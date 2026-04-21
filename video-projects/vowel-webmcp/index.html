@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Vowel WebMCP Promo</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #030812; font-family: "Montserrat", sans-serif; color: #f5f7fa; }
+      .beat-layer { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; }
+      #chyron { position: absolute; top: 56px; left: 56px; display: flex; align-items: baseline; gap: 18px; font-family: "Roboto Mono", monospace; font-weight: 700; font-size: 18px; letter-spacing: 0.32em; z-index: 20; pointer-events: none; opacity: 0; }
+      #chyron .chyron-counter { color: #37bdf8; text-shadow: 0 0 12px rgba(55,189,248,0.5); }
+      #chyron .chyron-sep { color: rgba(255,255,255,0.3); }
+      #chyron .chyron-label { color: #f5f7fa; font-family: "Montserrat", sans-serif; font-weight: 900; font-size: 22px; letter-spacing: 0.2em; }
+      #chyron .chyron-hot { color: #f09025; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="vowel-webmcp" data-start="0" data-duration="45" data-width="1920" data-height="1080">
+      <!-- 25 beats scaled to 45s -->
+      <div class="beat-layer" data-composition-id="b01-ready" data-composition-src="compositions/b01-ready.html" data-start="0" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b02-shift" data-composition-src="compositions/b02-shift.html" data-start="2" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b03-twoforone" data-composition-src="compositions/b03-twoforone.html" data-start="4" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b04-found" data-composition-src="compositions/b04-found.html" data-start="6" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b05-understandable" data-composition-src="compositions/b05-understandable.html" data-start="8" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b06-executable" data-composition-src="compositions/b06-executable.html" data-start="10" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b07-whatis" data-composition-src="compositions/b07-whatis.html" data-start="12" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b08-browser" data-composition-src="compositions/b08-browser.html" data-start="14" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b09-search" data-composition-src="compositions/b09-search.html" data-start="16" data-duration="1.5" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b10-cart" data-composition-src="compositions/b10-cart.html" data-start="17.5" data-duration="1.5" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b11-ticket" data-composition-src="compositions/b11-ticket.html" data-start="19" data-duration="1.5" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b12-client" data-composition-src="compositions/b12-client.html" data-start="20.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b13-seo" data-composition-src="compositions/b13-seo.html" data-start="22.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b14-agentready" data-composition-src="compositions/b14-agentready.html" data-start="24.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b15-agentic" data-composition-src="compositions/b15-agentic.html" data-start="26.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b16-whatnow" data-composition-src="compositions/b16-whatnow.html" data-start="28.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b17-straightforward" data-composition-src="compositions/b17-straightforward.html" data-start="30.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b18-vowel" data-composition-src="compositions/b18-vowel.html" data-start="32.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b19-vowelbot" data-composition-src="compositions/b19-vowelbot.html" data-start="34.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b20-features" data-composition-src="compositions/b20-features.html" data-start="36.5" data-duration="2" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b21-free" data-composition-src="compositions/b21-free.html" data-start="38.5" data-duration="1.5" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b22-docs" data-composition-src="compositions/b22-docs.html" data-start="40" data-duration="1.5" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b23-here" data-composition-src="compositions/b23-here.html" data-start="41.5" data-duration="1.5" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b24-edge" data-composition-src="compositions/b24-edge.html" data-start="43" data-duration="1" data-track-index="0" data-width="1920" data-height="1080"></div>
+      <div class="beat-layer" data-composition-id="b25-cta" data-composition-src="compositions/b25-cta.html" data-start="44" data-duration="1" data-track-index="0" data-width="1920" data-height="1080"></div>
+
+      <div id="chyron">
+        <span class="chyron-counter" id="chyron-counter">01</span>
+        <span class="chyron-sep">/</span>
+        <span class="chyron-label" id="chyron-label">WEB <span class="chyron-hot">MCP</span></span>
+      </div>
+
+      <audio id="music" data-start="0" data-duration="45" data-track-index="1" data-volume="0.6" src="assets/music.mp3"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const counterEl = document.getElementById("chyron-counter");
+      const labelEl = document.getElementById("chyron-label");
+      const labels = ["HOOK","SHIFT","TWO4ONE","SEO→","DATA","MCP","WHAT","STANDARD","TOOLS","MORE","RUNS","QUOTE","AGENT","WEB","NOW","EASY","VOWEL","BOT","FEATURES","FREE","DOCS","HERE","EDGE","CTA"];
+      for(let i=0;i<25;i++){
+        const t = i * 1.8;
+        tl.call(() => { counterEl.textContent = (labels[i]||"").slice(0,2); labelEl.innerHTML = labels[i]||""; }, null, t);
+        tl.fromTo("#chyron",{opacity:0},{opacity:1,duration:0.1,ease:"power3.out"},t+0.05);
+        tl.to("#chyron",{opacity:0,duration:0.1,ease:"power2.in"},t+1.6);
+      }
+      tl.set({}, {}, 45);
+      window.__timelines["vowel-webmcp"] = tl;
+    </script>
+  </body>
+</html>

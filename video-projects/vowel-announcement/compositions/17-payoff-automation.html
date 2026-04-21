@@ -1,0 +1,56 @@
+<div data-composition-id="payoff-automation" data-start="0" data-duration="3.5" data-width="1920" data-height="1080" style="width: 1920px; height: 1080px; position: absolute; display: grid; place-items: center; background: transparent;">
+  <style>
+    @font-face {
+      font-family: 'Electrolize';
+      src: url('../assets/Electrolize-Regular.ttf') format('truetype');
+    }
+    .line {
+      font-family: 'Electrolize', sans-serif;
+      position: absolute;
+    }
+    .l1 {
+      font-size: 100px;
+      background: linear-gradient(90deg, #33d4c8, #a155ff, #ff9430, #33d4c8);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 40px rgba(255,255,255,0.3);
+    }
+    .l2 {
+      font-size: 50px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 100px;
+    }
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #fff, 0 0 20px #33d4c8;
+    }
+  </style>
+  <div class="sparkle" style="top: 30%; left: 20%;"></div>
+  <div class="sparkle" style="top: 25%; left: 70%;"></div>
+  <div class="sparkle" style="top: 60%; left: 15%;"></div>
+  <div class="sparkle" style="top: 65%; left: 75%;"></div>
+  <div class="sparkle" style="top: 40%; left: 85%;"></div>
+  <div class="sparkle" style="top: 45%; left: 10%;"></div>
+  <span class="line l1">Auto-magically</span>
+  <span class="line l2">Voice AI that just works</span>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from('.sparkle', { opacity: 0, scale: 1.5, duration: 0.3, ease: 'power2.out', stagger: 0.1 }, 0);
+      tl.to('.sparkle', { y: -30, opacity: 0, duration: 1.5, ease: 'power2.out', stagger: 0.1 }, 0.5);
+      tl.from('.l1', { scale: 0.7, opacity: 0, duration: 0.8, ease: 'back.out(1.4)' }, 0.3);
+      tl.to('.l1', { y: -10, duration: 0.3, ease: 'power2.out', yoyo: true, repeat: 3 }, 1.0);
+      tl.from('.l2', { y: 30, opacity: 0, duration: 0.6, ease: 'power3.out' }, 1.3);
+      tl.to('.line', { opacity: 0, filter: 'blur(15px)', duration: 0.5, ease: 'power2.in' }, 2.8);
+      tl.to({}, { duration: 3.5 }, 0);
+      window.__timelines['payoff-automation'] = tl;
+    })();
+  </script>
+</div>

@@ -1,0 +1,16 @@
+<div data-composition-id="b16-whatnow" data-start="35" data-duration="2" data-width="1920" data-height="1080">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+[data-composition-id="b16-whatnow"] { position:absolute;inset:0;background:#030812;display:flex;align-items:center;justify-content:center; }
+[data-composition-id="b16-whatnow"] .text { font-family:"Montserrat";font-weight:900;font-size:80px;color:#fff; }
+[data-composition-id="b16-whatnow"] .accent { color:#f09025; }
+</style>
+<div class="text">Ok, so <span class="accent">what now</span>?</div>
+<script>
+(function(){
+const SLOT_DURATION=2;window.__timelines=window.__timelines||{};const tl=gsap.timeline({paused:true});
+tl.fromTo(".text",{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.35,ease:"elastic.out(1,0.5)"},0.1);
+tl.to({}, {duration:SLOT_DURATION},0);window.__timelines["b16-whatnow"]=tl;
+})();
+</script>
+</div>

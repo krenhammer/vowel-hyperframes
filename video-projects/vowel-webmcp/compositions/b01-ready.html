@@ -1,0 +1,27 @@
+<div data-composition-id="b01-ready" data-start="0" data-duration="3" data-width="1920" data-height="1080">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+[data-composition-id="b01-ready"] { position:absolute;inset:0;background:#030812;overflow:hidden; }
+[data-composition-id="b01-ready"] .term { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);width:900px;background:rgba(13,32,49,0.9);border:1px solid rgba(55,189,248,0.3);border-radius:12px;opacity:0; }
+[data-composition-id="b01-ready"] .term-bar { display:flex;align-items:center;gap:10px;padding:14px 20px;background:rgba(7,18,28,0.8);border-bottom:1px solid rgba(55,189,248,0.2); }
+[data-composition-id="b01-ready"] .dot { width:12px;height:12px;border-radius:50%; }
+[data-composition-id="b01-ready"] .title { margin-left:16px;font-family:"Roboto Mono";font-size:18px;color:#5a7a9a; }
+[data-composition-id="b01-ready"] .body { padding:30px 40px;font-family:"Roboto Mono";font-size:36px;color:#fff; }
+[data-composition-id="b01-ready"] .prompt { color:#37bdf8; }
+[data-composition-id="b01-ready"] .cmd { color:#fff; }
+[data-composition-id="b01-ready"] .caret { color:#37bdf8;animation:blink 0.8s infinite; }
+@keyframes blink { 50% { opacity:0; } }
+</style>
+<div class="term">
+  <div class="term-bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="title">zsh — webmcp-promo</span></div>
+  <div class="body"><span class="prompt">$</span> <span class="cmd" id="cmd1"></span><span class="caret">▎</span></div>
+</div>
+<script>
+(function(){
+const SLOT_DURATION=3;window.__timelines=window.__timelines||{};const tl=gsap.timeline({paused:true});
+tl.fromTo(".term",{opacity:0,scale:0.85},{opacity:1,scale:0.9,duration:0.3,ease:"power3.out"},0);
+tl.to({},{duration:2,onUpdate:function(){const p=this.progress();document.getElementById("cmd1").textContent="echo 'WebMCP: Are you ready?'".slice(0,Math.floor(p*35))}},0.4);
+tl.to({}, {duration:SLOT_DURATION},0);window.__timelines["b01-ready"]=tl;
+})();
+</script>
+</div>

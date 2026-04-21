@@ -1,0 +1,49 @@
+<div data-composition-id="hook-expensive" data-start="0" data-duration="2" data-width="1920" data-height="1080" style="width: 1920px; height: 1080px; position: absolute; display: grid; place-items: center; background: transparent;">
+  <style>
+    @font-face {
+      font-family: 'Electrolize';
+      src: url('../assets/Electrolize-Regular.ttf') format('truetype');
+    }
+    .word {
+      font-family: 'Electrolize', sans-serif;
+      position: absolute;
+    }
+    .w1 {
+      font-size: 100px;
+      background: linear-gradient(180deg, #ff9430 0%, #e67600 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 30px rgba(255,148,48,0.5);
+    }
+    .w2 {
+      font-size: 60px;
+      margin-top: 80px;
+      background: linear-gradient(180deg, #fff 0%, #999 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .price-tag {
+      position: absolute;
+      font-size: 200px;
+      color: rgba(255,148,48,0.1);
+      font-family: 'Electrolize', sans-serif;
+    }
+  </style>
+  <div class="price-tag">$</div>
+  <span class="word w1">Too expensive</span>
+  <span class="word w2">to scale</span>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from('.price-tag', { scale: 0, rotation: -180, opacity: 0, duration: 0.6, ease: 'back.out(1.2)' }, 0);
+      tl.from('.w1', { y: 50, opacity: 0, scale: 0.8, duration: 0.5, ease: 'power3.out' }, 0.2);
+      tl.from('.w2', { y: 30, opacity: 0, duration: 0.4, ease: 'power2.out' }, 0.5);
+      tl.to('.price-tag', { scale: 1.5, opacity: 0.8, duration: 0.5, ease: 'power2.in' }, 1.0);
+      tl.to('.word, .price-tag', { opacity: 0, y: -30, filter: 'blur(15px)', duration: 0.4, ease: 'power2.in' }, 1.5);
+      tl.to({}, { duration: 2 }, 0);
+      window.__timelines['hook-expensive'] = tl;
+    })();
+  </script>
+</div>

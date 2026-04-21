@@ -1,0 +1,62 @@
+<div data-composition-id="brand-reveal" data-start="0" data-duration="2.5" data-width="1920" data-height="1080" style="width: 1920px; height: 1080px; position: absolute; display: grid; place-items: center; background: transparent;">
+  <style>
+    @font-face {
+      font-family: 'Electrolize';
+      src: url('../assets/Electrolize-Regular.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'OCR-A';
+      src: url('../assets/OCR-A_Regular.otf') format('opentype');
+    }
+    .meet {
+      font-family: 'Electrolize', sans-serif;
+      font-size: 60px;
+      background: linear-gradient(180deg, #fff 0%, #999 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      position: absolute;
+      margin-top: -120px;
+    }
+    .vowel-logo {
+      font-family: 'OCR-A', monospace;
+      font-size: 160px;
+      letter-spacing: 0.05em;
+      color: #33d4c8;
+      text-shadow: 0 0 40px rgba(51,212,200,0.6), 0 0 80px rgba(51,212,200,0.3), 0 0 120px rgba(51,212,200,0.2);
+      position: absolute;
+    }
+    .cursor {
+      position: absolute;
+      width: 3px;
+      height: 40px;
+      background: #33d4c8;
+      margin-left: 320px;
+      margin-top: 20px;
+      opacity: 0;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    .blinking { animation: blink 0.8s steps(1) infinite; }
+  </style>
+  <span class="meet">Meet</span>
+  <span class="vowel-logo">vowel</span>
+  <div class="cursor"></div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from('.meet', { opacity: 0, y: -30, duration: 0.5, ease: 'power2.out' }, 0);
+      tl.from('.vowel-logo', { opacity: 0, scale: 0.8, duration: 0.8, ease: 'back.out(1.4)' }, 0.4);
+      tl.to('.vowel-logo', { textShadow: '0 0 60px rgba(51,212,200,0.8), 0 0 100px rgba(51,212,200,0.5), 0 0 140px rgba(51,212,200,0.3)', duration: 0.4, ease: 'power2.out', yoyo: true, repeat: 1 }, 0.9);
+      tl.to('.cursor', { opacity: 1, duration: 0.1 }, 0.9);
+      tl.add(() => { document.querySelector('.cursor').classList.add('blinking'); }, 1.0);
+      tl.to('.meet, .cursor', { opacity: 0, duration: 0.3, ease: 'power2.in' }, 1.8);
+      tl.to('.vowel-logo', { scale: 1.1, duration: 0.5, ease: 'power2.inOut' }, 1.8);
+      tl.to({}, { duration: 2.5 }, 0);
+      window.__timelines['brand-reveal'] = tl;
+    })();
+  </script>
+</div>

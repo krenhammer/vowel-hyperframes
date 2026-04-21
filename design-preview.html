@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vowel Design System - Live Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vowel-black: #000000;
+            --pure-white: #ffffff;
+            --chip-gray: #efefef;
+            --hover-gray: #e2e2e2;
+            --hover-light: #f3f3f3;
+            --body-gray: #4b4b4b;
+            --muted-gray: #afafaf;
+            --link-blue: #0000ee;
+            --dark-bg: #1a1a1a;
+            --dark-surface: #242424;
+            --dark-text: #ffffff;
+            --dark-muted: #a0a0a0;
+            --dark-border: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--pure-white);
+            color: var(--vowel-black);
+            line-height: 1.5;
+        }
+
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        header {
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--chip-gray);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--body-gray);
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .section-description {
+            font-size: 16px;
+            color: var(--body-gray);
+            margin-bottom: 24px;
+        }
+
+        /* Color Palette */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .color-card {
+            background: var(--pure-white);
+            border: 1px solid var(--chip-gray);
+            border-radius: 12px;
+            padding: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .color-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .color-swatch {
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .color-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .color-hex {
+            font-size: 12px;
+            color: var(--body-gray);
+            font-family: monospace;
+        }
+
+        /* Typography */
+        .typography-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .typography-item {
+            padding: 16px;
+            border: 1px solid var(--chip-gray);
+            border-radius: 12px;
+        }
+
+        .typography-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--muted-gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .typography-value {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .button {
+            padding: 12px 24px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button-primary {
+            background: var(--vowel-black);
+            color: var(--pure-white);
+        }
+
+        .button-secondary {
+            background: transparent;
+            border-color: var(--vowel-black);
+            color: var(--vowel-black);
+        }
+
+        .button-chip {
+            background: var(--chip-gray);
+            color: var(--vowel-black);
+        }
+
+        .button-chip.active {
+            background: var(--vowel-black);
+            color: var(--pure-white);
+        }
+
+        .button-floating {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--vowel-black);
+            color: var(--pure-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .button-floating:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--pure-white);
+            border: 1px solid var(--chip-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            height: 120px;
+            background: linear-gradient(135deg, var(--vowel-black) 0%, #333 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon {
+            font-size: 48px;
+            color: var(--pure-white);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: var(--body-gray);
+            margin-bottom: 16px;
+        }
+
+        .card-button {
+            width: 100%;
+            padding: 10px;
+            background: var(--vowel-black);
+            color: var(--pure-white);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .card-button:hover {
+            background: #333;
+        }
+
+        /* Spacing */
+        .spacing-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .spacing-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: var(--chip-gray);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .spacing-box {
+            width: 24px;
+            height: 24px;
+            background: var(--vowel-black);
+            border-radius: 4px;
+        }
+
+        /* Border Radius */
+        .radius-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .radius-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radius-box {
+            width: 80px;
+            height: 80px;
+            background: var(--vowel-black);
+            transition: border-radius 0.3s ease;
+        }
+
+        .radius-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--body-gray);
+        }
+
+        /* Waveform */
+        .waveform-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 60px;
+        }
+
+        .waveform-bar {
+            width: 8px;
+            background: var(--vowel-black);
+            border-radius: 4px;
+            transition: height 0.1s ease;
+        }
+
+        .waveform-bar.active {
+            animation: waveformPulse 0.5s ease-in-out infinite;
+        }
+
+        @keyframes waveformPulse {
+            0%, 100% {
+                height: 20px;
+            }
+            50% {
+                height: 60px;
+            }
+        }
+
+        /* Latency Indicator */
+        .latency-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .latency-value {
+            font-weight: 700;
+            color: var(--vowel-black);
+        }
+
+        /* Dark Mode */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: var(--vowel-black);
+            color: var(--pure-white);
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: translateY(-1px);
+        }
+
+        .dark-mode {
+            background: var(--dark-bg) !important;
+            color: var(--dark-text) !important;
+        }
+
+        .dark-mode .color-card,
+        .dark-mode .card,
+        .dark-mode .button-chip {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .dark-mode .card-button {
+            background: var(--pure-white);
+            color: var(--vowel-black);
+        }
+
+        .dark-mode .card-button:hover {
+            background: var(--chip-gray);
+        }
+
+        .dark-mode .spacing-item {
+            background: var(--dark-border);
+        }
+
+        .dark-mode .waveform-bar {
+            background: var(--pure-white);
+        }
+
+        .dark-mode .latency-badge {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--dark-text);
+        }
+
+        /* Focus States */
+        *:focus {
+            outline: 3px solid var(--link-blue);
+            outline-offset: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .preview-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+    <div class="preview-container">
+        <header>
+            <h1>Vowel Design System</h1>
+            <p class="subtitle">Voice agent platform. Natural, immediate, intelligent conversations.</p>
+        </header>
+
+        <!-- Color Palette -->
+        <section>
+            <h2>Color Palette</h2>
+            <p class="section-description">Natural duality — bold black and white with subtle grays for depth</p>
+            <div class="color-grid">
+                <div class="color-card">
+                    <div class="color-swatch" style="background: var(--vowel-black);"></div>
+                    <div class="color-name">Vowel Black</div>
+                    <div class="color-hex">#000000</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: var(--pure-white);"></div>
+                    <div class="color-name">Pure White</div>
+                    <div class="color-hex">#ffffff</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: var(--chip-gray);"></div>
+                    <div class="color-name">Chip Gray</div>
+                    <div class="color-hex">#efefef</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: var(--hover-gray);"></div>
+                    <div class="color-name">Hover Gray</div>
+                    <div class="color-hex">#e2e2e2</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: var(--body-gray);"></div>
+                    <div class="color-name">Body Gray</div>
+                    <div class="color-hex">#4b4b4b</div>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="background: var(--muted-gray);"></div>
+                    <div class="color-name">Muted Gray</div>
+                    <div class="color-hex">#afafaf</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typography -->
+        <section>
+            <h2>Typography Scale</h2>
+            <p class="section-description">Vowel Voice Type System — clear hierarchy for voice-first interfaces</p>
+            <div class="typography-grid">
+                <div class="typography-item">
+                    <div class="typography-label">Display Hero</div>
+                    <div class="typography-value">48px Bold 700</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">Section Heading</div>
+                    <div class="typography-value">28px Bold 700</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">Card Title</div>
+                    <div class="typography-value">20px Bold 700</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">Body Text</div>
+                    <div class="typography-value">16px Regular 400</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">Caption</div>
+                    <div class="typography-value">14px Medium 500</div>
+                </div>
+                <div class="typography-item">
+                    <div class="typography-label">Micro Text</div>
+                    <div class="typography-value">12px Regular 400</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buttons -->
+        <section>
+            <h2>Button Variants</h2>
+            <p class="section-description">Pill-shaped actions for voice-first interactions</p>
+            <div class="button-group">
+                <button class="button button-primary">Start Conversation</button>
+                <button class="button button-secondary">View Documentation</button>
+                <button class="button button-chip">Audio Input</button>
+                <button class="button button-chip active">Real-time</button>
+                <button class="button button-chip">Voice Mode</button>
+            </div>
+        </section>
+
+        <!-- Cards -->
+        <section>
+            <h2>Card Examples</h2>
+            <p class="section-description">Conversation and feature cards with voice-specific elements</p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🎙️</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Real-time Latency</h3>
+                        <p class="card-description">Class-leading speech-to-speech performance delivers conversations that feel natural and immediate.</p>
+                        <button class="card-button">Try now</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🏠</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Self-hosted Control</h3>
+                        <p class="card-description">Deploy vowel on your own infrastructure for full control over data, compliance, and scaling.</p>
+                        <button class="card-button">Get started</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🛡️</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Secure & Private</h3>
+                        <p class="card-description">API keys never exposed to browsers, server-side action validation, and full data control.</p>
+                        <button class="card-button">Learn more</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Voice Elements -->
+        <section>
+            <h2>Voice-Specific Elements</h2>
+            <p class="section-description">Visualizations and indicators for voice interactions</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 24px;">
+                <div style="padding: 24px; border: 1px solid var(--chip-gray); border-radius: 12px;">
+                    <div style="margin-bottom: 12px; font-weight: 600;">Audio Waveform</div>
+                    <div class="waveform-container">
+                        <div class="waveform-bar active" style="height: 30px;"></div>
+                        <div class="waveform-bar active" style="height: 50px;"></div>
+                        <div class="waveform-bar active" style="height: 70px;"></div>
+                        <div class="waveform-bar active" style="height: 40px;"></div>
+                        <div class="waveform-bar active" style="height: 60px;"></div>
+                        <div class="waveform-bar active" style="height: 45px;"></div>
+                        <div class="waveform-bar active" style="height: 55px;"></div>
+                        <div class="waveform-bar active" style="height: 35px;"></div>
+                    </div>
+                </div>
+                <div style="padding: 24px; border: 1px solid var(--chip-gray); border-radius: 12px;">
+                    <div style="margin-bottom: 12px; font-weight: 600;">Latency Indicator</div>
+                    <div class="latency-badge">
+                        <span>Class-leading speech-to-speech latency</span>
+                        <span class="latency-value">&lt;50ms</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spacing -->
+        <section>
+            <h2>Spacing Scale (8px Grid)</h2>
+            <p class="section-description">Consistent spacing using 8px base unit</p>
+            <div class="spacing-demo">
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 4px;"></div>
+                    <span>4px</span>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 8px;"></div>
+                    <span>8px</span>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 12px;"></div>
+                    <span>12px</span>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 16px;"></div>
+                    <span>16px</span>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 20px;"></div>
+                    <span>20px</span>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 24px;"></div>
+                    <span>24px</span>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 32px;"></div>
+                    <span>32px</span>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 48px;"></div>
+                    <span>48px</span>
+                </div>
+                <div class="spacing-item">
+                    <div class="spacing-box" style="width: 64px;"></div>
+                    <span>64px</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Border Radius -->
+        <section>
+            <h2>Border Radius Scale</h2>
+            <p class="section-description">Corner shapes for different UI elements</p>
+            <div class="radius-demo">
+                <div class="radius-item">
+                    <div class="radius-box" style="border-radius: 0px;"></div>
+                    <span class="radius-label">None</span>
+                </div>
+                <div class="radius-item">
+                    <div class="radius-box" style="border-radius: 8px;"></div>
+                    <span class="radius-label">Standard</span>
+                </div>
+                <div class="radius-item">
+                    <div class="radius-box" style="border-radius: 12px;"></div>
+                    <span class="radius-label">Comfortable</span>
+                </div>
+                <div class="radius-item">
+                    <div class="radius-box" style="border-radius: 999px;"></div>
+                    <span class="radius-label">Full Pill</span>
+                </div>
+                <div class="radius-item">
+                    <div class="radius-box" style="border-radius: 50%;"></div>
+                    <span class="radius-label">Circle</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Elevation -->
+        <section>
+            <h2>Elevation System</h2>
+            <p class="section-description">Shadow hierarchy for depth and visual hierarchy</p>
+            <div class="card-grid">
+                <div class="card" style="box-shadow: none; border: 1px solid var(--chip-gray);">
+                    <div class="card-body">
+                        <div class="card-title" style="font-size: 16px;">Flat</div>
+                        <p class="card-description">No shadow, border only</p>
+                    </div>
+                </div>
+                <div class="card" style="box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);">
+                    <div class="card-body">
+                        <div class="card-title" style="font-size: 16px;">Subtle</div>
+                        <p class="card-description">rgba(0,0,0,0.12) 0 4px 16px</p>
+                    </div>
+                </div>
+                <div class="card" style="box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);">
+                    <div class="card-body">
+                        <div class="card-title" style="font-size: 16px;">Medium</div>
+                        <p class="card-description">rgba(0,0,0,0.16) 0 4px 16px</p>
+                    </div>
+                </div>
+                <div class="card" style="box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);">
+                    <div class="card-body">
+                        <div class="card-title" style="font-size: 16px;">Floating</div>
+                        <p class="card-description">rgba(0,0,0,0.16) 0 2px 8px + lift</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dark Mode Demo -->
+        <section>
+            <h2>Dark Mode Support</h2>
+            <p class="section-description">Toggle to see the design system in dark mode</p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🌙</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Dark Background</h3>
+                        <p class="card-description">#1a1a1a — Main dark surface</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">🔲</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Dark Surface</h3>
+                        <p class="card-description">#242424 — Card surfaces, panels</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-icon">✨</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Dark Text</h3>
+                        <p class="card-description">#ffffff — Primary text</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <button class="button-floating" onclick="toggleWaveform()" aria-label="Toggle voice animation">
+        🎙️
+    </button>
+
+    <script>
+        let waveformAnimating = true;
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function toggleWaveform() {
+            waveformAnimating = !waveformAnimating;
+            const bars = document.querySelectorAll('.waveform-bar');
+            bars.forEach(bar => {
+                bar.classList.toggle('active', waveformAnimating);
+            });
+        }
+
+        // Animate waveform on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.waveform-bar');
+            // Stagger animation for natural effect
+            bars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.classList.add('active');
+                }, index * 50);
+            });
+        });
+    </script>
+</body>
+</html>

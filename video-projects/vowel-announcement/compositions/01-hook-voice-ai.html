@@ -1,0 +1,34 @@
+<div data-composition-id="hook-voice-ai" data-start="0" data-duration="2" data-width="1920" data-height="1080" style="width: 1920px; height: 1080px; position: absolute; display: grid; place-items: center; background: transparent;">
+  <style>
+    @font-face {
+      font-family: 'Electrolize';
+      src: url('../assets/Electrolize-Regular.ttf') format('truetype');
+    }
+    .word {
+      font-family: 'Electrolize', sans-serif;
+      font-size: 140px;
+      letter-spacing: 0.1em;
+      background: linear-gradient(180deg, #fff 0%, #999 60%, #ccc 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 30px rgba(255,255,255,0.4), 0 0 60px rgba(255,255,255,0.2);
+      position: absolute;
+    }
+  </style>
+  <span class="word w1">Voice</span>
+  <span class="word w2" style="margin-left: 280px;">AI</span>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from('.w1', { x: -200, opacity: 0, scale: 0.7, duration: 0.6, ease: 'power3.out' }, 0.1);
+      tl.from('.w2', { x: 200, opacity: 0, scale: 0.7, duration: 0.6, ease: 'power3.out' }, 0.4);
+      tl.to('.word', { scale: 1.02, duration: 0.8, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 0.8);
+      tl.to('.w1', { x: -100, opacity: 0, filter: 'blur(10px)', duration: 0.4, ease: 'power2.in' }, 1.5);
+      tl.to('.w2', { x: 100, opacity: 0, filter: 'blur(10px)', duration: 0.4, ease: 'power2.in' }, 1.5);
+      tl.to({}, { duration: 2 }, 0);
+      window.__timelines['hook-voice-ai'] = tl;
+    })();
+  </script>
+</div>

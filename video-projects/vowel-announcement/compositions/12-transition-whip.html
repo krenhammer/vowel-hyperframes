@@ -1,0 +1,58 @@
+<div data-composition-id="transition-whip-3" data-start="0" data-duration="1.5" data-width="1920" data-height="1080" style="width: 1920px; height: 1080px; position: absolute; overflow: hidden; background: transparent;">
+  <style>
+    .streak {
+      position: absolute;
+      top: 50%;
+      left: -50%;
+      width: 200%;
+      height: 6px;
+      background: linear-gradient(90deg, transparent, rgba(255,148,48,0.9), rgba(255,255,255,0.9), rgba(255,148,48,0.9), transparent);
+      filter: blur(10px);
+      transform: translateY(-50%);
+    }
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(255,148,48,0.25) 0%, transparent 70%);
+      opacity: 0;
+    }
+    .bars {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 40px;
+      padding: 0 200px;
+    }
+    .bar {
+      width: 60px;
+      background: linear-gradient(180deg, #ff9430 0%, #e67600 100%);
+      opacity: 0.3;
+      transform-origin: bottom;
+    }
+  </style>
+  <div class="bars">
+    <div class="bar" style="height: 40%;"></div>
+    <div class="bar" style="height: 70%;"></div>
+    <div class="bar" style="height: 30%;"></div>
+  </div>
+  <div class="streak"></div>
+  <div class="flash"></div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from('.bar', { scaleY: 0, duration: 0.6, ease: 'power3.out', stagger: 0.1 }, 0);
+      tl.fromTo('.streak', { xPercent: -150 }, { xPercent: 150, duration: 0.5, ease: 'power4.in' }, 0.2);
+      tl.to('.flash', { opacity: 1, duration: 0.15, ease: 'power2.out' }, 0.4);
+      tl.to('.flash', { opacity: 0, duration: 0.3, ease: 'power2.in' }, 0.55);
+      tl.to({}, { duration: 1.5 }, 0);
+      window.__timelines['transition-whip-3'] = tl;
+    })();
+  </script>
+</div>

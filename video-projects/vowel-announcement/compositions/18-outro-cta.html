@@ -1,0 +1,66 @@
+<div data-composition-id="outro-cta" data-start="0" data-duration="15" data-width="1920" data-height="1080" style="width: 1920px; height: 1080px; position: absolute; display: grid; place-items: center; background: transparent;">
+  <style>
+    @font-face {
+      font-family: 'Electrolize';
+      src: url('../assets/Electrolize-Regular.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'OCR-A';
+      src: url('../assets/OCR-A_Regular.otf') format('opentype');
+    }
+    .logo {
+      font-family: 'OCR-A', monospace;
+      font-size: 180px;
+      color: #33d4c8;
+      text-shadow: 0 0 50px rgba(51,212,200,0.6), 0 0 100px rgba(51,212,200,0.3), 0 0 150px rgba(51,212,200,0.2);
+      position: absolute;
+      margin-top: -80px;
+    }
+    .tagline {
+      font-family: 'Electrolize', sans-serif;
+      font-size: 48px;
+      background: linear-gradient(180deg, #fff 0%, #999 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      position: absolute;
+      margin-top: 120px;
+    }
+    .url {
+      font-family: 'Electrolize', sans-serif;
+      font-size: 36px;
+      color: rgba(255,255,255,0.6);
+      position: absolute;
+      margin-top: 200px;
+      letter-spacing: 0.1em;
+    }
+    .shimmer {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+      transform: skewX(-20deg) translateX(-150%);
+    }
+  </style>
+  <span class="logo">vowel</span>
+  <span class="tagline">Stop typing. Start Commanding.</span>
+  <span class="url">https://vowel.to</span>
+  <div class="shimmer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from('.logo', { scale: 0.8, opacity: 0, duration: 1.0, ease: 'power3.out' }, 0.3);
+      tl.to('.logo', { textShadow: '0 0 70px rgba(51,212,200,0.8), 0 0 120px rgba(51,212,200,0.5), 0 0 180px rgba(51,212,200,0.3)', duration: 2, ease: 'sine.inOut', yoyo: true, repeat: 6 }, 1.5);
+      tl.from('.tagline', { y: 40, opacity: 0, duration: 0.8, ease: 'power2.out' }, 1.0);
+      tl.from('.url', { opacity: 0, duration: 0.6, ease: 'power2.out' }, 1.5);
+      tl.to('.url', { opacity: 1, duration: 1.5, ease: 'sine.inOut', yoyo: true, repeat: 8 }, 2.5);
+      tl.to('.shimmer', { x: '300%', duration: 1.5, ease: 'power2.inOut' }, 2.0);
+      tl.set('.shimmer', { x: '-150%' }, 5.0);
+      tl.to('.shimmer', { x: '300%', duration: 1.5, ease: 'power2.inOut' }, 5.0);
+      tl.set('.shimmer', { x: '-150%' }, 10.0);
+      tl.to('.shimmer', { x: '300%', duration: 1.5, ease: 'power2.inOut' }, 10.0);
+      tl.to({}, { duration: 15 }, 0);
+      window.__timelines['outro-cta'] = tl;
+    })();
+  </script>
+</div>

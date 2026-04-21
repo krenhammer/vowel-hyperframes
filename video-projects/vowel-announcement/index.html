@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vowel Platform Announcement</title>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'OCR-A';
+      src: url('assets/OCR-A_Regular.otf') format('opentype');
+    }
+    @font-face {
+      font-family: 'Electrolize';
+      src: url('assets/Electrolize-Regular.ttf') format('truetype');
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* Root composition */
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+    }
+
+    /* Caption styles - body level siblings */
+    .caption {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 16px 28px;
+      border-radius: 16px;
+      background: rgba(10, 8, 5, 0.6);
+      backdrop-filter: blur(12px);
+      font-family: 'Electrolize', sans-serif;
+      font-size: 32px;
+      font-weight: 400;
+      color: #fff;
+      text-align: center;
+      letter-spacing: 0.02em;
+      z-index: 50;
+    }
+  </style>
+</head>
+<body>
+  <!-- Root composition container -->
+  <div id="root"
+       data-composition-id="vowel-announcement"
+       data-start="0"
+       data-width="1920"
+       data-height="1080"
+       style="width: 1920px; height: 1080px; position: relative; overflow: hidden;">
+
+    <!-- Ambient background (always on, track 0) -->
+    <template data-composition-src="compositions/ambient-bg.html"
+              data-composition-id="ambient-bg"
+              data-start="0"
+              data-duration="60"
+              data-width="1920" data-height="1080" data-track-index="0"></template>
+
+    <!-- Act 1: Hook -->
+    <template data-composition-src="compositions/01-hook-voice-ai.html"
+              data-composition-id="hook-voice-ai-host"
+              data-start="0"
+              data-duration="2.0"
+              data-width="1920" data-height="1080" data-track-index="2"></template>
+
+    <template data-composition-src="compositions/02-hook-broken.html"
+              data-composition-id="hook-broken-host"
+              data-start="2.0"
+              data-duration="2.0"
+              data-width="1920" data-height="1080" data-track-index="3"></template>
+
+    <template data-composition-src="compositions/03-hook-expensive.html"
+              data-composition-id="hook-expensive-host"
+              data-start="4.0"
+              data-duration="2.0"
+              data-width="1920" data-height="1080" data-track-index="2"></template>
+
+    <template data-composition-src="compositions/04-hook-complex.html"
+              data-composition-id="hook-complex-host"
+              data-start="6.0"
+              data-duration="2.0"
+              data-width="1920" data-height="1080" data-track-index="3"></template>
+
+    <!-- Transition to solution -->
+    <template data-composition-src="compositions/05-transition-whip.html"
+              data-composition-id="transition-whip-host"
+              data-start="8.0"
+              data-duration="1.5"
+              data-width="1920" data-height="1080" data-track-index="5"></template>
+
+    <!-- Brand reveal -->
+    <template data-composition-src="compositions/06-brand-reveal.html"
+              data-composition-id="brand-reveal-host"
+              data-start="9.5"
+              data-duration="2.5"
+              data-width="1920" data-height="1080" data-track-index="2"></template>
+
+    <!-- Act 2: Pillar 1 - No Replatforming -->
+    <template data-composition-src="compositions/07-pillar-1-no-replatform.html"
+              data-composition-id="pillar-1-no-replatform-host"
+              data-start="12.0"
+              data-duration="3.0"
+              data-width="1920" data-height="1080" data-track-index="3"></template>
+
+    <template data-composition-src="compositions/08-pillar-1-zero-risk.html"
+              data-composition-id="pillar-1-zero-risk-host"
+              data-start="15.0"
+              data-duration="3.0"
+              data-width="1920" data-height="1080" data-track-index="2"></template>
+
+    <!-- Transition -->
+    <template data-composition-src="compositions/09-transition-whip.html"
+              data-composition-id="transition-whip-2-host"
+              data-start="18.0"
+              data-duration="1.5"
+              data-width="1920" data-height="1080" data-track-index="5"></template>
+
+    <!-- Pillar 2 - Speed + Sovereignty -->
+    <template data-composition-src="compositions/10-pillar-2-speed.html"
+              data-composition-id="pillar-2-speed-host"
+              data-start="19.5"
+              data-duration="3.5"
+              data-width="1920" data-height="1080" data-track-index="3"></template>
+
+    <template data-composition-src="compositions/11-pillar-2-sovereignty.html"
+              data-composition-id="pillar-2-sovereignty-host"
+              data-start="23.0"
+              data-duration="4.0"
+              data-width="1920" data-height="1080" data-track-index="2"></template>
+
+    <!-- Transition -->
+    <template data-composition-src="compositions/12-transition-whip.html"
+              data-composition-id="transition-whip-3-host"
+              data-start="27.0"
+              data-duration="1.5"
+              data-width="1920" data-height="1080" data-track-index="5"></template>
+
+    <!-- Pillar 3 - Better Economics -->
+    <template data-composition-src="compositions/13-pillar-3-economics.html"
+              data-composition-id="pillar-3-economics-host"
+              data-start="28.5"
+              data-duration="4.0"
+              data-width="1920" data-height="1080" data-track-index="3"></template>
+
+    <template data-composition-src="compositions/14-pillar-3-intelligent.html"
+              data-composition-id="pillar-3-intelligent-host"
+              data-start="32.5"
+              data-duration="4.0"
+              data-width="1920" data-height="1080" data-track-index="2"></template>
+
+    <!-- Transition -->
+    <template data-composition-src="compositions/15-transition-whip.html"
+              data-composition-id="transition-whip-4-host"
+              data-start="36.5"
+              data-duration="1.5"
+              data-width="1920" data-height="1080" data-track-index="5"></template>
+
+    <!-- Act 3: Payoff -->
+    <template data-composition-src="compositions/16-payoff-vowelbot.html"
+              data-composition-id="payoff-vowelbot-host"
+              data-start="38.0"
+              data-duration="3.5"
+              data-width="1920" data-height="1080" data-track-index="3"></template>
+
+    <template data-composition-src="compositions/17-payoff-automation.html"
+              data-composition-id="payoff-automation-host"
+              data-start="41.5"
+              data-duration="3.5"
+              data-width="1920" data-height="1080" data-track-index="2"></template>
+
+    <!-- Outro CTA -->
+    <template data-composition-src="compositions/18-outro-cta.html"
+              data-composition-id="outro-cta-host"
+              data-start="45.0"
+              data-duration="15.0"
+              data-width="1920" data-height="1080" data-track-index="3"></template>
+
+  </div>
+
+  <!-- Captions (body-level siblings, track-index >= 20) -->
+  <!-- Hook captions -->
+  <div class="caption clip" data-start="0.5" data-duration="1.3" data-track-index="20">Voice AI</div>
+  <div class="caption clip" data-start="2.2" data-duration="1.5" data-track-index="20">is still broken</div>
+  <div class="caption clip" data-start="4.3" data-duration="1.4" data-track-index="20">Too expensive to scale</div>
+  <div class="caption clip" data-start="6.5" data-duration="1.3" data-track-index="20">Complex rewrites?</div>
+
+  <!-- Solution caption -->
+  <div class="caption clip" data-start="9.8" data-duration="2.0" data-track-index="21">Meet vowel</div>
+
+  <!-- Pillar 1 captions -->
+  <div class="caption clip" data-start="12.3" data-duration="2.5" data-track-index="22">Your apps. No rewrite.</div>
+  <div class="caption clip" data-start="15.5" data-duration="2.3" data-track-index="22">Add voice. Zero risk.</div>
+
+  <!-- Pillar 2 captions -->
+  <div class="caption clip" data-start="20.2" data-duration="3.0" data-track-index="23">Cloud now. Launch fast.</div>
+  <div class="caption clip" data-start="23.5" data-duration="3.5" data-track-index="23">or self-hosted. Your data.</div>
+
+  <!-- Pillar 3 captions -->
+  <div class="caption clip" data-start="29.0" data-duration="3.5" data-track-index="24">4× less expensive</div>
+  <div class="caption clip" data-start="33.0" data-duration="3.5" data-track-index="24">More intelligent</div>
+
+  <!-- Payoff captions -->
+  <div class="caption clip" data-start="38.7" data-duration="2.8" data-track-index="25">vowelbot automation</div>
+  <div class="caption clip" data-start="42.0" data-duration="2.5" data-track-index="25">Auto-magically</div>
+
+  <!-- Music track -->
+  <audio src="assets/music.mp3" data-start="0" data-duration="60" data-track-index="30" data-volume="0.5" loop></audio>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+    tl.to({}, { duration: 60 }, 0);
+    window.__timelines["vowel-announcement"] = tl;
+  </script>
+</body>
+</html>

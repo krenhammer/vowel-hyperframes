@@ -1,0 +1,49 @@
+<div data-composition-id="hook-complex" data-start="0" data-duration="2" data-width="1920" data-height="1080" style="width: 1920px; height: 1080px; position: absolute; display: grid; place-items: center; background: transparent;">
+  <style>
+    @font-face {
+      font-family: 'Electrolize';
+      src: url('../assets/Electrolize-Regular.ttf') format('truetype');
+    }
+    .word {
+      font-family: 'Electrolize', sans-serif;
+      position: absolute;
+      background: linear-gradient(180deg, #fff 0%, #999 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .w1 { font-size: 80px; }
+    .w2 {
+      font-size: 50px;
+      margin-top: 100px;
+      text-decoration: line-through;
+      text-decoration-color: #e10b1f;
+    }
+    .wire-mesh {
+      position: absolute;
+      inset: 0;
+      opacity: 0.1;
+      background-image:
+        linear-gradient(45deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(-45deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+  </style>
+  <div class="wire-mesh"></div>
+  <span class="word w1">Complex</span>
+  <span class="word w2">Rewrite everything?</span>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.from('.wire-mesh', { opacity: 0, duration: 0.8, ease: 'power2.out' }, 0);
+      tl.from('.w1', { y: -80, opacity: 0, rotation: -5, duration: 0.5, ease: 'bounce.out' }, 0.2);
+      tl.from('.w2', { opacity: 0, x: -50, duration: 0.5, ease: 'power2.out' }, 0.6);
+      tl.to('.w1', { x: '+=5', duration: 0.05, yoyo: true, repeat: 5 }, 1.2);
+      tl.to('.w1', { y: 100, opacity: 0, rotation: 10, duration: 0.4, ease: 'power2.in' }, 1.5);
+      tl.to('.w2', { y: 80, opacity: 0, duration: 0.4, ease: 'power2.in' }, 1.5);
+      tl.to({}, { duration: 2 }, 0);
+      window.__timelines['hook-complex'] = tl;
+    })();
+  </script>
+</div>

@@ -1,0 +1,81 @@
+<div data-composition-id="pillar-2-speed" data-start="0" data-duration="3.5" data-width="1920" data-height="1080" style="width: 1920px; height: 1080px; position: absolute; display: grid; place-items: center; background: transparent;">
+  <style>
+    @font-face {
+      font-family: 'Electrolize';
+      src: url('../assets/Electrolize-Regular.ttf') format('truetype');
+    }
+    .line {
+      font-family: 'Electrolize', sans-serif;
+      position: absolute;
+    }
+    .l1 {
+      font-size: 120px;
+      background: linear-gradient(180deg, #a155ff 0%, #7e42d8 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 40px rgba(161,85,255,0.5);
+      margin-top: -80px;
+    }
+    .l2 {
+      font-size: 80px;
+      background: linear-gradient(180deg, #fff 0%, #999 100%);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-top: 80px;
+    }
+    .cloud {
+      position: absolute;
+      width: 100px;
+      height: 60px;
+      margin-left: -300px;
+    }
+    .cloud::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: linear-gradient(180deg, #a155ff 0%, #7e42d8 100%);
+      border-radius: 20px;
+    }
+    .cloud::after {
+      content: '';
+      position: absolute;
+      bottom: 20px;
+      left: 15px;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(180deg, #a155ff 0%, #7e42d8 100%);
+      border-radius: 50%;
+    }
+    .trail {
+      position: absolute;
+      width: 150px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(161,85,255,0.8), transparent);
+      margin-left: -400px;
+      opacity: 0;
+    }
+  </style>
+  <div class="trail"></div>
+  <div class="cloud"></div>
+  <span class="line l1">Cloud now</span>
+  <span class="line l2">Launch fast</span>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function(){
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo('.trail', { x: -100, opacity: 0 }, { x: 200, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.3);
+      tl.from('.cloud', { y: 80, opacity: 0, scale: 0.7, duration: 0.7, ease: 'power3.out' }, 0.3);
+      tl.from('.l1', { x: -120, opacity: 0, scale: 0.8, duration: 0.6, ease: 'expo.out' }, 0.5);
+      tl.from('.l2', { y: 50, opacity: 0, duration: 0.5, ease: 'power3.out' }, 1.0);
+      tl.to('.cloud', { y: -20, duration: 2, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 1.0);
+      tl.to('.line', { x: 150, opacity: 0, filter: 'blur(20px)', duration: 0.4, ease: 'power2.in' }, 2.9);
+      tl.to('.cloud', { y: -100, opacity: 0, duration: 0.4, ease: 'power2.in' }, 2.9);
+      tl.to({}, { duration: 3.5 }, 0);
+      window.__timelines['pillar-2-speed'] = tl;
+    })();
+  </script>
+</div>
