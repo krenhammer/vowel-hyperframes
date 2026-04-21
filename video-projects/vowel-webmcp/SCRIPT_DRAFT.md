@@ -4,12 +4,12 @@
 - This is a high energy 60 sec or so announcement video
 - use /stores/storage/Shared/Development/hyperframes/hyperframes-student-kit/assets/JMHBM - Keepsake.mp3 for soundtrack
 - vowel always is OCR-A font
-- text shouldtransitions should be 3 to 4 secs
+- text transitions should be 3 to 4 secs
 - Sections (##) should linger longer 
 - Groups of text should linger a bit longer ... dont over whelm the  users
 - Bold phrases should have kinetic animations that draw attention
-- phrases without extra line breaks shuold stagger in and stay on screen toggether 
-- All type should default to different Kinetic staggered type, be creative mix it up ... remember high energy   
+- phrases without extra line breaks shold stagger in and stay on screen toggether 
+- All type should default to different Kinetic staggered type, be creative mix up the text entry and exit .. esp the bolded text (draw attention)  ... remember high energy   
 
 
 ## "WebMCP: Are you ready?" - starts on screen. Exit with a zoom transition. background changes to whatever the font color it changes as it zooms 
