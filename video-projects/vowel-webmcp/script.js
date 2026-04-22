@@ -349,16 +349,32 @@ tl.to(
   21.75
 );
 
-// Act2: kinetic word spans; extra holds after "Conversational Voice AI" and "one change …"
+// Act2: kinetic word spans; holds after Interactive Voice / open source component; beat after “re-platforming?” before exit
 var scene5LineBase = 22.12;
 var scene5LineGap = 0.44;
 var scene5PauseAfterVoiceAI = 0.5;
 var scene5PauseAfterOneChange = 0.5;
+var scene5Line4Start =
+  scene5LineBase +
+  3 * scene5LineGap +
+  scene5PauseAfterVoiceAI +
+  scene5PauseAfterOneChange;
+/** Line 4 is two spans: “with no” + “re-platforming?” */
+var scene5Line4SpanCount = 2;
+var scene5Line4TweenDur =
+  0.38 + 0.06 * Math.max(0, scene5Line4SpanCount - 1);
+var scene5PauseAfterReplatform = 1.42;
+var scene5HoldAfterQuestion = 0.42;
+var scene5ExitT =
+  scene5Line4Start +
+  scene5Line4TweenDur +
+  scene5PauseAfterReplatform +
+  scene5HoldAfterQuestion;
 var scene5LineStarts = [
   scene5LineBase,
   scene5LineBase + scene5LineGap,
   scene5LineBase + 2 * scene5LineGap + scene5PauseAfterVoiceAI,
-  scene5LineBase + 3 * scene5LineGap + scene5PauseAfterVoiceAI + scene5PauseAfterOneChange
+  scene5Line4Start
 ];
 var scene5Lines = [
   '#scene5 .scene5-kline[data-k="1"] .scene5-w',
@@ -381,18 +397,20 @@ for (var si = 0; si < scene5Lines.length; si++) {
   );
 }
 
-// Transition to Scene 6: Diagonal split (after scene 5 copy finishes; +1s vs prior for act2 pauses)
+// Transition to Scene 6: Diagonal split (after re-platforming beat)
 tl.to("#scene5", {
   clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
   duration: 0.4,
   ease: "power2.in"
-}, 25.0);
-tl.set("#scene6", { opacity: 1 }, 25.2);
+}, scene5ExitT);
+tl.set("#scene6", { opacity: 1 }, scene5ExitT + 0.2);
 tl.from("#scene6", {
   clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)",
   duration: 0.5,
   ease: "power3.out"
-}, 25.2);
+}, scene5ExitT + 0.2);
+
+var sc6T0 = scene5ExitT + 0.7;
 
 // ===== SCENE 6: Two for One =====
 tl.from("#scene6 .split-title", {
@@ -400,7 +418,14 @@ tl.from("#scene6 .split-title", {
   opacity: 0,
   duration: 0.6,
   ease: "power3.out"
-}, 25.7);
+}, sc6T0);
+
+tl.from("#scene6 .scene6-enter", {
+  y: 24,
+  opacity: 0,
+  duration: 0.5,
+  ease: "power3.out"
+}, sc6T0 + 0.32);
 
 tl.from("#scene6 .card.webmcp", {
   x: -200,
@@ -408,7 +433,7 @@ tl.from("#scene6 .card.webmcp", {
   rotation: -10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, 26.2);
+}, sc6T0 + 0.5);
 
 tl.from("#scene6 .card.voice", {
   x: 200,
@@ -416,85 +441,118 @@ tl.from("#scene6 .card.voice", {
   rotation: 10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, 26.4);
+}, sc6T0 + 0.7);
 
-// Transition to Scene 7: Scale down to reveal
+var sc6Exit = sc6T0 + 2.75;
+
+// Transition to Scene 8 first (GitHub Action beat), then Scene 7 (VowelBot)
 tl.to("#scene6", {
   scale: 0.8,
   opacity: 0,
   duration: 0.5,
   ease: "power2.in"
-}, 28.5);
+}, sc6Exit);
+tl.to("#scene8", {
+  opacity: 1,
+  scale: 1,
+  duration: 0.5,
+  ease: "power2.out"
+}, sc6Exit + 0.3);
+
+var sc8T0 = sc6Exit + 0.65;
+var sc8Gap = 0.28;
+var sc8PauseAfterLine2 = 0.28;
+var sc8LineStarts = [
+  sc8T0,
+  sc8T0 + sc8Gap + 0.42,
+  sc8T0 + 2 * sc8Gap + 0.42 + sc8PauseAfterLine2,
+  sc8T0 + 3 * sc8Gap + 0.42 + sc8PauseAfterLine2 + 0.32
+];
+var sc8Lines = [
+  '#scene8 .scene8-kline[data-k="1"] .scene8-w',
+  '#scene8 .scene8-kline[data-k="2"] .scene8-w',
+  '#scene8 .scene8-kline[data-k="3"] .scene8-w',
+  '#scene8 .scene8-kline[data-k="4"] .scene8-w'
+];
+for (var sj = 0; sj < sc8Lines.length; sj++) {
+  tl.fromTo(
+    sc8Lines[sj],
+    { y: 26, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.36,
+      stagger: 0.055,
+      ease: "power3.out"
+    },
+    sc8LineStarts[sj]
+  );
+}
+
+/** Line 4: two spans (“and a” + “new branch”) */
+var sc8Line4SpanCount = 2;
+var sc8AnimEnd =
+  sc8LineStarts[3] +
+  0.36 +
+  0.055 * Math.max(0, sc8Line4SpanCount - 1);
+var sc8Hold = 0.28;
+var sc8Exit = sc8AnimEnd + sc8Hold;
+
+// ===== SCENE 7: VowelBot (after Scene 8) =====
+tl.to("#scene8", {
+  opacity: 0,
+  duration: 0.35,
+  ease: "power2.in"
+}, sc8Exit);
+tl.set("#scene7", { y: 0, scale: 1 }, sc8Exit + 0.14);
 tl.to("#scene7", {
   opacity: 1,
   scale: 1,
   duration: 0.5,
   ease: "power2.out"
-}, 28.8);
+}, sc8Exit + 0.15);
 
-// ===== SCENE 7: VowelBot =====
+var sc7T0 = sc8Exit + 0.45;
+
 tl.from("#scene7 .label", {
   y: -30,
   opacity: 0,
-  duration: 0.4,
+  duration: 0.38,
   ease: "power2.out"
-}, 29.3);
+}, sc7T0);
 
 tl.from("#scene7 .headline", {
   y: 50,
   opacity: 0,
-  duration: 0.6,
+  duration: 0.55,
   ease: "bounce.out"
-}, 29.6);
+}, sc7T0 + 0.22);
 
 tl.from("#scene7 .feature", {
   x: 30,
   opacity: 0,
-  duration: 0.4,
-  stagger: 0.1,
+  duration: 0.36,
+  stagger: 0.09,
   ease: "power2.out"
-}, 30.2);
+}, sc7T0 + 0.62);
 
-// Transition to Scene 8: Light leak
-tl.to("#scene7", {
-  opacity: 0,
-  duration: 0.3,
-  ease: "power2.in"
-}, 32.0);
-tl.fromTo("#scene8", 
-  { opacity: 0 },
-  { opacity: 1, duration: 0.6, ease: "power2.out" },
-  32.1
-);
-
-// ===== SCENE 8: No Code =====
-tl.from("#scene8 .headline", {
-  scale: 3,
-  opacity: 0,
-  duration: 0.8,
-  ease: "expo.out"
-}, 32.6);
-
-tl.from("#scene8 .big-text", {
-  scale: 0.5,
-  opacity: 0,
-  rotation: -15,
-  duration: 0.7,
-  ease: "elastic.out(1, 0.4)"
-}, 33.2);
+var sc7Exit = sc7T0 + 2.15;
 
 // Transition to Scene 9: Gravity drop
-tl.to("#scene8", {
+tl.set("#scene9", { y: 1080 }, sc7Exit - 0.05);
+tl.to("#scene7", {
   y: 1080,
   duration: 0.4,
   ease: "power3.in"
-}, 35.5);
+}, sc7Exit);
 tl.to("#scene9", {
   y: 0,
   opacity: 1,
   duration: 0.5,
   ease: "bounce.out"
-}, 35.7);
+}, sc7Exit + 0.18);
+
+var sc9T0 = sc7Exit + 0.58;
 
 // ===== SCENE 9: CTA =====
 tl.from("#scene9 .headline", {
@@ -502,14 +560,14 @@ tl.from("#scene9 .headline", {
   opacity: 0,
   duration: 0.8,
   ease: "elastic.out(1, 0.5)"
-}, 36.2);
+}, sc9T0);
 
 tl.from("#scene9 .cta", {
   y: 30,
   opacity: 0,
   duration: 0.5,
   ease: "power2.out"
-}, 36.8);
+}, sc9T0 + 0.55);
 
 tl.from("#scene9 .url", {
   y: 40,
@@ -518,13 +576,13 @@ tl.from("#scene9 .url", {
   duration: 0.5,
   stagger: 0.15,
   ease: "back.out(1.7)"
-}, 37.2);
+}, sc9T0 + 0.95);
 
 // Final fade to black
 tl.to("#scene9", {
   opacity: 0,
   duration: 1.0,
   ease: "power2.in"
-}, 38.0);
+}, sc9T0 + 2.05);
 
 window.__timelines["webmcp-announce"] = tl;
