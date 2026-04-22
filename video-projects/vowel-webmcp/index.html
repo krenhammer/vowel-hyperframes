@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700;900&display=swap');
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0a0a0f;
+        font-family: 'Outfit', sans-serif;
+      }
+
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+
+      .scene-content {
+        width: 100%;
+        height: 100%;
+        padding: 80px 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 24px;
+      }
+
+      /* Scene 1: Title - Dark with neon accent */
+      #scene1 {
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+      }
+      #scene1 .title {
+        font-size: 140px;
+        font-weight: 900;
+        color: #fff;
+        line-height: 0.95;
+        letter-spacing: -4px;
+      }
+      #scene1 .title span {
+        display: inline-block;
+        background: linear-gradient(90deg, #00f5d4, #7b2cbf, #f72585);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      #scene1 .subtitle {
+        font-size: 36px;
+        color: #00f5d4;
+        font-weight: 400;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+      }
+
+      /* Scene 2: What is WebMCP - Blue tech */
+      #scene2 {
+        background: #0d1b2a;
+      }
+      #scene2 .label {
+        font-size: 24px;
+        color: #4895ef;
+        text-transform: uppercase;
+        letter-spacing: 6px;
+      }
+      #scene2 .headline {
+        font-size: 90px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.1;
+      }
+      #scene2 .headline em {
+        color: #4895ef;
+        font-style: normal;
+      }
+      #scene2 .desc {
+        font-size: 32px;
+        color: #8d99ae;
+        max-width: 900px;
+      }
+
+      /* Scene 3: Big claim - Purple */
+      #scene3 {
+        background: linear-gradient(180deg, #10002b 0%, #240046 100%);
+      }
+      #scene3 .quote {
+        font-size: 72px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.2;
+      }
+      #scene3 .quote .highlight {
+        color: #e0aaff;
+      }
+      #scene3 .attribution {
+        font-size: 28px;
+        color: #c77dff;
+        margin-top: 20px;
+      }
+
+      /* Scene 4: 3 examples - Grid */
+      #scene4 {
+        background: #1a1a2e;
+      }
+      #scene4 .grid-title {
+        font-size: 48px;
+        color: #fff;
+        margin-bottom: 40px;
+      }
+      #scene4 .examples {
+        display: flex;
+        gap: 30px;
+      }
+      #scene4 .example {
+        flex: 1;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+      }
+      #scene4 .example-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+      }
+      #scene4 .example-text {
+        font-size: 28px;
+        color: #00f5d4;
+        font-weight: 700;
+      }
+
+      /* Scene 5: Vowel intro - Teal */
+      #scene5 {
+        background: linear-gradient(135deg, #001219 0%, #005f73 100%);
+      }
+      #scene5 .product {
+        font-size: 36px;
+        color: #94d2bd;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+      }
+      #scene5 .headline {
+        font-size: 100px;
+        font-weight: 900;
+        color: #fff;
+      }
+      #scene5 .headline .brand {
+        color: #00f5d4;
+      }
+      #scene5 .tagline {
+        font-size: 36px;
+        color: #94d2bd;
+      }
+
+      /* Scene 6: Two for one - Split */
+      #scene6 {
+        background: #0f0f23;
+      }
+      #scene6 .split-title {
+        font-size: 56px;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 60px;
+      }
+      #scene6 .cards {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+      }
+      #scene6 .card {
+        width: 500px;
+        padding: 50px;
+        border-radius: 24px;
+        text-align: center;
+      }
+      #scene6 .card.webmcp {
+        background: linear-gradient(135deg, #3a0ca3, #7209b7);
+      }
+      #scene6 .card.voice {
+        background: linear-gradient(135deg, #06d6a0, #118ab2);
+      }
+      #scene6 .card-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+      #scene6 .card-label {
+        font-size: 32px;
+        color: rgba(255,255,255,0.8);
+        margin-bottom: 16px;
+      }
+      #scene6 .card-title {
+        font-size: 40px;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      /* Scene 7: VowelBot - Orange energy */
+      #scene7 {
+        background: linear-gradient(135deg, #1d1135 0%, #4a1942 100%);
+      }
+      #scene7 .label {
+        font-size: 28px;
+        color: #ff6b6b;
+        text-transform: uppercase;
+        letter-spacing: 6px;
+      }
+      #scene7 .headline {
+        font-size: 80px;
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.1;
+      }
+      #scene7 .headline .name {
+        color: #ffd93d;
+      }
+      #scene7 .features {
+        display: flex;
+        gap: 30px;
+        margin-top: 30px;
+      }
+      #scene7 .feature {
+        font-size: 22px;
+        color: #ff9f1c;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      #scene7 .feature::before {
+        content: "✓";
+        font-weight: bold;
+      }
+
+      /* Scene 8: No code - Green */
+      #scene8 {
+        background: #061a0f;
+      }
+      #scene8 .headline {
+        font-size: 64px;
+        color: #fff;
+        text-align: center;
+      }
+      #scene8 .headline .highlight {
+        color: #40c057;
+        font-weight: 900;
+      }
+      #scene8 .big-text {
+        font-size: 120px;
+        font-weight: 900;
+        color: #40c057;
+        text-align: center;
+        margin: 30px 0;
+      }
+
+      /* Scene 9: CTA - Final */
+      #scene9 {
+        background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%);
+      }
+      #scene9 .headline {
+        font-size: 72px;
+        font-weight: 900;
+        color: #fff;
+        text-align: center;
+        line-height: 1.15;
+      }
+      #9-1 .headline .highlight {
+        background: linear-gradient(90deg, #00f5d4, #7b2cbf, #f72585);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      #scene9 .cta {
+        font-size: 28px;
+        color: #8d99ae;
+        text-align: center;
+        margin-top: 30px;
+      }
+      #scene9 .urls {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+        margin-top: 40px;
+      }
+      #scene9 .url {
+        font-size: 24px;
+        color: #00f5d4;
+        padding: 16px 32px;
+        border: 2px solid #00f5d4;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+
+      /* Glow effects */
+      .glow {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.4;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="webmcp-announce"
+      data-width="1920"
+      data-height="1080"
+      data-start="0"
+      data-duration="30"
+    >
+      <audio
+        id="el-a"
+        data-start="0"
+        data-duration="30"
+        data-track-index="2"
+        src="JMHBM - Keepsake.mp3"
+        data-volume="1"
+      ></audio>
+      <!-- Scene 1: Title -->
+      <div id="scene1" class="scene">
+        <div class="glow" style="width: 600px; height: 600px; background: #7b2cbf; top: -200px; right: -100px;"></div>
+        <div class="glow" style="width: 400px; height: 400px; background: #00f5d4; bottom: -100px; left: -100px;"></div>
+        <div class="scene-content">
+          <div class="subtitle">Introducing</div>
+          <div class="title"><span>WebMCP</span></div>
+        </div>
+      </div>
+
+      <!-- Scene 2: What is WebMCP -->
+      <div id="scene2" class="scene" style="opacity: 0;">
+        <div class="scene-content">
+          <div class="label">What is it?</div>
+          <div class="headline">The new <em>browser-native</em> standard that lets websites expose <em>callable tools</em> for AI agents</div>
+          <div class="desc">No more screenshot-scraping. Agents call your functions directly.</div>
+        </div>
+      </div>
+
+      <!-- Scene 3: Big Quote -->
+      <div id="scene3" class="scene" style="opacity: 0;">
+        <div class="scene-content">
+          <div class="quote"><span class="highlight">"The biggest shift in technical SEO since structured data."</span></div>
+          <div class="attribution">— SEO Experts Worldwide</div>
+        </div>
+      </div>
+
+      <!-- Scene 4: Examples -->
+      <div id="scene4" class="scene" style="opacity: 0;">
+        <div class="scene-content">
+          <div class="grid-title">Agents can now call:</div>
+          <div class="examples">
+            <div class="example">
+              <div class="example-icon">🔍</div>
+              <div class="example-text">search-products</div>
+            </div>
+            <div class="example">
+              <div class="example-icon">🛒</div>
+              <div class="example-text">add-to-cart</div>
+            </div>
+            <div class="example">
+              <div class="example-icon">🎫</div>
+              <div class="example-text">submit-ticket</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 5: Vowel Intro -->
+      <div id="scene5" class="scene" style="opacity: 0;">
+        <div class="scene-content">
+          <div class="product">But wait — there's more</div>
+          <div class="headline">Meet <span class="brand">Vowel</span></div>
+          <div class="tagline">WebMCP + intelligent conversational voice control</div>
+        </div>
+      </div>
+
+      <!-- Scene 6: Two for One -->
+      <div id="scene6" class="scene" style="opacity: 0;">
+        <div class="scene-content">
+          <div class="split-title">Two for one. No extra code.</div>
+          <div class="cards">
+            <div class="card webmcp">
+              <div class="card-icon">🌐</div>
+              <div class="card-label">Get</div>
+              <div class="card-title">WebMCP Tools</div>
+            </div>
+            <div class="card voice">
+              <div class="card-icon">🎤</div>
+              <div class="card-label">Plus</div>
+              <div class="card-title">Voice Control</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 7: VowelBot -->
+      <div id="scene7" class="scene" style="opacity: 0;">
+        <div class="scene-content">
+          <div class="label">New</div>
+          <div class="headline">Meet <span class="name">VowelBot</span></div>
+          <div class="headline" style="font-size: 50px; margin-top: 10px;">Your instant WebMCP + voice enabler</div>
+          <div class="features">
+            <div class="feature">GitHub Action setup</div>
+            <div class="feature">No code changes</div>
+            <div class="feature">Open source</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 8: No Code -->
+      <div id="scene8" class="scene" style="opacity: 0;">
+        <div class="scene-content">
+          <div class="headline">Zero. <span class="highlight">Zero.</span> Code.</div>
+          <div class="big-text">NO EXTRA CODE</div>
+        </div>
+      </div>
+
+      <!-- Scene 9: CTA -->
+      <div id="scene9" class="scene" style="opacity: 0;">
+        <div class="scene-content">
+          <div class="headline">The agentic web is <span class="highlight">HERE</span></div>
+          <div class="cta">Will your site be ready?</div>
+          <div class="urls">
+            <div class="url">vowel.to</div>
+            <div class="url">vowel.to/vowelbot</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      // ===== SCENE 1: Title =====
+      // Entrance: staggered letter reveal with scale + blur
+      tl.from("#scene1 .subtitle", {
+        y: 30,
+        opacity: 0,
+        duration: 0.6,
+        ease: "power3.out"
+      }, 0.2);
+      
+      tl.from("#scene1 .title span", {
+        y: 100,
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.8,
+        ease: "elastic.out(1, 0.5)"
+      }, 0.5);
+
+      // Glow pulse
+      tl.from(".glow", {
+        scale: 0,
+        opacity: 0,
+        duration: 1,
+        ease: "power2.out"
+      }, 0);
+
+      // Transition to Scene 2: Zoom through
+      tl.to("#scene1", {
+        scale: 1.5,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.in"
+      }, 2.5);
+      tl.to("#scene2", {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out"
+      }, 2.5);
+
+      // ===== SCENE 2: What is WebMCP =====
+      // Entrance: slide from left with stagger
+      tl.from("#scene2 .label", {
+        x: -50,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power3.out"
+      }, 3.0);
+      
+      tl.from("#scene2 .headline", {
+        x: -80,
+        opacity: 0,
+        duration: 0.7,
+        ease: "expo.out"
+      }, 3.3);
+      
+      tl.from("#scene2 .desc", {
+        y: 40,
+        opacity: 0,
+        duration: 0.6,
+        ease: "power2.out"
+      }, 3.8);
+
+      // Transition to Scene 3: Radial iris
+      tl.to("#scene2", {
+        clipPath: "circle(0% at 50% 50%)",
+        duration: 0.5,
+        ease: "power2.inOut"
+      }, 5.8);
+      tl.to("#scene3", {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out"
+      }, 6.0);
+
+      // ===== SCENE 3: Big Quote =====
+      // Entrance: bounce in with text scramble effect simulation
+      tl.from("#scene3 .quote", {
+        scale: 0.5,
+        opacity: 0,
+        duration: 0.8,
+        ease: "back.out(1.7)"
+      }, 6.5);
+      
+      tl.from("#scene3 .attribution", {
+        y: 20,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out"
+      }, 7.2);
+
+      // Transition to Scene 4: Push up
+      tl.to("#scene3", {
+        y: -1080,
+        duration: 0.5,
+        ease: "power3.in"
+      }, 8.8);
+      tl.to("#scene4", {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: "power3.out"
+      }, 9.0);
+
+      // ===== SCENE 4: Examples =====
+      // Entrance: stagger each card with different easing
+      tl.from("#scene4 .grid-title", {
+        y: -30,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out"
+      }, 9.5);
+      
+      tl.from("#scene4 .example", {
+        y: 60,
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: "elastic.out(1, 0.6)"
+      }, 10.0);
+
+      // Transition to Scene 5: Crossfade with blur
+      tl.to("#scene4", {
+        opacity: 0,
+        filter: "blur(20px)",
+        duration: 0.6,
+        ease: "power2.in"
+      }, 12.5);
+      tl.to("#scene5", {
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 0.6,
+        ease: "power2.out"
+      }, 12.8);
+
+      // ===== SCENE 5: Vowel Intro =====
+      // Entrance: typewriter style words
+      tl.from("#scene5 .product", {
+        x: -40,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out"
+      }, 13.3);
+      
+      tl.from("#scene5 .headline", {
+        x: 50,
+        opacity: 0,
+        duration: 0.7,
+        ease: "circ.out"
+      }, 13.6);
+      
+      tl.from("#scene5 .tagline", {
+        y: 30,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out"
+      }, 14.2);
+
+      // Transition to Scene 6: Diagonal split
+      tl.to("#scene5", {
+        clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+        duration: 0.4,
+        ease: "power2.in"
+      }, 16.0);
+      tl.set("#scene6", { opacity: 1 }, 16.2);
+      tl.from("#scene6", {
+        clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)",
+        duration: 0.5,
+        ease: "power3.out"
+      }, 16.2);
+
+      // ===== SCENE 6: Two for One =====
+      // Entrance: cards fly in from sides
+      tl.from("#scene6 .split-title", {
+        y: -40,
+        opacity: 0,
+        duration: 0.6,
+        ease: "power3.out"
+      }, 16.7);
+      
+      tl.from("#scene6 .card.webmcp", {
+        x: -200,
+        opacity: 0,
+        rotation: -10,
+        duration: 0.7,
+        ease: "back.out(1.2)"
+      }, 17.2);
+      
+      tl.from("#scene6 .card.voice", {
+        x: 200,
+        opacity: 0,
+        rotation: 10,
+        duration: 0.7,
+        ease: "back.out(1.2)"
+      }, 17.4);
+
+      // Transition to Scene 7: Scale down to reveal
+      tl.to("#scene6", {
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.in"
+      }, 19.5);
+      tl.to("#scene7", {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "power2.out"
+      }, 19.8);
+
+      // ===== SCENE 7: VowelBot =====
+      // Entrance: cascade down
+      tl.from("#scene7 .label", {
+        y: -30,
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.out"
+      }, 20.3);
+      
+      tl.from("#scene7 .headline", {
+        y: 50,
+        opacity: 0,
+        duration: 0.6,
+        ease: "bounce.out"
+      }, 20.6);
+      
+      tl.from("#scene7 .feature", {
+        x: 30,
+        opacity: 0,
+        duration: 0.4,
+        stagger: 0.1,
+        ease: "power2.out"
+      }, 21.2);
+
+      // Transition to Scene 8: Light leak
+      tl.to("#scene7", {
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in"
+      }, 23.0);
+      tl.fromTo("#scene8", 
+        { opacity: 0 },
+        { opacity: 1, duration: 0.6, ease: "power2.out" },
+        23.1
+      );
+
+      // ===== SCENE 8: No Code =====
+      // Entrance: dramatic scale in
+      tl.from("#scene8 .headline", {
+        scale: 3,
+        opacity: 0,
+        duration: 0.8,
+        ease: "expo.out"
+      }, 23.6);
+      
+      tl.from("#scene8 .big-text", {
+        scale: 0.5,
+        opacity: 0,
+        rotation: -15,
+        duration: 0.7,
+        ease: "elastic.out(1, 0.4)"
+      }, 24.2);
+
+      // Transition to Scene 9: Gravity drop
+      tl.to("#scene8", {
+        y: 1080,
+        duration: 0.4,
+        ease: "power3.in"
+      }, 26.5);
+      tl.to("#scene9", {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: "bounce.out"
+      }, 26.7);
+
+      // ===== SCENE 9: CTA =====
+      // Entrance: final dramatic reveal
+      tl.from("#scene9 .headline", {
+        y: 100,
+        opacity: 0,
+        duration: 0.8,
+        ease: "elastic.out(1, 0.5)"
+      }, 27.2);
+      
+      tl.from("#scene9 .cta", {
+        y: 30,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out"
+      }, 27.8);
+      
+      tl.from("#scene9 .url", {
+        y: 40,
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.5,
+        stagger: 0.15,
+        ease: "back.out(1.7)"
+      }, 28.2);
+
+      // Final fade to black
+      tl.to("#scene9", {
+        opacity: 0,
+        duration: 1.0,
+        ease: "power2.in"
+      }, 29.0);
+
+      window.__timelines["webmcp-announce"] = tl;
+    </script>
+  </body>
+</html>
