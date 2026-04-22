@@ -468,116 +468,23 @@ tl.from("#scene6 .card.voice", {
 
 var sc6Exit = sc6SplitTitleT + 2.55;
 
-// Transition to Scene 8 first (GitHub Action beat), then Scene 7 (VowelBot)
+// Transition to Scene 9: gravity drop (scenes 7–8 removed)
+tl.set("#scene9", { y: 1080 }, sc6Exit - 0.05);
 tl.to("#scene6", {
-  scale: 0.8,
-  opacity: 0,
-  duration: 0.5,
-  ease: "power2.in"
-}, sc6Exit);
-tl.to("#scene8", {
-  opacity: 1,
-  scale: 1,
-  duration: 0.5,
-  ease: "power2.out"
-}, sc6Exit + 0.3);
-
-var sc8T0 = sc6Exit + 0.65;
-var sc8Gap = 0.28;
-var sc8PauseAfterLine2 = 0.28;
-var sc8LineStarts = [
-  sc8T0,
-  sc8T0 + sc8Gap + 0.42,
-  sc8T0 + 2 * sc8Gap + 0.42 + sc8PauseAfterLine2,
-  sc8T0 + 3 * sc8Gap + 0.42 + sc8PauseAfterLine2 + 0.32
-];
-var sc8Lines = [
-  '#scene8 .scene8-kline[data-k="1"] .scene8-w',
-  '#scene8 .scene8-kline[data-k="2"] .scene8-w',
-  '#scene8 .scene8-kline[data-k="3"] .scene8-w',
-  '#scene8 .scene8-kline[data-k="4"] .scene8-w'
-];
-for (var sj = 0; sj < sc8Lines.length; sj++) {
-  tl.fromTo(
-    sc8Lines[sj],
-    { y: 26, opacity: 0 },
-    {
-      y: 0,
-      opacity: 1,
-      duration: 0.36,
-      stagger: 0.055,
-      ease: "power3.out"
-    },
-    sc8LineStarts[sj]
-  );
-}
-
-/** Line 4: two spans (“and a” + “new branch”) */
-var sc8Line4SpanCount = 2;
-var sc8AnimEnd =
-  sc8LineStarts[3] +
-  0.36 +
-  0.055 * Math.max(0, sc8Line4SpanCount - 1);
-var sc8Hold = 0.28;
-var sc8Exit = sc8AnimEnd + sc8Hold;
-
-// ===== SCENE 7: VowelBot (after Scene 8) =====
-tl.to("#scene8", {
-  opacity: 0,
-  duration: 0.35,
-  ease: "power2.in"
-}, sc8Exit);
-tl.set("#scene7", { y: 0, scale: 1 }, sc8Exit + 0.14);
-tl.to("#scene7", {
-  opacity: 1,
-  scale: 1,
-  duration: 0.5,
-  ease: "power2.out"
-}, sc8Exit + 0.15);
-
-var sc7T0 = sc8Exit + 0.45;
-
-tl.from("#scene7 .label", {
-  y: -30,
-  opacity: 0,
-  duration: 0.38,
-  ease: "power2.out"
-}, sc7T0);
-
-tl.from("#scene7 .headline", {
-  y: 50,
-  opacity: 0,
-  duration: 0.55,
-  ease: "bounce.out"
-}, sc7T0 + 0.22);
-
-tl.from("#scene7 .feature", {
-  x: 30,
-  opacity: 0,
-  duration: 0.36,
-  stagger: 0.09,
-  ease: "power2.out"
-}, sc7T0 + 0.62);
-
-var sc7Exit = sc7T0 + 2.15;
-
-// Transition to Scene 9: Gravity drop
-tl.set("#scene9", { y: 1080 }, sc7Exit - 0.05);
-tl.to("#scene7", {
   y: 1080,
   duration: 0.4,
   ease: "power3.in"
-}, sc7Exit);
+}, sc6Exit);
 tl.to("#scene9", {
   y: 0,
   opacity: 1,
   duration: 0.5,
   ease: "bounce.out"
-}, sc7Exit + 0.18);
+}, sc6Exit + 0.18);
 
-var sc9T0 = sc7Exit + 0.58;
+var sc9T0 = sc6Exit + 0.58;
 
-// ===== SCENE 9: CTA =====
+// ===== SCENE 9: CTA — headline, then staggered “Are you ready?” / “get started at” / URL =====
 tl.from("#scene9 .headline", {
   y: 100,
   opacity: 0,
@@ -585,27 +492,71 @@ tl.from("#scene9 .headline", {
   ease: "elastic.out(1, 0.5)"
 }, sc9T0);
 
-tl.from("#scene9 .cta", {
-  y: 30,
-  opacity: 0,
-  duration: 0.5,
-  ease: "power2.out"
-}, sc9T0 + 0.55);
+var sc9ReadyStart = sc9T0 + 0.48;
+tl.fromTo(
+  "#scene9 .scene9-ready-word",
+  { y: 32, opacity: 0, scale: 0.94 },
+  {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    duration: 0.34,
+    stagger: 0.09,
+    ease: "power3.out"
+  },
+  sc9ReadyStart
+);
 
-tl.from("#scene9 .url", {
-  y: 40,
-  opacity: 0,
-  scale: 0.8,
-  duration: 0.5,
-  stagger: 0.15,
-  ease: "back.out(1.7)"
-}, sc9T0 + 0.95);
+var sc9LearnStart =
+  sc9ReadyStart + 0.34 + 3 * 0.09 + 0.42;
+tl.fromTo(
+  "#scene9 .scene9-learn-word",
+  { y: 24, opacity: 0 },
+  {
+    y: 0,
+    opacity: 1,
+    duration: 0.3,
+    stagger: 0.08,
+    ease: "power3.out"
+  },
+  sc9LearnStart
+);
+
+var sc9UrlStart =
+  sc9LearnStart + 0.3 + 3 * 0.08 + 0.38;
+tl.fromTo(
+  "#scene9 .scene9-url-chunk",
+  { y: 28, opacity: 0, scale: 0.92 },
+  {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    duration: 0.42,
+    stagger: 0.14,
+    ease: "back.out(1.25)"
+  },
+  sc9UrlStart
+);
+
+/** Full CTA plate stays up 10s after URL finishes animating in */
+var sc9HoldAfterUrl = 10;
+var sc9FadeStart =
+  sc9UrlStart + 0.42 + 0.14 + sc9HoldAfterUrl;
 
 // Final fade to black
 tl.to("#scene9", {
   opacity: 0,
   duration: 1.0,
   ease: "power2.in"
-}, sc9T0 + 2.05);
+}, sc9FadeStart);
+
+/** Must match root `data-duration` / audio `data-duration` on #root and #el-a */
+var announceDurationSec = 48;
+tl.fromTo(
+  "#el-a",
+  { volume: 1 },
+  { volume: 0, duration: 2, ease: "none" },
+  announceDurationSec - 2
+);
 
 window.__timelines["webmcp-announce"] = tl;
