@@ -474,31 +474,128 @@ tl.to("#scene9", {
 
 var sc9T0 = sc6Exit + 0.58;
 
-// ===== SCENE 9: CTA — headline, then staggered “Are you ready?” / “get started at” / URL =====
-tl.from("#scene9 .headline", {
-  y: 100,
+// ===== SCENE 9: CTA — WebMCP out → vowel in/out → HERE in/out → NOW (gradient) → type rest =====
+var sc9Pause = 0.28;
+var sc9PauseLong = 0.36;
+var sc9LineInDur = 0.7;
+var sc9LineEnd = sc9T0 + sc9LineInDur;
+
+tl.from("#scene9 .scene9-headline-line", {
+  y: 56,
   opacity: 0,
-  duration: 0.8,
-  ease: "elastic.out(1, 0.5)"
+  duration: sc9LineInDur,
+  ease: "power3.out"
 }, sc9T0);
 
-var sc9ReadyStart = sc9T0 + 0.48;
+tl.set("#scene9 .scene9-webmcp", {
+  display: "inline-block",
+  opacity: 1,
+  y: 0
+}, sc9T0);
+tl.set("#scene9 .scene9-vowel-wrap", { display: "none" }, sc9T0);
+tl.set("#scene9 .scene9-here", { display: "none", opacity: 0, y: 0, x: 0 }, sc9T0);
+tl.set("#scene9 .scene9-now", { display: "none", opacity: 0, y: 0, x: 0 }, sc9T0);
+
+var sc9WmcpOut = sc9LineEnd + sc9Pause;
+tl.to("#scene9 .scene9-webmcp", {
+  opacity: 0,
+  y: -14,
+  duration: 0.34,
+  ease: "power2.in"
+}, sc9WmcpOut);
+tl.set("#scene9 .scene9-webmcp", { display: "none" }, sc9WmcpOut + 0.34);
+
+var sc9VowelIn = sc9WmcpOut + 0.34 + sc9PauseLong;
+tl.set("#scene9 .scene9-vowel-wrap", { display: "inline-flex" }, sc9VowelIn);
 tl.fromTo(
-  "#scene9 .scene9-ready-word",
-  { y: 32, opacity: 0, scale: 0.94 },
+  "#scene9 .scene9-vowel-letter",
+  { opacity: 0, y: 12, filter: "blur(6px)" },
   {
-    y: 0,
     opacity: 1,
-    scale: 1,
-    duration: 0.34,
-    stagger: 0.09,
-    ease: "power3.out"
+    y: 0,
+    filter: "blur(0px)",
+    duration: 0.16,
+    stagger: 0.056,
+    ease: "power2.out"
+  },
+  sc9VowelIn + 0.05
+);
+
+var sc9VowelTypedEnd =
+  sc9VowelIn + 0.05 + 0.16 + 4 * 0.056;
+var sc9VowelOut = sc9VowelTypedEnd + sc9Pause;
+tl.to("#scene9 .scene9-vowel-letter", {
+  opacity: 0,
+  y: -12,
+  duration: 0.14,
+  stagger: { each: 0.048, from: "end" },
+  ease: "power2.in"
+}, sc9VowelOut);
+tl.set("#scene9 .scene9-vowel-wrap", { display: "none" }, sc9VowelOut + 0.14 + 4 * 0.048 + 0.04);
+
+var sc9HereIn = sc9VowelOut + 0.14 + 4 * 0.048 + 0.04 + sc9PauseLong;
+tl.set("#scene9 .scene9-here", { display: "inline-block" }, sc9HereIn);
+tl.fromTo(
+  "#scene9 .scene9-here",
+  { opacity: 0, scale: 0.78, y: 10 },
+  { opacity: 1, scale: 1, y: 0, duration: 0.38, ease: "back.out(1.35)" },
+  sc9HereIn
+);
+
+var sc9HereHoldEnd = sc9HereIn + 0.38;
+var sc9HereOut = sc9HereHoldEnd + sc9Pause;
+tl.to("#scene9 .scene9-here", {
+  opacity: 0,
+  y: -16,
+  duration: 0.3,
+  ease: "power2.in"
+}, sc9HereOut);
+tl.set("#scene9 .scene9-here", { display: "none" }, sc9HereOut + 0.3);
+
+var sc9NowIn = sc9HereOut + 0.3 + sc9PauseLong;
+tl.set("#scene9 .scene9-now", { display: "inline-block" }, sc9NowIn);
+tl.fromTo(
+  "#scene9 .scene9-now",
+  { opacity: 0, scale: 0.84, y: 12 },
+  { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: "back.out(1.25)" },
+  sc9NowIn
+);
+
+tl.fromTo(
+  "#scene9 .scene9-now",
+  { backgroundPosition: "0% 50%" },
+  {
+    backgroundPosition: "100% 50%",
+    duration: 1.85,
+    ease: "sine.inOut",
+    repeat: 1,
+    yoyo: true
+  },
+  sc9NowIn + 0.4
+);
+
+var sc9ReadyStart = sc9NowIn + 0.42 + sc9Pause + 0.22;
+var sc9ReadyChars = 14;
+var sc9ReadyStagger = 0.038;
+var sc9ReadyDur = 0.04;
+tl.fromTo(
+  "#scene9 .scene9-rc",
+  { opacity: 0, y: 8 },
+  {
+    opacity: 1,
+    y: 0,
+    duration: sc9ReadyDur,
+    stagger: sc9ReadyStagger,
+    ease: "power1.out"
   },
   sc9ReadyStart
 );
 
 var sc9LearnStart =
-  sc9ReadyStart + 0.34 + 3 * 0.09 + 0.42;
+  sc9ReadyStart +
+  sc9ReadyDur +
+  (sc9ReadyChars - 1) * sc9ReadyStagger +
+  0.32;
 tl.fromTo(
   "#scene9 .scene9-learn-word",
   { y: 24, opacity: 0 },
