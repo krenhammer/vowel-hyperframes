@@ -573,9 +573,6 @@ body {
 #scene5 .scene5-no {
   color: #e2e8f0;
   font-weight: 700;
-  text-decoration: line-through;
-  text-decoration-color: rgba(248, 113, 113, 0.85);
-  text-decoration-thickness: 3px;
 }
 
 /* Scene 6: Two for one - Split */

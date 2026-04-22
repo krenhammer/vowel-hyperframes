@@ -349,9 +349,17 @@ tl.to(
   21.75
 );
 
-// Act2: kinetic word spans; each line starts after the previous (same 0.44s cadence as before)
+// Act2: kinetic word spans; extra holds after "Conversational Voice AI" and "one change …"
 var scene5LineBase = 22.12;
 var scene5LineGap = 0.44;
+var scene5PauseAfterVoiceAI = 0.5;
+var scene5PauseAfterOneChange = 0.5;
+var scene5LineStarts = [
+  scene5LineBase,
+  scene5LineBase + scene5LineGap,
+  scene5LineBase + 2 * scene5LineGap + scene5PauseAfterVoiceAI,
+  scene5LineBase + 3 * scene5LineGap + scene5PauseAfterVoiceAI + scene5PauseAfterOneChange
+];
 var scene5Lines = [
   '#scene5 .scene5-kline[data-k="1"] .scene5-w',
   '#scene5 .scene5-kline[data-k="2"] .scene5-w',
@@ -369,22 +377,22 @@ for (var si = 0; si < scene5Lines.length; si++) {
       stagger: 0.06,
       ease: "power3.out"
     },
-    scene5LineBase + si * scene5LineGap
+    scene5LineStarts[si]
   );
 }
 
-// Transition to Scene 6: Diagonal split (after scene 5 copy finishes)
+// Transition to Scene 6: Diagonal split (after scene 5 copy finishes; +1s vs prior for act2 pauses)
 tl.to("#scene5", {
   clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
   duration: 0.4,
   ease: "power2.in"
-}, 24.0);
-tl.set("#scene6", { opacity: 1 }, 24.2);
+}, 25.0);
+tl.set("#scene6", { opacity: 1 }, 25.2);
 tl.from("#scene6", {
   clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)",
   duration: 0.5,
   ease: "power3.out"
-}, 24.2);
+}, 25.2);
 
 // ===== SCENE 6: Two for One =====
 tl.from("#scene6 .split-title", {
@@ -392,7 +400,7 @@ tl.from("#scene6 .split-title", {
   opacity: 0,
   duration: 0.6,
   ease: "power3.out"
-}, 24.7);
+}, 25.7);
 
 tl.from("#scene6 .card.webmcp", {
   x: -200,
@@ -400,7 +408,7 @@ tl.from("#scene6 .card.webmcp", {
   rotation: -10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, 25.2);
+}, 26.2);
 
 tl.from("#scene6 .card.voice", {
   x: 200,
@@ -408,7 +416,7 @@ tl.from("#scene6 .card.voice", {
   rotation: 10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, 25.4);
+}, 26.4);
 
 // Transition to Scene 7: Scale down to reveal
 tl.to("#scene6", {
@@ -416,13 +424,13 @@ tl.to("#scene6", {
   opacity: 0,
   duration: 0.5,
   ease: "power2.in"
-}, 27.5);
+}, 28.5);
 tl.to("#scene7", {
   opacity: 1,
   scale: 1,
   duration: 0.5,
   ease: "power2.out"
-}, 27.8);
+}, 28.8);
 
 // ===== SCENE 7: VowelBot =====
 tl.from("#scene7 .label", {
@@ -430,14 +438,14 @@ tl.from("#scene7 .label", {
   opacity: 0,
   duration: 0.4,
   ease: "power2.out"
-}, 28.3);
+}, 29.3);
 
 tl.from("#scene7 .headline", {
   y: 50,
   opacity: 0,
   duration: 0.6,
   ease: "bounce.out"
-}, 28.6);
+}, 29.6);
 
 tl.from("#scene7 .feature", {
   x: 30,
@@ -445,18 +453,18 @@ tl.from("#scene7 .feature", {
   duration: 0.4,
   stagger: 0.1,
   ease: "power2.out"
-}, 29.2);
+}, 30.2);
 
 // Transition to Scene 8: Light leak
 tl.to("#scene7", {
   opacity: 0,
   duration: 0.3,
   ease: "power2.in"
-}, 31.0);
+}, 32.0);
 tl.fromTo("#scene8", 
   { opacity: 0 },
   { opacity: 1, duration: 0.6, ease: "power2.out" },
-  31.1
+  32.1
 );
 
 // ===== SCENE 8: No Code =====
@@ -465,7 +473,7 @@ tl.from("#scene8 .headline", {
   opacity: 0,
   duration: 0.8,
   ease: "expo.out"
-}, 31.6);
+}, 32.6);
 
 tl.from("#scene8 .big-text", {
   scale: 0.5,
@@ -473,20 +481,20 @@ tl.from("#scene8 .big-text", {
   rotation: -15,
   duration: 0.7,
   ease: "elastic.out(1, 0.4)"
-}, 32.2);
+}, 33.2);
 
 // Transition to Scene 9: Gravity drop
 tl.to("#scene8", {
   y: 1080,
   duration: 0.4,
   ease: "power3.in"
-}, 34.5);
+}, 35.5);
 tl.to("#scene9", {
   y: 0,
   opacity: 1,
   duration: 0.5,
   ease: "bounce.out"
-}, 34.7);
+}, 35.7);
 
 // ===== SCENE 9: CTA =====
 tl.from("#scene9 .headline", {
@@ -494,14 +502,14 @@ tl.from("#scene9 .headline", {
   opacity: 0,
   duration: 0.8,
   ease: "elastic.out(1, 0.5)"
-}, 35.2);
+}, 36.2);
 
 tl.from("#scene9 .cta", {
   y: 30,
   opacity: 0,
   duration: 0.5,
   ease: "power2.out"
-}, 35.8);
+}, 36.8);
 
 tl.from("#scene9 .url", {
   y: 40,
@@ -510,13 +518,13 @@ tl.from("#scene9 .url", {
   duration: 0.5,
   stagger: 0.15,
   ease: "back.out(1.7)"
-}, 36.2);
+}, 37.2);
 
 // Final fade to black
 tl.to("#scene9", {
   opacity: 0,
   duration: 1.0,
   ease: "power2.in"
-}, 37.0);
+}, 38.0);
 
 window.__timelines["webmcp-announce"] = tl;
