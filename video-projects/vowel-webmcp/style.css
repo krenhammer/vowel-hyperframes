@@ -88,70 +88,229 @@ body {
   max-width: 900px;
 }
 
-/* Scene 3: SEO Experts - Dark */
+/* Scene 3: SEO Experts — catalog-style x-post + reddit-post cards, absolute “messy” field */
 #scene3 {
   background: #0a0a0f;
 }
+#scene3 .scene3-layout {
+  position: relative;
+  padding: 64px 48px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100%;
+  gap: 0;
+}
 #scene3 .question {
   font-family: 'Outfit', sans-serif;
-  font-size: 64px;
+  font-size: 56px;
   font-weight: 700;
   color: #fff;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 28px;
+  z-index: 2;
+  flex-shrink: 0;
 }
 #scene3 .question span {
   color: #00f5d4;
 }
-#scene3 .posts {
+#scene3 .posts-field {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 720px;
+  z-index: 1;
+  pointer-events: none;
+}
+#scene3 .post-slot {
+  position: absolute;
+  width: 400px;
+  max-width: 90vw;
+  will-change: transform, opacity;
+}
+/* —— X Post Card (https://hyperframes.heygen.com/catalog/blocks/x-post) —— */
+#scene3 .x-mock-card {
+  font-family: "Inter", sans-serif;
+  width: 100%;
+  background: #15202b;
+  border-radius: 16px;
+  padding: 20px 20px 16px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid #38444d;
+  position: relative;
+  overflow: hidden;
+}
+#scene3 .x-mock-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: linear-gradient(to top, rgba(29, 155, 240, 0.06), transparent);
+  pointer-events: none;
+}
+#scene3 .x-post-header {
   display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative;
+}
+#scene3 .x-avatar svg {
+  width: 40px;
+  height: 40px;
+  display: block;
+  border-radius: 50%;
+}
+#scene3 .x-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+}
+#scene3 .x-name-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+#scene3 .x-display-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #e7e9ea;
+  line-height: 1.2;
+}
+#scene3 .x-handle {
+  font-size: 14px;
+  font-weight: 400;
+  color: #8b98a5;
+}
+#scene3 .x-logo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  line-height: 0;
+  opacity: 0.9;
+}
+#scene3 .x-tweet-body {
+  font-size: 15px;
+  font-weight: 400;
+  color: #e7e9ea;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+#scene3 .x-tweet-body em {
+  font-style: italic;
+  color: #9fb0bd;
+}
+#scene3 .x-hashtag {
+  color: #1d9bf0;
+  font-weight: 600;
+}
+#scene3 .x-timestamp {
+  font-size: 12px;
+  color: #8b98a5;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #38444d;
+  margin-bottom: 8px;
+}
+#scene3 .x-metrics {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 0 80px;
+  gap: 8px;
+  font-size: 12px;
+  color: #8b98a5;
+  position: relative;
+  z-index: 1;
 }
-#scene3 .post {
-  padding: 20px 24px;
-  border-radius: 12px;
-  max-width: 400px;
+/* —— Reddit Post Card (https://hyperframes.heygen.com/catalog/blocks/reddit-post) —— */
+#scene3 .reddit-mock-card {
+  font-family: "DM Sans", sans-serif;
+  width: 100%;
+  background: #1a1a2e;
+  border-radius: 14px;
+  padding: 18px 20px 16px;
+  box-shadow: 0 10px 48px rgba(0, 0, 0, 0.55);
+  border: 1px solid #2a2a3a;
 }
-#scene3 .post.reddit {
-  background: #1a1a1b;
-  border: 1px solid #343536;
+#scene3 .rd-post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
 }
-#scene3 .post.twitter {
-  background: #000;
-  border: 1px solid #2f3336;
+#scene3 .rd-icon svg {
+  width: 40px;
+  height: 40px;
+  display: block;
+  flex-shrink: 0;
 }
-#scene3 .post-header {
+#scene3 .rd-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+#scene3 .rd-sub {
+  font-size: 15px;
+  font-weight: 700;
+  color: #d7dadc;
+  line-height: 1.2;
+}
+#scene3 .rd-author {
+  font-size: 13px;
+  font-weight: 400;
+  color: #818384;
+}
+#scene3 .rd-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #d7dadc;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+#scene3 .rd-body {
+  font-size: 14px;
+  font-weight: 400;
+  color: #a8aaab;
+  line-height: 1.4;
+  margin: 0 0 12px;
+}
+#scene3 .rd-body strong {
+  color: #00f5d4;
+  font-weight: 700;
+}
+#scene3 .rd-actions {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #343536;
+  font-size: 13px;
+  color: #818384;
 }
-#scene3 .post-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #00f5d4, #7b2cbf);
-}
-#scene3 .post-user {
-  font-size: 16px;
+#scene3 .rd-vote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #272729;
+  border-radius: 20px;
+  padding: 4px 10px;
   font-weight: 700;
-  color: #fff;
+  color: #d7dadc;
 }
-#scene3 .post.handle {
-  font-size: 14px;
-  color: #71767b;
-}
-#scene3 .post-content {
-  font-size: 18px;
-  color: #fff;
-  line-height: 1.4;
-}
-#scene3 .post-content .highlight {
-  color: #00f5d4;
-  font-weight: 700;
+#scene3 .rd-pill {
+  background: #272729;
+  border-radius: 20px;
+  padding: 4px 10px;
 }
 
 /* Scene 4: 3 examples - Grid */
@@ -318,7 +477,7 @@ body {
   text-align: center;
   line-height: 1.15;
 }
-#9-1 .headline .highlight {
+#scene9 .headline .highlight {
   background: linear-gradient(90deg, #00f5d4, #7b2cbf, #f72585);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

@@ -2,6 +2,8 @@
 window.__timelines = window.__timelines || {};
 var tl = gsap.timeline({ paused: true });
 
+// Scene 3 post positions: init lives in compositions/scene-03-seo.html (runs when that sub-composition inlines)
+
 // ===== SCENE 1: Title =====
 // WebMCP is already visible (large on screen)
 // Rubber stamp stagger "are" "you" "ready?" with bounce
@@ -106,7 +108,7 @@ tl.to("#scene3", {
   ease: "power2.out"
 }, 8.2);
 
-// ===== SCENE 3: SEO Experts =====
+// ===== SCENE 3: SEO Experts (x-post + reddit-post mocks; ~1s between drops, then float) =====
 // Question comes in first
 tl.from("#scene3 .question", {
   y: -50,
@@ -115,44 +117,76 @@ tl.from("#scene3 .question", {
   ease: "power3.out"
 }, 8.7);
 
-// Posts drop in staggered with random positions and tilts
-tl.from("#scene3 .post", {
-  y: -300,
-  opacity: 0,
-  rotation: function(i) { return (i % 2 === 0 ? 1 : -1) * (5 + Math.random() * 10); },
-  x: function(i) { return (i % 3 - 1) * 80; },
-  duration: 0.5,
-  stagger: 0.15,
-  ease: "bounce.out"
-}, 9.5);
+// Six cards: 1s stagger, fall, then light sine bob until exit
+var scene3Slots = document.querySelectorAll("#scene3 .post-slot");
+var scene3T0 = 9.5;
+var scene3Stagger = 1.0;
+var scene3Fall = 0.58;
+var scene3Exit = 16.0;
+for (var si = 0; si < scene3Slots.length; si++) {
+  var el = scene3Slots[si];
+  var tDrop = scene3T0 + si * scene3Stagger;
+  tl.to(
+    el,
+    {
+      y: 0,
+      opacity: 1,
+      duration: scene3Fall,
+      ease: "bounce.out"
+    },
+    tDrop
+  );
+  var tFloat = tDrop + scene3Fall;
+  var windowLeft = scene3Exit - tFloat;
+  var bobDur = 0.4;
+  var maxRepeats = Math.max(0, Math.min(12, Math.floor(windowLeft / (bobDur * 2))));
+  if (maxRepeats > 0) {
+    var bobAmp = 5 + (si % 3) * 1.2;
+    var xAmp = 3.5 + (si % 2) * 1.5;
+    var rotAmp = 0.6 + (si % 4) * 0.2;
+    tl.to(
+      el,
+      {
+        y: "+=" + bobAmp,
+        x: "+=" + xAmp,
+        rotation: "+=" + rotAmp,
+        yoyo: true,
+        repeat: maxRepeats,
+        duration: bobDur,
+        ease: "sine.inOut"
+      },
+      tFloat
+    );
+  }
+}
 
-// Pause for 1 second after last post drops (at 9.5 + 0.15*5 = 10.25)
-// Then bounce exit all posts up quickly staggered
-tl.to("#scene3 .post", {
-  y: -400,
-  opacity: 0,
-  rotation: function(i) { return (i % 2 === 0 ? 1 : -1) * 15; },
-  duration: 0.4,
-  stagger: 0.08,
-  ease: "power2.in"
-}, 11.5);
-
-// Question exits with posts
+tl.to(
+  "#scene3 .post-slot",
+  {
+    y: -400,
+    opacity: 0,
+    rotation: "+=6",
+    duration: 0.45,
+    stagger: 0.07,
+    ease: "power2.in"
+  },
+  15.6
+);
 tl.to("#scene3 .question", {
   y: -50,
   opacity: 0,
-  duration: 0.3,
+  duration: 0.35,
   ease: "power2.in"
-}, 11.8);
+}, 15.85);
 
 // ===== SCENE 4: Examples =====
-// Entrance: stagger each card with different easing
+// (timings +4.2s after longer scene 3)
 tl.from("#scene4 .grid-title", {
   y: -30,
   opacity: 0,
   duration: 0.5,
   ease: "power2.out"
-}, 12.3);
+}, 16.5);
 
 tl.from("#scene4 .example", {
   y: 60,
@@ -161,7 +195,7 @@ tl.from("#scene4 .example", {
   duration: 0.6,
   stagger: 0.15,
   ease: "elastic.out(1, 0.6)"
-}, 12.8);
+}, 17.0);
 
 // Transition to Scene 5: Crossfade with blur
 tl.to("#scene4", {
@@ -169,58 +203,56 @@ tl.to("#scene4", {
   filter: "blur(20px)",
   duration: 0.6,
   ease: "power2.in"
-}, 15.5);
+}, 19.7);
 tl.to("#scene5", {
   opacity: 1,
   filter: "blur(0px)",
   duration: 0.6,
   ease: "power2.out"
-}, 15.8);
+}, 20.0);
 
 // ===== SCENE 5: Vowel Intro =====
-// Entrance: typewriter style words
 tl.from("#scene5 .product", {
   x: -40,
   opacity: 0,
   duration: 0.5,
   ease: "power2.out"
-}, 13.3);
+}, 20.15);
 
 tl.from("#scene5 .headline", {
   x: 50,
   opacity: 0,
   duration: 0.7,
   ease: "circ.out"
-}, 13.6);
+}, 20.45);
 
 tl.from("#scene5 .tagline", {
   y: 30,
   opacity: 0,
   duration: 0.5,
   ease: "power2.out"
-}, 14.2);
+}, 20.95);
 
-// Transition to Scene 6: Diagonal split
+// Transition to Scene 6: Diagonal split (after scene 5 copy finishes)
 tl.to("#scene5", {
   clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
   duration: 0.4,
   ease: "power2.in"
-}, 16.0);
-tl.set("#scene6", { opacity: 1 }, 16.2);
+}, 22.0);
+tl.set("#scene6", { opacity: 1 }, 22.2);
 tl.from("#scene6", {
   clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)",
   duration: 0.5,
   ease: "power3.out"
-}, 16.2);
+}, 22.2);
 
 // ===== SCENE 6: Two for One =====
-// Entrance: cards fly in from sides
 tl.from("#scene6 .split-title", {
   y: -40,
   opacity: 0,
   duration: 0.6,
   ease: "power3.out"
-}, 16.7);
+}, 22.7);
 
 tl.from("#scene6 .card.webmcp", {
   x: -200,
@@ -228,7 +260,7 @@ tl.from("#scene6 .card.webmcp", {
   rotation: -10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, 17.2);
+}, 23.2);
 
 tl.from("#scene6 .card.voice", {
   x: 200,
@@ -236,7 +268,7 @@ tl.from("#scene6 .card.voice", {
   rotation: 10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, 17.4);
+}, 23.4);
 
 // Transition to Scene 7: Scale down to reveal
 tl.to("#scene6", {
@@ -244,29 +276,28 @@ tl.to("#scene6", {
   opacity: 0,
   duration: 0.5,
   ease: "power2.in"
-}, 19.5);
+}, 25.5);
 tl.to("#scene7", {
   opacity: 1,
   scale: 1,
   duration: 0.5,
   ease: "power2.out"
-}, 19.8);
+}, 25.8);
 
 // ===== SCENE 7: VowelBot =====
-// Entrance: cascade down
 tl.from("#scene7 .label", {
   y: -30,
   opacity: 0,
   duration: 0.4,
   ease: "power2.out"
-}, 20.3);
+}, 26.3);
 
 tl.from("#scene7 .headline", {
   y: 50,
   opacity: 0,
   duration: 0.6,
   ease: "bounce.out"
-}, 20.6);
+}, 26.6);
 
 tl.from("#scene7 .feature", {
   x: 30,
@@ -274,28 +305,27 @@ tl.from("#scene7 .feature", {
   duration: 0.4,
   stagger: 0.1,
   ease: "power2.out"
-}, 21.2);
+}, 27.2);
 
 // Transition to Scene 8: Light leak
 tl.to("#scene7", {
   opacity: 0,
   duration: 0.3,
   ease: "power2.in"
-}, 23.0);
+}, 29.0);
 tl.fromTo("#scene8", 
   { opacity: 0 },
   { opacity: 1, duration: 0.6, ease: "power2.out" },
-  23.1
+  29.1
 );
 
 // ===== SCENE 8: No Code =====
-// Entrance: dramatic scale in
 tl.from("#scene8 .headline", {
   scale: 3,
   opacity: 0,
   duration: 0.8,
   ease: "expo.out"
-}, 23.6);
+}, 29.6);
 
 tl.from("#scene8 .big-text", {
   scale: 0.5,
@@ -303,36 +333,35 @@ tl.from("#scene8 .big-text", {
   rotation: -15,
   duration: 0.7,
   ease: "elastic.out(1, 0.4)"
-}, 24.2);
+}, 30.2);
 
 // Transition to Scene 9: Gravity drop
 tl.to("#scene8", {
   y: 1080,
   duration: 0.4,
   ease: "power3.in"
-}, 26.5);
+}, 32.5);
 tl.to("#scene9", {
   y: 0,
   opacity: 1,
   duration: 0.5,
   ease: "bounce.out"
-}, 26.7);
+}, 32.7);
 
 // ===== SCENE 9: CTA =====
-// Entrance: final dramatic reveal
 tl.from("#scene9 .headline", {
   y: 100,
   opacity: 0,
   duration: 0.8,
   ease: "elastic.out(1, 0.5)"
-}, 27.2);
+}, 33.2);
 
 tl.from("#scene9 .cta", {
   y: 30,
   opacity: 0,
   duration: 0.5,
   ease: "power2.out"
-}, 27.8);
+}, 33.8);
 
 tl.from("#scene9 .url", {
   y: 40,
@@ -341,13 +370,13 @@ tl.from("#scene9 .url", {
   duration: 0.5,
   stagger: 0.15,
   ease: "back.out(1.7)"
-}, 28.2);
+}, 34.2);
 
 // Final fade to black
 tl.to("#scene9", {
   opacity: 0,
   duration: 1.0,
   ease: "power2.in"
-}, 29.0);
+}, 35.0);
 
 window.__timelines["webmcp-announce"] = tl;

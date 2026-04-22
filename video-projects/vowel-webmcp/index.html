@@ -4,7 +4,27 @@
     <meta charset="UTF-8" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="style.css">
-     
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+      .scene-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+      }
+    </style>
   </head>
   <body>
     <div
@@ -13,188 +33,107 @@
       data-width="1920"
       data-height="1080"
       data-start="0"
-      data-duration="30"
+      data-duration="36"
     >
       <audio
         id="el-a"
         data-start="0"
-        data-duration="30"
+        data-duration="36"
         data-track-index="2"
-        src="JMHBM - Keepsake.mp3"
+        src="assets/JMHBM - Keepsake.mp3"
         data-volume="1"
       ></audio>
-      <!-- Scene 1: Title -->
-      <div id="scene1" class="scene">
-        <div class="scene-content">
-          <div class="title">WebMCP</div>
-          <div class="ready">
-            <span class="word1">are</span>
-            <span class="word2">you</span>
-            <span class="word3">ready?</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Scene 2: What is WebMCP -->
-      <div id="scene2" class="scene" style="opacity: 0;">
-        <div class="scene-content">
-          <div class="label">What is it?</div>
-          <div class="headline">The new <em>browser-native</em> standard that lets websites expose <em>callable tools</em> for AI agents</div>
-          <div class="desc">No more screenshot-scraping. Agents call your functions directly.</div>
-        </div>
-      </div>
-
-      <!-- Scene 3: SEO Experts -->
-      <div id="scene3" class="scene" style="opacity: 0;">
-        <div class="scene-content">
-          <div class="question">What are <span>SEO SME's</span> saying?</div>
-          <div class="posts">
-            <div class="post reddit" style="opacity: 0;">
-              <div class="post-header">
-                <div class="post-avatar"></div>
-                <div>
-                  <div class="post-user">SEO_Guru_2024</div>
-                  <div class="handle">@seoguru</div>
-                </div>
-              </div>
-              <div class="post-content">WebMCP is <span class="highlight">the biggest shift</span> in technical SEO since Schema.org. Mark my words.</div>
-            </div>
-            <div class="post twitter" style="opacity: 0;">
-              <div class="post-header">
-                <div class="post-avatar"></div>
-                <div>
-                  <div class="post-user">TechSEO Pro</div>
-                  <div class="handle">@techseopro</div>
-                </div>
-              </div>
-              <div class="post-content">Sites implementing WebMCP will have a <span class="highlight">real competitive edge</span>. The ones that don't? Left scraping.</div>
-            </div>
-            <div class="post reddit" style="opacity: 0;">
-              <div class="post-header">
-                <div class="post-avatar"></div>
-                <div>
-                  <div class="post-user">DigitalMarketer</div>
-                  <div class="handle">@digitalmark</div>
-                </div>
-              </div>
-              <div class="post-content">Just installed WebMCP on my client sites. <span class="highlight">Agent-ready</span> is the new mobile-first.</div>
-            </div>
-            <div class="post twitter" style="opacity: 0;">
-              <div class="post-header">
-                <div class="post-avatar"></div>
-                <div>
-                  <div class="post-user">GrowthHacker</div>
-                  <div class="handle">@growthhack</div>
-                </div>
-              </div>
-              <div class="post-content">WebMCP creates "<span class="highlight">WebMCP SEO</span>" - optimizing tool names, descriptions, and error handling.</div>
-            </div>
-            <div class="post reddit" style="opacity: 0;">
-              <div class="post-header">
-                <div class="post-avatar"></div>
-                <div>
-                  <div class="post-user">SearchEngineJournal</div>
-                  <div class="handle">@sejournal</div>
-                </div>
-              </div>
-              <div class="post-content">The <span class="highlight">agentic web</span> is here. Every day more sites expose callable tools. Are you ready?</div>
-            </div>
-            <div class="post twitter" style="opacity: 0;">
-              <div class="post-header">
-                <div class="post-avatar"></div>
-                <div>
-                  <div class="post-user">AI_Marketing</div>
-                  <div class="handle">@aimarketing</div>
-                </div>
-              </div>
-              <div class="post-content">Traditional SEO gets agents TO your site. <span class="highlight">WebMCP</span> makes them DO stuff once they're there.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scene 4: Examples -->
-      <div id="scene4" class="scene" style="opacity: 0;">
-        <div class="scene-content">
-          <div class="grid-title">Agents can now call:</div>
-          <div class="examples">
-            <div class="example">
-              <div class="example-icon">🔍</div>
-              <div class="example-text">search-products</div>
-            </div>
-            <div class="example">
-              <div class="example-icon">🛒</div>
-              <div class="example-text">add-to-cart</div>
-            </div>
-            <div class="example">
-              <div class="example-icon">🎫</div>
-              <div class="example-text">submit-ticket</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scene 5: Vowel Intro -->
-      <div id="scene5" class="scene" style="opacity: 0;">
-        <div class="scene-content">
-          <div class="product">But wait — there's more</div>
-          <div class="headline">Meet <span class="brand">Vowel</span></div>
-          <div class="tagline">WebMCP + intelligent conversational voice control</div>
-        </div>
-      </div>
-
-      <!-- Scene 6: Two for One -->
-      <div id="scene6" class="scene" style="opacity: 0;">
-        <div class="scene-content">
-          <div class="split-title">Two for one. No extra code.</div>
-          <div class="cards">
-            <div class="card webmcp">
-              <div class="card-icon">🌐</div>
-              <div class="card-label">Get</div>
-              <div class="card-title">WebMCP Tools</div>
-            </div>
-            <div class="card voice">
-              <div class="card-icon">🎤</div>
-              <div class="card-label">Plus</div>
-              <div class="card-title">Voice Control</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scene 7: VowelBot -->
-      <div id="scene7" class="scene" style="opacity: 0;">
-        <div class="scene-content">
-          <div class="label">New</div>
-          <div class="headline">Meet <span class="name">VowelBot</span></div>
-          <div class="headline" style="font-size: 50px; margin-top: 10px;">Your instant WebMCP + voice enabler</div>
-          <div class="features">
-            <div class="feature">GitHub Action setup</div>
-            <div class="feature">No code changes</div>
-            <div class="feature">Open source</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scene 8: No Code -->
-      <div id="scene8" class="scene" style="opacity: 0;">
-        <div class="scene-content">
-          <div class="headline">Zero. <span class="highlight">Zero.</span> Code.</div>
-          <div class="big-text">NO EXTRA CODE</div>
-        </div>
-      </div>
-
-      <!-- Scene 9: CTA -->
-      <div id="scene9" class="scene" style="opacity: 0;">
-        <div class="scene-content">
-          <div class="headline">The agentic web is <span class="highlight">HERE</span></div>
-          <div class="cta">Will your site be ready?</div>
-          <div class="urls">
-            <div class="url">vowel.to</div>
-            <div class="url">vowel.to/vowelbot</div>
-          </div>
-        </div>
-      </div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-01"
+        data-composition-src="compositions/scene-01-title.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-02"
+        data-composition-src="compositions/scene-02-what.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="1"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-03"
+        data-composition-src="compositions/scene-03-seo.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="3"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-04"
+        data-composition-src="compositions/scene-04-examples.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="4"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-05"
+        data-composition-src="compositions/scene-05-vowel.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="5"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-06"
+        data-composition-src="compositions/scene-06-twoforone.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="6"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-07"
+        data-composition-src="compositions/scene-07-vowelbot.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="7"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-08"
+        data-composition-src="compositions/scene-08-zerocode.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="8"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="webmcp-sc-09"
+        data-composition-src="compositions/scene-09-cta.html"
+        data-start="0"
+        data-duration="36"
+        data-track-index="9"
+        data-width="1920"
+        data-height="1080"
+      ></div>
     </div>
 
     <script src="script.js"></script>

@@ -1,0 +1,28 @@
+<div
+  data-composition-id="webmcp-sc-01"
+  data-start="0"
+  data-duration="36"
+  data-width="1920"
+  data-height="1080"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px"
+>
+  <!-- Scene 1: Title -->
+  <div id="scene1" class="scene">
+    <div class="scene-content">
+      <div class="title">WebMCP</div>
+      <div class="ready">
+        <span class="word1">are</span>
+        <span class="word2">you</span>
+        <span class="word3">ready?</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 36);
+      window.__timelines["webmcp-sc-01"] = tl;
+    })();
+  </script>
+</div>
