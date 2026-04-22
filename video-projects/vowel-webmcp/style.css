@@ -127,14 +127,14 @@ body {
   position: relative;
   width: 100%;
   flex: 1;
-  min-height: 720px;
+  min-height: 980px;
   z-index: 1;
   pointer-events: none;
 }
 #scene3 .post-slot {
   position: absolute;
-  width: 400px;
-  max-width: 90vw;
+  width: 620px;
+  max-width: 94vw;
   will-change: transform, opacity;
 }
 /* —— X Post Card (https://hyperframes.heygen.com/catalog/blocks/x-post) —— */
@@ -142,8 +142,8 @@ body {
   font-family: "Inter", sans-serif;
   width: 100%;
   background: #15202b;
-  border-radius: 16px;
-  padding: 20px 20px 16px;
+  border-radius: 20px;
+  padding: 28px 28px 20px;
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
   border: 1px solid #38444d;
   position: relative;
@@ -155,20 +155,20 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 56px;
+  height: 72px;
   background: linear-gradient(to top, rgba(29, 155, 240, 0.06), transparent);
   pointer-events: none;
 }
 #scene3 .x-post-header {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 14px;
+  margin-bottom: 14px;
   position: relative;
 }
 #scene3 .x-avatar svg {
-  width: 40px;
-  height: 40px;
+  width: 54px;
+  height: 54px;
   display: block;
   border-radius: 50%;
 }
@@ -185,13 +185,13 @@ body {
   gap: 4px;
 }
 #scene3 .x-display-name {
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 700;
   color: #e7e9ea;
   line-height: 1.2;
 }
 #scene3 .x-handle {
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 400;
   color: #8b98a5;
 }
@@ -202,12 +202,16 @@ body {
   line-height: 0;
   opacity: 0.9;
 }
+#scene3 .x-logo svg {
+  width: 38px;
+  height: 38px;
+}
 #scene3 .x-tweet-body {
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 400;
   color: #e7e9ea;
-  line-height: 1.4;
-  margin: 0 0 8px;
+  line-height: 1.45;
+  margin: 0 0 12px;
 }
 #scene3 .x-tweet-body em {
   font-style: italic;
@@ -218,19 +222,19 @@ body {
   font-weight: 600;
 }
 #scene3 .x-timestamp {
-  font-size: 12px;
+  font-size: 15px;
   color: #8b98a5;
-  padding-bottom: 10px;
+  padding-bottom: 14px;
   border-bottom: 1px solid #38444d;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 #scene3 .x-metrics {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: 12px;
+  gap: 12px;
+  font-size: 15px;
   color: #8b98a5;
   position: relative;
   z-index: 1;
@@ -240,20 +244,20 @@ body {
   font-family: "DM Sans", sans-serif;
   width: 100%;
   background: #1a1a2e;
-  border-radius: 14px;
-  padding: 18px 20px 16px;
+  border-radius: 18px;
+  padding: 26px 28px 20px;
   box-shadow: 0 10px 48px rgba(0, 0, 0, 0.55);
   border: 1px solid #2a2a3a;
 }
 #scene3 .rd-post-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 14px;
+  margin-bottom: 16px;
 }
 #scene3 .rd-icon svg {
-  width: 40px;
-  height: 40px;
+  width: 54px;
+  height: 54px;
   display: block;
   flex-shrink: 0;
 }
@@ -264,33 +268,33 @@ body {
   min-width: 0;
 }
 #scene3 .rd-sub {
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 700;
   color: #d7dadc;
   line-height: 1.2;
 }
 #scene3 .rd-author {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 400;
   color: #818384;
 }
 #scene3 .rd-title {
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 700;
   color: #d7dadc;
   line-height: 1.3;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 #scene3 .rd-body {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 400;
   color: #a8aaab;
-  line-height: 1.4;
-  margin: 0 0 12px;
+  line-height: 1.45;
+  margin: 0 0 16px;
 }
 #scene3 .rd-body strong {
   color: #00f5d4;
@@ -299,26 +303,26 @@ body {
 #scene3 .rd-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-top: 10px;
+  gap: 16px;
+  padding-top: 14px;
   border-top: 1px solid #343536;
-  font-size: 13px;
+  font-size: 16px;
   color: #818384;
 }
 #scene3 .rd-vote {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: #272729;
   border-radius: 20px;
-  padding: 4px 10px;
+  padding: 8px 14px;
   font-weight: 700;
   color: #d7dadc;
 }
 #scene3 .rd-pill {
   background: #272729;
   border-radius: 20px;
-  padding: 4px 10px;
+  padding: 8px 14px;
 }
 
 /* Scene 4: callable tool names — same “field + absolute slots” pattern as scene 3 */
@@ -683,12 +687,13 @@ body {
   align-items: baseline;
   gap: 0.32em;
   margin: 0;
-  font-size: 56px;
+  font-size: 104px;
   font-weight: 800;
   color: #e2e8f0;
   text-align: center;
-  margin-top: 32px;
-  letter-spacing: -0.02em;
+  margin-top: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
 }
 #scene9 .scene9-learn {
   display: flex;
@@ -697,7 +702,7 @@ body {
   align-items: baseline;
   gap: 0.35em;
   margin: 0;
-  font-size: 30px;
+  font-size: 48px;
   font-weight: 600;
   color: #94a3b8;
   text-align: center;
@@ -718,7 +723,7 @@ body {
   gap: 0.06em;
   margin-top: 32px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 32px;
+  font-size: 58px;
   font-weight: 600;
   color: #93c5fd;
   text-shadow: 0 0 28px rgba(147, 197, 253, 0.45);

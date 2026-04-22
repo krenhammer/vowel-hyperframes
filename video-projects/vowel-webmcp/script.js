@@ -268,17 +268,7 @@ tl.to(
   },
   18.92
 );
-tl.to(
-  "#scene4 .grid-title, #scene4 .grid-sub, #scene4 .grid-mcp",
-  {
-    y: -50,
-    opacity: 0,
-    duration: 0.35,
-    stagger: 0.04,
-    ease: "power2.in"
-  },
-  19.08
-);
+// Head copy stays put; fades with #scene4 blur/opacity (no separate upward exit)
 
 // Transition to Scene 5: Crossfade with blur
 tl.to("#scene4", {
@@ -349,11 +339,11 @@ tl.to(
   21.75
 );
 
-// Act2: kinetic word spans; holds after Interactive Voice / open source component; beat after “re-platforming?” before exit
+// Act2: kinetic word spans; holds after Interactive Voice, then after “one open source component”; beat after “re-platforming?” before exit
 var scene5LineBase = 22.12;
 var scene5LineGap = 0.44;
-var scene5PauseAfterVoiceAI = 0.5;
-var scene5PauseAfterOneChange = 0.5;
+var scene5PauseAfterVoiceAI = 0.72;
+var scene5PauseAfterOneChange = 0.72;
 var scene5Line4Start =
   scene5LineBase +
   3 * scene5LineGap +
@@ -538,25 +528,16 @@ tl.fromTo(
   sc9UrlStart
 );
 
-/** Full CTA plate stays up 10s after URL finishes animating in */
-var sc9HoldAfterUrl = 10;
-var sc9FadeStart =
-  sc9UrlStart + 0.42 + 0.14 + sc9HoldAfterUrl;
-
-// Final fade to black
-tl.to("#scene9", {
-  opacity: 0,
-  duration: 1.0,
-  ease: "power2.in"
-}, sc9FadeStart);
+/** CTA stays on screen through end — no fade; soundtrack fades out on #el-a below. */
 
 /** Must match root `data-duration` / audio `data-duration` on #root and #el-a */
 var announceDurationSec = 48;
+var soundtrackFadeLeadSec = 4;
 tl.fromTo(
   "#el-a",
   { volume: 1 },
-  { volume: 0, duration: 2, ease: "none" },
-  announceDurationSec - 2
+  { volume: 0, duration: soundtrackFadeLeadSec, ease: "none" },
+  announceDurationSec - soundtrackFadeLeadSec
 );
 
 window.__timelines["webmcp-announce"] = tl;

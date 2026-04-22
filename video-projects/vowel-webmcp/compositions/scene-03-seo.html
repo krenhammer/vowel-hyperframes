@@ -174,13 +174,13 @@
   </div>
   <script>
     (function initScene3Posts() {
-      // Cluster near frame center (not edge-to-edge). Deterministic "jitter" from index — no unseeded Math.random().
+      // Cluster stays centered as a group; offsets scaled so larger cards overlap less (deterministic, no Math.random).
       var cx = 50;
-      var cy = 46;
-      // One slot per post in DOM order: X, Reddit, X, Reddit, X, Reddit — j* rows match former per-card layout (0,3,1,4,2,5).
-      var jx = [ -7.2, -5.5, 5.1, 6.8, 1.4, -2.0 ];
-      var jy = [ -6.0, 2.3, 4.2, -4.4, 7.1, 0.6 ];
-      var jr = [ -6.5, -5.8, 8.2, 6.1, 4.5, -4.0 ];
+      var cy = 48;
+      // One slot per post in DOM order: X, Reddit, X, Reddit, X, Reddit.
+      var jx = [ -10.6, -8.2, 7.6, 10.1, 2.1, -3.0 ];
+      var jy = [ -8.8, 3.4, 6.2, -6.5, 10.5, 0.9 ];
+      var jr = [ -5.5, -5.0, 7.0, 5.2, 3.8, -3.4 ];
       var slots = document.querySelectorAll("#scene3 .post-slot");
       for (var i = 0; i < slots.length; i++) {
         var left = cx + (jx[i] || 0);
@@ -200,7 +200,7 @@
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
-      tl.set({}, {}, 47);
+      tl.set({}, {}, 48);
       window.__timelines["webmcp-sc-03"] = tl;
     })();
   </script>
