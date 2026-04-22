@@ -1,0 +1,356 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: #0a0a0f;
+  font-family: 'Outfit', sans-serif;
+}
+
+.scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+.scene-content {
+  width: 100%;
+  height: 100%;
+  padding: 80px 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+
+/* Scene 1: Title - Big WebMCP */
+#scene1 {
+  background: #0a0a0f;
+}
+#scene1 .title {
+  font-size: 320px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 0.85;
+  letter-spacing: -10px;
+  text-align: center;
+}
+#scene1 .ready {
+  font-size: 72px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 20px;
+  margin-top: 40px;
+}
+#scene1 .ready span {
+  display: inline-block;
+  opacity: 1;
+}
+
+/* Scene 2: What is WebMCP - Blue */
+#scene2 {
+  background: #0d1b2a;
+}
+#scene2 .label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 100px;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+  text-align: center;
+}
+#scene2 .headline {
+  font-size: 90px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+#scene2 .headline em {
+  color: #4895ef;
+  font-style: normal;
+}
+#scene2 .desc {
+  font-size: 32px;
+  color: #8d99ae;
+  max-width: 900px;
+}
+
+/* Scene 3: SEO Experts - Dark */
+#scene3 {
+  background: #0a0a0f;
+}
+#scene3 .question {
+  font-family: 'Outfit', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 50px;
+}
+#scene3 .question span {
+  color: #00f5d4;
+}
+#scene3 .posts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 80px;
+}
+#scene3 .post {
+  padding: 20px 24px;
+  border-radius: 12px;
+  max-width: 400px;
+}
+#scene3 .post.reddit {
+  background: #1a1a1b;
+  border: 1px solid #343536;
+}
+#scene3 .post.twitter {
+  background: #000;
+  border: 1px solid #2f3336;
+}
+#scene3 .post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+#scene3 .post-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00f5d4, #7b2cbf);
+}
+#scene3 .post-user {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+#scene3 .post.handle {
+  font-size: 14px;
+  color: #71767b;
+}
+#scene3 .post-content {
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.4;
+}
+#scene3 .post-content .highlight {
+  color: #00f5d4;
+  font-weight: 700;
+}
+
+/* Scene 4: 3 examples - Grid */
+#scene4 {
+  background: #1a1a2e;
+}
+#scene4 .grid-title {
+  font-size: 48px;
+  color: #fff;
+  margin-bottom: 40px;
+}
+#scene4 .examples {
+  display: flex;
+  gap: 30px;
+}
+#scene4 .example {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+}
+#scene4 .example-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+#scene4 .example-text {
+  font-size: 28px;
+  color: #00f5d4;
+  font-weight: 700;
+}
+
+/* Scene 5: Vowel intro - Teal */
+#scene5 {
+  background: linear-gradient(135deg, #001219 0%, #005f73 100%);
+}
+#scene5 .product {
+  font-size: 36px;
+  color: #94d2bd;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+}
+#scene5 .headline {
+  font-size: 100px;
+  font-weight: 900;
+  color: #fff;
+}
+#scene5 .headline .brand {
+  color: #00f5d4;
+}
+#scene5 .tagline {
+  font-size: 36px;
+  color: #94d2bd;
+}
+
+/* Scene 6: Two for one - Split */
+#scene6 {
+  background: #0f0f23;
+}
+#scene6 .split-title {
+  font-size: 56px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 60px;
+}
+#scene6 .cards {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+}
+#scene6 .card {
+  width: 500px;
+  padding: 50px;
+  border-radius: 24px;
+  text-align: center;
+}
+#scene6 .card.webmcp {
+  background: linear-gradient(135deg, #3a0ca3, #7209b7);
+}
+#scene6 .card.voice {
+  background: linear-gradient(135deg, #06d6a0, #118ab2);
+}
+#scene6 .card-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+#scene6 .card-label {
+  font-size: 32px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 16px;
+}
+#scene6 .card-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Scene 7: VowelBot - Orange energy */
+#scene7 {
+  background: linear-gradient(135deg, #1d1135 0%, #4a1942 100%);
+}
+#scene7 .label {
+  font-size: 28px;
+  color: #ff6b6b;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+}
+#scene7 .headline {
+  font-size: 80px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+}
+#scene7 .headline .name {
+  color: #ffd93d;
+}
+#scene7 .features {
+  display: flex;
+  gap: 30px;
+  margin-top: 30px;
+}
+#scene7 .feature {
+  font-size: 22px;
+  color: #ff9f1c;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#scene7 .feature::before {
+  content: "✓";
+  font-weight: bold;
+}
+
+/* Scene 8: No code - Green */
+#scene8 {
+  background: #061a0f;
+}
+#scene8 .headline {
+  font-size: 64px;
+  color: #fff;
+  text-align: center;
+}
+#scene8 .headline .highlight {
+  color: #40c057;
+  font-weight: 900;
+}
+#scene8 .big-text {
+  font-size: 120px;
+  font-weight: 900;
+  color: #40c057;
+  text-align: center;
+  margin: 30px 0;
+}
+
+/* Scene 9: CTA - Final */
+#scene9 {
+  background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%);
+}
+#scene9 .headline {
+  font-size: 72px;
+  font-weight: 900;
+  color: #fff;
+  text-align: center;
+  line-height: 1.15;
+}
+#9-1 .headline .highlight {
+  background: linear-gradient(90deg, #00f5d4, #7b2cbf, #f72585);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+#scene9 .cta {
+  font-size: 28px;
+  color: #8d99ae;
+  text-align: center;
+  margin-top: 30px;
+}
+#scene9 .urls {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-top: 40px;
+}
+#scene9 .url {
+  font-size: 24px;
+  color: #00f5d4;
+  padding: 16px 32px;
+  border: 2px solid #00f5d4;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+/* Glow effects */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.4;
+  pointer-events: none;
+}
