@@ -625,6 +625,21 @@ tl.fromTo(
   sc9UrlStart
 );
 
+var sc9UrlAnimEnd = sc9UrlStart + 0.42 + 0.14;
+var sc9MusicStart = sc9UrlAnimEnd + 0.2;
+tl.fromTo(
+  "#scene9 .scene9-music-seg",
+  { opacity: 0, y: 5 },
+  {
+    opacity: 1,
+    y: 0,
+    duration: 0.11,
+    stagger: 0.05,
+    ease: "power2.out"
+  },
+  sc9MusicStart
+);
+
 /** CTA stays on screen through end — no fade; soundtrack fades out on #el-a below. */
 
 /** Must match root `data-duration` / audio `data-duration` on #root and #el-a */

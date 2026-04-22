@@ -667,8 +667,14 @@ body {
 #scene9 {
   background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%);
 }
+/*
+ * Headline: “The agentic web is” shares the same horizontal center as
+ * “Are you ready?” — the cycling word is only tacked on to the right.
+ * If we center (lead + slot) as one box, the fixed phrase sits left of center.
+ * So: center the cluster, then translateX by half (slot + gap) so the lead’s
+ * midpoint lands on 50%; the slot still keeps swap stability.
+ */
 #scene9 .scene9-headline-block {
-  text-align: left;
   width: 100%;
 }
 #scene9 .scene9-headline-line {
@@ -678,33 +684,38 @@ body {
   color: #fff;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  column-gap: 0.035em;
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#scene9 .scene9-headline-cluster {
+  --scene9-cycle-slot: 6.2em;
+  --scene9-head-gap: 0.26em;
+  display: inline-flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  column-gap: var(--scene9-head-gap);
+  transform: translateX(
+    calc((var(--scene9-cycle-slot) + var(--scene9-head-gap)) / 2)
+  );
 }
 #scene9 .scene9-lead {
   flex: 0 0 auto;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.96);
+  white-space: nowrap;
 }
-/*
- * Fixed slot for WebMCP / vowel / HERE / NOW so total row width never changes
- * and “The agentic web is …” stays pinned while words cycle.
- * ~6.2em at 72px ≈ widest beat (WebMCP + tracking).
- */
 #scene9 .scene9-cycle-host {
   flex: 0 0 auto;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  width: 6.2em;
-  min-width: 6.2em;
-  max-width: 6.2em;
+  width: var(--scene9-cycle-slot, 6.2em);
+  min-width: var(--scene9-cycle-slot, 6.2em);
+  max-width: var(--scene9-cycle-slot, 6.2em);
   height: 1.22em;
   line-height: 1;
   box-sizing: border-box;
@@ -725,8 +736,8 @@ body {
   align-items: center;
   gap: 0.02em;
   white-space: nowrap;
-  /* OCR sits low vs Outfit — lift to match cap/x-height optically */
-  transform: translateY(-0.06em);
+  /* Slight nudge only — was too high with stronger negative translate */
+  transform: translateY(-0.02em);
 }
 #scene9 .scene9-vowel-letter {
   font-family: "OCR-A", "JetBrains Mono", monospace;
@@ -814,7 +825,8 @@ body {
   margin-top: 22px;
 }
 #scene9 .scene9-learn-word,
-#scene9 .scene9-url-chunk {
+#scene9 .scene9-url-chunk,
+#scene9 .scene9-music-seg {
   display: inline-block;
   opacity: 0;
   will-change: transform, opacity;
@@ -831,6 +843,27 @@ body {
   font-weight: 600;
   color: #93c5fd;
   text-shadow: 0 0 28px rgba(147, 197, 253, 0.45);
+}
+#scene9 .scene9-music-credit {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.28em;
+  margin: 0;
+  margin-top: 18px;
+  max-width: 920px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+  font-family: "Outfit", sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(148, 163, 184, 0.68);
+  text-align: center;
+  letter-spacing: 0.01em;
 }
 
 /* Glow effects */
