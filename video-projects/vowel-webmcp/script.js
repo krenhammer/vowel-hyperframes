@@ -412,20 +412,43 @@ tl.from("#scene6", {
 
 var sc6T0 = scene5ExitT + 0.7;
 
-// ===== SCENE 6: Two for One =====
-tl.from("#scene6 .split-title", {
-  y: -40,
+// ===== SCENE 6: enter vowel (typed) → pause → Two for one + cards =====
+var sc6VowelStart = sc6T0 + 0.4;
+var sc6VowelLetterDur = 0.1;
+var sc6VowelLetterStagger = 0.1;
+var sc6VowelLetterCount = 5;
+var sc6VowelTypeEnd =
+  sc6VowelStart +
+  sc6VowelLetterDur +
+  sc6VowelLetterStagger * (sc6VowelLetterCount - 1);
+var sc6PauseAfterVowel = 0.62;
+var sc6SplitTitleT = sc6VowelTypeEnd + sc6PauseAfterVowel;
+
+tl.from("#scene6 .scene6-enter-prefix", {
+  y: 18,
   opacity: 0,
-  duration: 0.6,
+  duration: 0.45,
   ease: "power3.out"
 }, sc6T0);
 
-tl.from("#scene6 .scene6-enter", {
-  y: 24,
+tl.fromTo(
+  "#scene6 .scene6-vowel-letter",
+  { opacity: 0 },
+  {
+    opacity: 1,
+    duration: sc6VowelLetterDur,
+    stagger: sc6VowelLetterStagger,
+    ease: "none"
+  },
+  sc6VowelStart
+);
+
+tl.from("#scene6 .split-title", {
+  y: -40,
   opacity: 0,
-  duration: 0.5,
+  duration: 0.55,
   ease: "power3.out"
-}, sc6T0 + 0.32);
+}, sc6SplitTitleT);
 
 tl.from("#scene6 .card.webmcp", {
   x: -200,
@@ -433,7 +456,7 @@ tl.from("#scene6 .card.webmcp", {
   rotation: -10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, sc6T0 + 0.5);
+}, sc6SplitTitleT + 0.38);
 
 tl.from("#scene6 .card.voice", {
   x: 200,
@@ -441,9 +464,9 @@ tl.from("#scene6 .card.voice", {
   rotation: 10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, sc6T0 + 0.7);
+}, sc6SplitTitleT + 0.58);
 
-var sc6Exit = sc6T0 + 2.75;
+var sc6Exit = sc6SplitTitleT + 2.55;
 
 // Transition to Scene 8 first (GitHub Action beat), then Scene 7 (VowelBot)
 tl.to("#scene6", {

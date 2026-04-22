@@ -591,7 +591,7 @@ body {
   font-size: 56px;
   color: #fff;
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 48px;
 }
 #scene6 .scene6-enter {
   font-family: 'Outfit', sans-serif;
@@ -599,24 +599,33 @@ body {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.94);
   text-align: center;
-  margin-bottom: 44px;
+  margin-bottom: 36px;
   letter-spacing: 0.08em;
 }
 #scene6 .scene6-enter-prefix {
   text-transform: lowercase;
-  margin-right: 0.3em;
+  margin-right: 0.35em;
 }
-/** Brand word only — OCR-A per vowel.to */
-#scene6 .scene6-vowel-ocr {
+/** Brand word — OCR-A; letters typed in via GSAP (start opacity 0) */
+#scene6 .scene6-vowel-wrap {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.02em;
+}
+#scene6 .scene6-vowel-letter {
   font-family: 'OCR-A', 'JetBrains Mono', monospace;
   font-weight: normal;
-  font-size: 1.2em;
-  letter-spacing: 0.14em;
-  text-transform: lowercase;
-  color: #fef08a;
+  font-size: 1.22em;
+  line-height: 1;
+  display: inline-block;
+  opacity: 0;
+  color: #ffffff;
   text-shadow:
-    0 0 28px rgba(250, 204, 21, 0.45),
-    0 0 2px rgba(202, 138, 4, 0.85);
+    0 0 18px rgba(255, 255, 255, 0.95),
+    0 0 42px rgba(255, 255, 255, 0.55),
+    0 0 72px rgba(255, 255, 255, 0.25);
+  will-change: opacity;
 }
 #scene6 .cards {
   display: flex;
