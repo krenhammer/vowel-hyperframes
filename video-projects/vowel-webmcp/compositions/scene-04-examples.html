@@ -7,25 +7,96 @@
   style="position: absolute; inset: 0; width: 1920px; height: 1080px"
 >
   <div id="scene4" class="scene" style="opacity: 0;">
-    <div class="scene-content">
-      <div class="grid-title">Agents can now call:</div>
-      <div class="examples">
-        <div class="example">
-          <div class="example-icon">🔍</div>
-          <div class="example-text">search-products</div>
+    <div class="scene-content scene4-layout">
+      <div class="scene4-head">
+        <div class="grid-title">Agents can now call:</div>
+        <p class="grid-sub">No brittle screenshot scraping, etc.</p>
+        <p class="grid-mcp">MCP functions directly:</p>
+      </div>
+      <div class="functions-field" aria-hidden="true">
+        <div class="function-slot">
+          <div class="ts-func">
+            <pre class="ts-pre" translate="no"><code><span class="ts-kw">export async function</span> <span class="ts-name">searchProducts</span>(
+  <span class="ts-param">q</span>: <span class="ts-type">string</span>,
+  <span class="ts-param">limit</span>?: <span class="ts-type">number</span>,
+) {
+  <span class="ts-body">/* … */</span>
+}</code></pre>
+          </div>
         </div>
-        <div class="example">
-          <div class="example-icon">🛒</div>
-          <div class="example-text">add-to-cart</div>
+        <div class="function-slot">
+          <div class="ts-func">
+            <pre class="ts-pre" translate="no"><code><span class="ts-kw">async function</span> <span class="ts-name">addToCart</span>(
+  <span class="ts-param">sku</span>: <span class="ts-type">string</span>,
+  <span class="ts-param">qty</span>: <span class="ts-type">number</span>,
+) {
+  <span class="ts-body">// …</span>
+}</code></pre>
+          </div>
         </div>
-        <div class="example">
-          <div class="example-icon">🎫</div>
-          <div class="example-text">submit-ticket</div>
+        <div class="function-slot">
+          <div class="ts-func">
+            <pre class="ts-pre" translate="no"><code><span class="ts-kw">function</span> <span class="ts-name">submitTicket</span>(
+  <span class="ts-param">topic</span>: <span class="ts-type">string</span>,
+  <span class="ts-param">body</span>: <span class="ts-type">string</span>,
+) {
+  <span class="ts-body">…</span>
+}</code></pre>
+          </div>
+        </div>
+        <div class="function-slot">
+          <div class="ts-func">
+            <pre class="ts-pre" translate="no"><code><span class="ts-kw">async function</span> <span class="ts-name">getOrderStatus</span>(<span class="ts-param">id</span>: <span class="ts-type">OrderId</span>) {
+  <span class="ts-body">/* … */</span>
+}</code></pre>
+          </div>
+        </div>
+        <div class="function-slot">
+          <div class="ts-func">
+            <pre class="ts-pre" translate="no"><code><span class="ts-kw">function</span> <span class="ts-name">listInventory</span>(
+  <span class="ts-param">f</span>: <span class="ts-type">InventoryFilter</span>,
+) {
+  <span class="ts-body">// …</span>
+}</code></pre>
+          </div>
+        </div>
+        <div class="function-slot">
+          <div class="ts-func">
+            <pre class="ts-pre" translate="no"><code><span class="ts-kw">export function</span> <span class="ts-name">createCheckout</span>(
+  <span class="ts-param">cart</span>: <span class="ts-type">Cart</span>
+) {
+  <span class="ts-body">…</span>
+}</code></pre>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <script>
+    (function initScene4Functions() {
+      gsap.set("#scene4 .grid-title", { opacity: 0, y: -50 });
+      gsap.set("#scene4 .grid-sub", { opacity: 0, y: 24 });
+      gsap.set("#scene4 .grid-mcp", { opacity: 0, y: 24 });
+      // 2×3 grid (two wide columns) inside .functions-field; tiny jitter in °.
+      var jx = [ 25, 75, 24, 76, 25, 75 ];
+      var jy = [ 19, 21, 50, 50, 79, 78 ];
+      var jr = [ -3.2, 2.1, -1.5, 2.6, -2.0, 1.2 ];
+      var slots = document.querySelectorAll("#scene4 .function-slot");
+      for (var i = 0; i < slots.length; i++) {
+        var left = jx[i] != null ? jx[i] : 50;
+        var top = jy[i] != null ? jy[i] : 50;
+        var r = jr[i] != null ? jr[i] : 0;
+        gsap.set(slots[i], {
+          left: left + "%",
+          top: top + "%",
+          xPercent: -50,
+          yPercent: -50,
+          rotation: r,
+          opacity: 0,
+          y: -780
+        });
+      }
+    })();
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });

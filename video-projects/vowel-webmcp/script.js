@@ -102,6 +102,10 @@ tl.to("#scene2", {
   duration: 0.5,
   ease: "power2.inOut"
 }, 8.0);
+// Scenes 1–2 must go to opacity 0 when scene 3+ take over. Later layers (4, 5, …) fade
+// to transparent; if 1–2 stayed at 1, they would show through (e.g. "What is it?" after scene 4).
+tl.set("#scene1", { opacity: 0 }, 8.2);
+tl.set("#scene2", { opacity: 0 }, 8.2);
 tl.to("#scene3", {
   opacity: 1,
   duration: 0.5,
@@ -179,23 +183,102 @@ tl.to("#scene3 .question", {
   ease: "power2.in"
 }, 15.85);
 
-// ===== SCENE 4: Examples =====
-// (timings +4.2s after longer scene 3)
-tl.from("#scene4 .grid-title", {
-  y: -30,
-  opacity: 0,
+// ===== SCENE 3 → 4: Staggered blocks cover (registry: transitions-cover pattern) =====
+var coverT = 15.88;
+tl.set("#cover-wipe-a", { x: -1920 }, coverT - 0.01);
+tl.set("#cover-wipe-b", { x: -1920 }, coverT - 0.01);
+tl.to("#cover-wipe-a", { x: 0, duration: 0.25, ease: "power3.inOut" }, coverT);
+tl.to("#cover-wipe-b", { x: 0, duration: 0.25, ease: "power3.inOut" }, coverT + 0.06);
+tl.set("#scene3", { opacity: 0 }, coverT + 0.2);
+tl.set("#scene4", { opacity: 1 }, coverT + 0.2);
+tl.to("#cover-wipe-a", { x: 1920, duration: 0.25, ease: "power3.inOut" }, coverT + 0.28);
+tl.to("#cover-wipe-b", { x: 1920, duration: 0.25, ease: "power3.inOut" }, coverT + 0.34);
+
+// ===== SCENE 4: Headlines + tool cards (same fall / float / exit as scene 3 post-slots) =====
+tl.to("#scene4 .grid-title", {
+  y: 0,
+  opacity: 1,
   duration: 0.5,
+  ease: "power3.out"
+}, 16.35);
+tl.to("#scene4 .grid-sub", {
+  y: 0,
+  opacity: 1,
+  duration: 0.45,
+  ease: "power2.out"
+}, 16.42);
+tl.to("#scene4 .grid-mcp", {
+  y: 0,
+  opacity: 1,
+  duration: 0.45,
   ease: "power2.out"
 }, 16.5);
 
-tl.from("#scene4 .example", {
-  y: 60,
-  opacity: 0,
-  scale: 0.9,
-  duration: 0.6,
-  stagger: 0.15,
-  ease: "elastic.out(1, 0.6)"
-}, 17.0);
+var scene4Slots = document.querySelectorAll("#scene4 .function-slot");
+var scene4T0 = 16.65;
+var scene4Stagger = 0.32;
+var scene4Fall = 0.5;
+var scene4Exit = 19.0;
+for (var fsi = 0; fsi < scene4Slots.length; fsi++) {
+  var fel = scene4Slots[fsi];
+  var tDrop4 = scene4T0 + fsi * scene4Stagger;
+  tl.to(
+    fel,
+    {
+      y: 0,
+      opacity: 1,
+      duration: scene4Fall,
+      ease: "bounce.out"
+    },
+    tDrop4
+  );
+  var tFloat4 = tDrop4 + scene4Fall;
+  var winLeft4 = scene4Exit - tFloat4;
+  var bobDur4 = 0.4;
+  var maxRep4 = Math.max(0, Math.min(12, Math.floor(winLeft4 / (bobDur4 * 2))));
+  if (maxRep4 > 0) {
+    var bobAmp4 = 5 + (fsi % 3) * 1.2;
+    var xAmp4 = 3.5 + (fsi % 2) * 1.5;
+    var rotAmp4 = 0.6 + (fsi % 4) * 0.2;
+    tl.to(
+      fel,
+      {
+        y: "+=" + bobAmp4,
+        x: "+=" + xAmp4,
+        rotation: "+=" + rotAmp4,
+        yoyo: true,
+        repeat: maxRep4,
+        duration: bobDur4,
+        ease: "sine.inOut"
+      },
+      tFloat4
+    );
+  }
+}
+
+tl.to(
+  "#scene4 .function-slot",
+  {
+    y: -400,
+    opacity: 0,
+    rotation: "+=6",
+    duration: 0.45,
+    stagger: 0.06,
+    ease: "power2.in"
+  },
+  18.92
+);
+tl.to(
+  "#scene4 .grid-title, #scene4 .grid-sub, #scene4 .grid-mcp",
+  {
+    y: -50,
+    opacity: 0,
+    duration: 0.35,
+    stagger: 0.04,
+    ease: "power2.in"
+  },
+  19.08
+);
 
 // Transition to Scene 5: Crossfade with blur
 tl.to("#scene4", {

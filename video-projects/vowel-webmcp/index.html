@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Inter:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Inter:wght@400;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -133,6 +133,18 @@
         data-track-index="9"
         data-width="1920"
         data-height="1080"
+      ></div>
+
+      <!-- Cover transition (3→4): staggered blocks — pattern from registry block transitions-cover -->
+      <div
+        id="cover-wipe-a"
+        aria-hidden="true"
+        style="position: absolute; inset: 0; background: #f72585; z-index: 100; transform: translateX(-1920px); pointer-events: none"
+      ></div>
+      <div
+        id="cover-wipe-b"
+        aria-hidden="true"
+        style="position: absolute; inset: 0; background: #7209b7; z-index: 99; transform: translateX(-1920px); pointer-events: none"
       ></div>
     </div>
 

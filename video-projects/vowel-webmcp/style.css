@@ -313,35 +313,103 @@ body {
   padding: 4px 10px;
 }
 
-/* Scene 4: 3 examples - Grid */
+/* Scene 4: callable tool names — same “field + absolute slots” pattern as scene 3 */
 #scene4 {
   background: #1a1a2e;
+}
+#scene4 .scene4-layout {
+  position: relative;
+  padding: 64px 48px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100%;
+  gap: 0;
+}
+#scene4 .scene4-head {
+  z-index: 2;
+  flex-shrink: 0;
+  text-align: center;
+  max-width: 1100px;
+  margin: 0 auto 8px;
 }
 #scene4 .grid-title {
   font-size: 48px;
   color: #fff;
-  margin-bottom: 40px;
-}
-#scene4 .examples {
-  display: flex;
-  gap: 30px;
-}
-#scene4 .example {
-  flex: 1;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
-  padding: 40px;
-  text-align: center;
-}
-#scene4 .example-icon {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-#scene4 .example-text {
-  font-size: 28px;
-  color: #00f5d4;
+  margin: 0 0 10px;
   font-weight: 700;
+}
+#scene4 .grid-sub {
+  margin: 0 0 6px;
+  font-family: "DM Sans", "Inter", sans-serif;
+  font-size: 26px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+}
+#scene4 .grid-mcp {
+  margin: 0;
+  font-family: "DM Sans", "Inter", sans-serif;
+  font-size: 30px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #00f5d4;
+}
+/* Wide field + 2×3 = large readable TypeScript cards */
+#scene4 .functions-field {
+  position: absolute;
+  left: 50%;
+  top: 64%;
+  width: 90%;
+  height: 48%;
+  min-height: 0;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+}
+#scene4 .function-slot {
+  position: absolute;
+  width: 46%;
+  min-width: 0;
+  max-width: none;
+  will-change: transform, opacity;
+}
+#scene4 .ts-func {
+  width: 100%;
+  background: rgba(6, 10, 20, 0.92);
+  border: 1px solid rgba(0, 245, 212, 0.28);
+  border-radius: 14px;
+  padding: 18px 20px 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  text-align: left;
+}
+#scene4 .ts-pre {
+  margin: 0;
+  font-family: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #e5e7eb;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+#scene4 .ts-kw {
+  color: #c792ea;
+  font-weight: 500;
+}
+#scene4 .ts-name {
+  color: #82aaff;
+  font-weight: 600;
+}
+#scene4 .ts-param {
+  color: #f78c6c;
+}
+#scene4 .ts-type {
+  color: #ffcb6b;
+}
+#scene4 .ts-body {
+  color: #6b8a7a;
+  font-style: italic;
 }
 
 /* Scene 5: Vowel intro - Teal */

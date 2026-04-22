@@ -41,6 +41,28 @@
             </div>
           </div>
         </div>
+        <div class="post-slot" data-post-kind="reddit">
+          <div class="reddit-mock-card">
+            <div class="rd-post-header">
+              <div class="rd-icon">
+                <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                  <circle cx="24" cy="24" r="24" fill="#4A90D9" />
+                  <text x="24" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">r/</text>
+                </svg>
+              </div>
+              <div class="rd-meta">
+                <span class="rd-sub">r/technicalSEO</span>
+                <span class="rd-author">u/SEO_Guru_2024 &middot; 3h</span>
+              </div>
+            </div>
+            <div class="rd-title">WebMCP is the biggest shift since Schema.org</div>
+            <p class="rd-body">Not hype — the plumbing for agent-readable sites is here. <strong>WebMCP</strong> is the real deal.</p>
+            <div class="rd-actions">
+              <div class="rd-vote"><span>▲</span><span>4.2k</span><span>▼</span></div>
+              <span class="rd-pill">💬 328</span>
+            </div>
+          </div>
+        </div>
         <div class="post-slot" data-post-kind="x">
           <div class="x-mock-card">
             <div class="x-post-header">
@@ -69,6 +91,28 @@
             <div class="x-timestamp">9:22 AM &middot; Apr 6, 2026</div>
             <div class="x-metrics">
               <span>↩ 12</span><span>↻ 842</span><span>♡ 5.0K</span>
+            </div>
+          </div>
+        </div>
+        <div class="post-slot" data-post-kind="reddit">
+          <div class="reddit-mock-card">
+            <div class="rd-post-header">
+              <div class="rd-icon">
+                <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                  <circle cx="24" cy="24" r="24" fill="#4A90D9" />
+                  <text x="24" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">r/</text>
+                </svg>
+              </div>
+              <div class="rd-meta">
+                <span class="rd-sub">r/bigseo</span>
+                <span class="rd-author">u/DigitalMarketer &middot; 8h</span>
+              </div>
+            </div>
+            <div class="rd-title">Agent-ready is the new mobile-first</div>
+            <p class="rd-body">Rolled WebMCP out to client properties — agents can finally call <strong>our</strong> tools, not just read HTML.</p>
+            <div class="rd-actions">
+              <div class="rd-vote"><span>▲</span><span>1.1k</span><span>▼</span></div>
+              <span class="rd-pill">💬 94</span>
             </div>
           </div>
         </div>
@@ -113,50 +157,6 @@
                 </svg>
               </div>
               <div class="rd-meta">
-                <span class="rd-sub">r/technicalSEO</span>
-                <span class="rd-author">u/SEO_Guru_2024 &middot; 3h</span>
-              </div>
-            </div>
-            <div class="rd-title">WebMCP is the biggest shift since Schema.org</div>
-            <p class="rd-body">Not hype — the plumbing for agent-readable sites is here. <strong>WebMCP</strong> is the real deal.</p>
-            <div class="rd-actions">
-              <div class="rd-vote"><span>▲</span><span>4.2k</span><span>▼</span></div>
-              <span class="rd-pill">💬 328</span>
-            </div>
-          </div>
-        </div>
-        <div class="post-slot" data-post-kind="reddit">
-          <div class="reddit-mock-card">
-            <div class="rd-post-header">
-              <div class="rd-icon">
-                <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                  <circle cx="24" cy="24" r="24" fill="#4A90D9" />
-                  <text x="24" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">r/</text>
-                </svg>
-              </div>
-              <div class="rd-meta">
-                <span class="rd-sub">r/bigseo</span>
-                <span class="rd-author">u/DigitalMarketer &middot; 8h</span>
-              </div>
-            </div>
-            <div class="rd-title">Agent-ready is the new mobile-first</div>
-            <p class="rd-body">Rolled WebMCP out to client properties — agents can finally call <strong>our</strong> tools, not just read HTML.</p>
-            <div class="rd-actions">
-              <div class="rd-vote"><span>▲</span><span>1.1k</span><span>▼</span></div>
-              <span class="rd-pill">💬 94</span>
-            </div>
-          </div>
-        </div>
-        <div class="post-slot" data-post-kind="reddit">
-          <div class="reddit-mock-card">
-            <div class="rd-post-header">
-              <div class="rd-icon">
-                <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-                  <circle cx="24" cy="24" r="24" fill="#4A90D9" />
-                  <text x="24" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">r/</text>
-                </svg>
-              </div>
-              <div class="rd-meta">
                 <span class="rd-sub">r/TechSEO</span>
                 <span class="rd-author">u/SearchEngineJournal &middot; 1d</span>
               </div>
@@ -174,23 +174,24 @@
   </div>
   <script>
     (function initScene3Posts() {
-      var SCENE3_PLACES = [
-        { left: "7%", top: "22%", r: -6.5 },
-        { left: "74%", top: "20%", r: 8.2 },
-        { left: "44%", top: "60%", r: 4.5 },
-        { left: "11%", top: "52%", r: -5.8 },
-        { left: "58%", top: "14%", r: 6.1 },
-        { left: "84%", top: "48%", r: -9.4 }
-      ];
+      // Cluster near frame center (not edge-to-edge). Deterministic "jitter" from index — no unseeded Math.random().
+      var cx = 50;
+      var cy = 46;
+      // One slot per post in DOM order: X, Reddit, X, Reddit, X, Reddit — j* rows match former per-card layout (0,3,1,4,2,5).
+      var jx = [ -7.2, -5.5, 5.1, 6.8, 1.4, -2.0 ];
+      var jy = [ -6.0, 2.3, 4.2, -4.4, 7.1, 0.6 ];
+      var jr = [ -6.5, -5.8, 8.2, 6.1, 4.5, -4.0 ];
       var slots = document.querySelectorAll("#scene3 .post-slot");
       for (var i = 0; i < slots.length; i++) {
-        var p = SCENE3_PLACES[i] || { left: "50%", top: "50%", r: 0 };
+        var left = cx + (jx[i] || 0);
+        var top = cy + (jy[i] || 0);
+        var r = jr[i] != null ? jr[i] : 0;
         gsap.set(slots[i], {
-          left: p.left,
-          top: p.top,
+          left: left + "%",
+          top: top + "%",
           xPercent: -50,
           yPercent: -50,
-          rotation: p.r,
+          rotation: r,
           opacity: 0,
           y: -780
         });
