@@ -294,40 +294,76 @@ tl.to("#scene5", {
   ease: "power2.out"
 }, 20.0);
 
-// ===== SCENE 5: Vowel Intro =====
-tl.from("#scene5 .product", {
-  x: -40,
-  opacity: 0,
-  duration: 0.5,
-  ease: "power2.out"
-}, 20.15);
+// ===== SCENE 5: White → “WebMCP” / then “Sounds great…” (after flash so it’s not covered) / exit act1 / stagger pitch (pauses = stagger gap) =====
+tl.fromTo(
+  "#scene5-flash",
+  { opacity: 1, scale: 1 },
+  {
+    scale: 1.65,
+    opacity: 0,
+    duration: 0.68,
+    ease: "power2.inOut"
+  },
+  20.0
+);
+tl.fromTo(
+  "#scene5 .scene5-webmcp",
+  { scale: 1.38, opacity: 0, filter: "blur(16px)" },
+  {
+    scale: 1,
+    opacity: 1,
+    filter: "blur(0px)",
+    duration: 0.72,
+    ease: "power3.out"
+  },
+  20.0
+);
 
-tl.from("#scene5 .headline", {
-  x: 50,
-  opacity: 0,
-  duration: 0.7,
-  ease: "circ.out"
-}, 20.45);
+// “Sounds great, but how do I get started?” — start after the white layer has cleared (z-index was hiding it before).
+tl.from(
+  "#scene5 .scene5-pain .word",
+  {
+    y: 24,
+    opacity: 0,
+    duration: 0.3,
+    stagger: 0.07,
+    ease: "power2.out"
+  },
+  20.8
+);
 
-tl.from("#scene5 .tagline", {
-  y: 30,
-  opacity: 0,
-  duration: 0.5,
-  ease: "power2.out"
-}, 20.95);
+// Drop act1 (WebMCP + “Sounds great…”) — opacity only (act1 is translateY(-50%) centered; avoid GSAP y fighting CSS)
+tl.to(
+  "#scene5 .scene5-act1",
+  { opacity: 0, duration: 0.45, ease: "power2.in" },
+  21.75
+);
+
+// Act2: each line is its own <p>; stagger 0.44s = pause between phrases (ellipses in script = timing, not on-screen type)
+tl.from(
+  "#scene5 .scene5-beat",
+  {
+    y: 26,
+    opacity: 0,
+    duration: 0.4,
+    stagger: 0.44,
+    ease: "power2.out"
+  },
+  22.12
+);
 
 // Transition to Scene 6: Diagonal split (after scene 5 copy finishes)
 tl.to("#scene5", {
   clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
   duration: 0.4,
   ease: "power2.in"
-}, 22.0);
-tl.set("#scene6", { opacity: 1 }, 22.2);
+}, 24.0);
+tl.set("#scene6", { opacity: 1 }, 24.2);
 tl.from("#scene6", {
   clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)",
   duration: 0.5,
   ease: "power3.out"
-}, 22.2);
+}, 24.2);
 
 // ===== SCENE 6: Two for One =====
 tl.from("#scene6 .split-title", {
@@ -335,7 +371,7 @@ tl.from("#scene6 .split-title", {
   opacity: 0,
   duration: 0.6,
   ease: "power3.out"
-}, 22.7);
+}, 24.7);
 
 tl.from("#scene6 .card.webmcp", {
   x: -200,
@@ -343,7 +379,7 @@ tl.from("#scene6 .card.webmcp", {
   rotation: -10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, 23.2);
+}, 25.2);
 
 tl.from("#scene6 .card.voice", {
   x: 200,
@@ -351,7 +387,7 @@ tl.from("#scene6 .card.voice", {
   rotation: 10,
   duration: 0.7,
   ease: "back.out(1.2)"
-}, 23.4);
+}, 25.4);
 
 // Transition to Scene 7: Scale down to reveal
 tl.to("#scene6", {
@@ -359,13 +395,13 @@ tl.to("#scene6", {
   opacity: 0,
   duration: 0.5,
   ease: "power2.in"
-}, 25.5);
+}, 27.5);
 tl.to("#scene7", {
   opacity: 1,
   scale: 1,
   duration: 0.5,
   ease: "power2.out"
-}, 25.8);
+}, 27.8);
 
 // ===== SCENE 7: VowelBot =====
 tl.from("#scene7 .label", {
@@ -373,14 +409,14 @@ tl.from("#scene7 .label", {
   opacity: 0,
   duration: 0.4,
   ease: "power2.out"
-}, 26.3);
+}, 28.3);
 
 tl.from("#scene7 .headline", {
   y: 50,
   opacity: 0,
   duration: 0.6,
   ease: "bounce.out"
-}, 26.6);
+}, 28.6);
 
 tl.from("#scene7 .feature", {
   x: 30,
@@ -388,18 +424,18 @@ tl.from("#scene7 .feature", {
   duration: 0.4,
   stagger: 0.1,
   ease: "power2.out"
-}, 27.2);
+}, 29.2);
 
 // Transition to Scene 8: Light leak
 tl.to("#scene7", {
   opacity: 0,
   duration: 0.3,
   ease: "power2.in"
-}, 29.0);
+}, 31.0);
 tl.fromTo("#scene8", 
   { opacity: 0 },
   { opacity: 1, duration: 0.6, ease: "power2.out" },
-  29.1
+  31.1
 );
 
 // ===== SCENE 8: No Code =====
@@ -408,7 +444,7 @@ tl.from("#scene8 .headline", {
   opacity: 0,
   duration: 0.8,
   ease: "expo.out"
-}, 29.6);
+}, 31.6);
 
 tl.from("#scene8 .big-text", {
   scale: 0.5,
@@ -416,20 +452,20 @@ tl.from("#scene8 .big-text", {
   rotation: -15,
   duration: 0.7,
   ease: "elastic.out(1, 0.4)"
-}, 30.2);
+}, 32.2);
 
 // Transition to Scene 9: Gravity drop
 tl.to("#scene8", {
   y: 1080,
   duration: 0.4,
   ease: "power3.in"
-}, 32.5);
+}, 34.5);
 tl.to("#scene9", {
   y: 0,
   opacity: 1,
   duration: 0.5,
   ease: "bounce.out"
-}, 32.7);
+}, 34.7);
 
 // ===== SCENE 9: CTA =====
 tl.from("#scene9 .headline", {
@@ -437,14 +473,14 @@ tl.from("#scene9 .headline", {
   opacity: 0,
   duration: 0.8,
   ease: "elastic.out(1, 0.5)"
-}, 33.2);
+}, 35.2);
 
 tl.from("#scene9 .cta", {
   y: 30,
   opacity: 0,
   duration: 0.5,
   ease: "power2.out"
-}, 33.8);
+}, 35.8);
 
 tl.from("#scene9 .url", {
   y: 40,
@@ -453,13 +489,13 @@ tl.from("#scene9 .url", {
   duration: 0.5,
   stagger: 0.15,
   ease: "back.out(1.7)"
-}, 34.2);
+}, 36.2);
 
 // Final fade to black
 tl.to("#scene9", {
   opacity: 0,
   duration: 1.0,
   ease: "power2.in"
-}, 35.0);
+}, 37.0);
 
 window.__timelines["webmcp-announce"] = tl;

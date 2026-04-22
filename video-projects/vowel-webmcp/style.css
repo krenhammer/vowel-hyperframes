@@ -412,27 +412,126 @@ body {
   font-style: italic;
 }
 
-/* Scene 5: Vowel intro - Teal */
+/* Scene 5: WebMCP — white zoom / act1 (hero + “Sounds great…”) / exit / act2 (staggered pitch, pauses via stagger) */
 #scene5 {
-  background: linear-gradient(135deg, #001219 0%, #005f73 100%);
+  background: linear-gradient(160deg, #0a0a0f 0%, #0d1b2a 55%, #001218 100%);
+  position: relative;
 }
-#scene5 .product {
-  font-size: 36px;
-  color: #94d2bd;
-  text-transform: uppercase;
-  letter-spacing: 8px;
+#scene5 .scene5-wrap {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
-#scene5 .headline {
-  font-size: 100px;
+#scene5 .scene5-stack {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  min-height: 520px;
+  margin: 0 auto;
+}
+#scene5 .scene5-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #fff;
+  pointer-events: none;
+  transform-origin: 50% 45%;
+  will-change: transform, opacity;
+}
+#scene5 .scene5-act1 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  will-change: transform, opacity;
+}
+#scene5 .scene5-hero {
+  position: relative;
+}
+#scene5 .scene5-webmcp {
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(120px, 16vw, 220px);
   font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
   color: #fff;
+  text-shadow:
+    0 0 60px rgba(0, 245, 212, 0.35),
+    0 4px 0 rgba(0, 0, 0, 0.2);
+  will-change: transform, opacity, filter;
 }
-#scene5 .headline .brand {
+#scene5 .scene5-pain {
+  max-width: 1200px;
+  margin: 0;
+  font-family: "DM Sans", "Outfit", sans-serif;
+  font-size: 44px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #f1f5f9;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
+  position: relative;
+  z-index: 2;
+}
+#scene5 .scene5-pain .word {
+  display: inline-block;
+  margin: 0 0.1em 0.1em 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+#scene5 .scene5-act2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 0 16px;
+  pointer-events: none;
+}
+#scene5 .scene5-beat {
+  margin: 0;
+  max-width: 1100px;
+  font-family: "Outfit", sans-serif;
+  font-size: 36px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.98);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+#scene5 .scene5-beat strong {
+  font-weight: 800;
   color: #00f5d4;
 }
-#scene5 .tagline {
-  font-size: 36px;
-  color: #94d2bd;
+#scene5 .scene5-accent {
+  font-weight: 800;
+  background: linear-gradient(90deg, #a78bfa, #7b2cbf);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+#scene5 .scene5-beat em {
+  color: #ffd93d;
+  font-style: normal;
+  font-weight: 800;
+}
+#scene5 .scene5-no {
+  color: #cbd5e1;
+  font-weight: 700;
 }
 
 /* Scene 6: Two for one - Split */
