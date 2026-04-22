@@ -306,30 +306,40 @@ tl.fromTo(
   },
   20.0
 );
+// Hero: kinetic letters — must use fromTo when CSS keeps opacity:0 (from() would tween 0→0)
 tl.fromTo(
-  "#scene5 .scene5-webmcp",
-  { scale: 1.38, opacity: 0, filter: "blur(16px)" },
+  "#scene5 .scene5-letter",
   {
-    scale: 1,
-    opacity: 1,
-    filter: "blur(0px)",
-    duration: 0.72,
-    ease: "power3.out"
+    y: 110,
+    opacity: 0,
+    rotationX: -68,
+    scale: 0.65
   },
-  20.0
+  {
+    y: 0,
+    opacity: 1,
+    rotationX: 0,
+    scale: 1,
+    duration: 0.52,
+    stagger: 0.065,
+    ease: "back.out(1.35)"
+  },
+  20.02
 );
 
-// “Sounds great, but how do I get started?” — start after the white layer has cleared (z-index was hiding it before).
-tl.from(
+// “Sounds great, but how do I get started?” — after flash clears
+tl.fromTo(
   "#scene5 .scene5-pain .word",
+  { y: 36, opacity: 0, scale: 0.92 },
   {
-    y: 24,
-    opacity: 0,
-    duration: 0.3,
-    stagger: 0.07,
-    ease: "power2.out"
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    duration: 0.32,
+    stagger: 0.065,
+    ease: "power3.out"
   },
-  20.8
+  20.72
 );
 
 // Drop act1 (WebMCP + “Sounds great…”) — opacity only (act1 is translateY(-50%) centered; avoid GSAP y fighting CSS)
@@ -339,18 +349,29 @@ tl.to(
   21.75
 );
 
-// Act2: each line is its own <p>; stagger 0.44s = pause between phrases (ellipses in script = timing, not on-screen type)
-tl.from(
-  "#scene5 .scene5-beat",
-  {
-    y: 26,
-    opacity: 0,
-    duration: 0.4,
-    stagger: 0.44,
-    ease: "power2.out"
-  },
-  22.12
-);
+// Act2: kinetic word spans; each line starts after the previous (same 0.44s cadence as before)
+var scene5LineBase = 22.12;
+var scene5LineGap = 0.44;
+var scene5Lines = [
+  '#scene5 .scene5-kline[data-k="1"] .scene5-w',
+  '#scene5 .scene5-kline[data-k="2"] .scene5-w',
+  '#scene5 .scene5-kline[data-k="3"] .scene5-w',
+  '#scene5 .scene5-kline[data-k="4"] .scene5-w'
+];
+for (var si = 0; si < scene5Lines.length; si++) {
+  tl.fromTo(
+    scene5Lines[si],
+    { y: 28, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.38,
+      stagger: 0.06,
+      ease: "power3.out"
+    },
+    scene5LineBase + si * scene5LineGap
+  );
+}
 
 // Transition to Scene 6: Diagonal split (after scene 5 copy finishes)
 tl.to("#scene5", {
