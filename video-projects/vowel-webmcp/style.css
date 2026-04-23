@@ -818,11 +818,11 @@ body {
   align-items: baseline;
   gap: 0.35em;
   margin: 0;
-  font-size: 48px;
+  font-size: 62px;
   font-weight: 600;
   color: #94a3b8;
   text-align: center;
-  margin-top: 22px;
+  margin-top: 26px;
 }
 #scene9 .scene9-learn-word,
 #scene9 .scene9-url-chunk,
@@ -837,12 +837,12 @@ body {
   justify-content: center;
   align-items: baseline;
   gap: 0.06em;
-  margin-top: 32px;
+  margin-top: 36px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 58px;
+  font-size: 76px;
   font-weight: 600;
   color: #93c5fd;
-  text-shadow: 0 0 28px rgba(147, 197, 253, 0.45);
+  text-shadow: 0 0 32px rgba(147, 197, 253, 0.5);
 }
 #scene9 .scene9-music-credit {
   display: flex;
