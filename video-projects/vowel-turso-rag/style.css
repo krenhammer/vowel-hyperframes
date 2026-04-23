@@ -449,26 +449,192 @@ body {
 #scene5 {
   background: var(--bg-deep);
 }
+/* Scene 5: copy in a fixed top band; screenshot only below — never z-stacked over the shot */
+#scene5 .s5-perspective {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#scene5 .s5-zoom-root {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Hard floor: screenshot starts well below copy; extra margin for 3D tilt spilling upward. */
+  top: var(--s5-shot-top, 515px);
+  bottom: 0;
+  width: 100%;
+  transform-style: preserve-3d;
+  /* Scale/zoom pivots around the screenshot, not the full frame */
+  transform-origin: 50% 45%;
+  will-change: transform;
+  z-index: 1;
+  pointer-events: none;
+}
+#scene5 .s5-text-col {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(1600px, 92vw);
+  padding: 0 48px;
+  text-align: center;
+  z-index: 2;
+  pointer-events: none;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.2em;
+}
+#scene5 .s5-callouts {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
 #scene5 .wow {
-  font-size: 80px;
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(52px, 4.8vw, 86px);
   font-weight: 700;
   color: var(--text);
+  line-height: 1.12;
+  margin: 0 0 0.35em;
+  text-wrap: balance;
 }
-#scene5 .q5 {
-  font-size: 36px;
+#scene5 .wow .wow-w1,
+#scene5 .wow .wow-w2 {
+  display: inline;
+}
+#scene5 .s5-q {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: clamp(28px, 2.6vw, 40px);
+  font-weight: 500;
+  color: var(--muted);
+  margin: 0.15em 0 0.5em;
+  line-height: 1.3;
+}
+#scene5 .s5-q .s5-qw {
+  display: inline-block;
+  margin-right: 0.22em;
+  will-change: transform, opacity;
+}
+#scene5 .s5-q .s5-qw:last-child {
+  margin-right: 0;
+}
+/* One type size for all scene-5 CTA / callout lines */
+#scene5 .s5-goto {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: clamp(32px, 2.85vw, 46px);
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.28;
+}
+#scene5 .s5-goto .s5-url {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 1em;
+  color: var(--accent-2);
+  font-weight: 600;
+}
+#scene5 .s5-instruct,
+#scene5 .s5-panel-cap,
+#scene5 .s5-doc-hint,
+#scene5 .s5-chat-hint {
+  display: none;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: clamp(32px, 2.85vw, 46px);
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.28;
+  text-wrap: balance;
+  width: 100%;
+  max-width: min(56rem, 92vw);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+#scene5 .s5-instruct,
+#scene5 .s5-panel-cap {
+  color: var(--text);
+}
+#scene5 .s5-doc-hint,
+#scene5 .s5-chat-hint {
   color: var(--muted);
 }
-#scene5 .url-pill {
+#scene5 .s5-instruct .s5-iw {
   display: inline-block;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 42px;
-  font-weight: 600;
-  padding: 20px 36px;
-  border-radius: 12px;
-  background: var(--bg-panel);
-  border: 2px solid rgba(76, 201, 240, 0.45);
+  margin-right: 0.18em;
+  opacity: 0;
+}
+#scene5 .s5-instruct .s5-iw:last-child {
+  margin-right: 0;
+}
+#scene5 .s5-panel-cap {
+  opacity: 0;
+}
+#scene5 .s5-doc-hint,
+#scene5 .s5-chat-hint {
+  opacity: 0;
+}
+#scene5 .s5-doc-hint strong,
+#scene5 .s5-chat-hint strong {
   color: var(--accent-2);
-  text-decoration: none;
+  font-weight: 600;
+}
+#scene5 .s5-img-stack {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+#scene5 .s5-img-stack .s5-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+#scene5 .s5-img-rag,
+#scene5 .s5-img-chat {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  opacity: 0;
+}
+#scene5 .s5-shot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 32px;
+  width: min(1000px, 52%);
+  max-width: 1000px;
+  margin-left: 0;
+  margin-right: 0;
+  z-index: 1;
+  opacity: 0;
+  border-radius: 12px;
+  overflow: visible;
+  filter: drop-shadow(0 22px 44px rgba(0, 0, 0, 0.5));
+  /* xPercent:-50 from GSAP centers this box on the canvas */
+}
+/* Perspective: pronounced twist without extreme skew */
+#scene5 .s5-shot .ui3d {
+  perspective: min(4400px, 250vw);
+  perspective-origin: 50% 42%;
+}
+#scene5 .s5-shot .ui3d-sway {
+  border-radius: 12px;
+  overflow: hidden;
+}
+/* Baseline tilt; GSAP pushes a stronger left / right twist */
+#scene5 .s5-card-tilt {
+  transform: rotateX(3.5deg) rotateY(-14deg) translateZ(0) rotateZ(0.1deg);
+  animation: none !important;
+  transform-style: preserve-3d;
 }
 
 #scene6 {

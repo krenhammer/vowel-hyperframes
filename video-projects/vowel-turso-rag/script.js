@@ -228,24 +228,192 @@ d4in("#d4-sec2 .d4l8", tS2L8);
 var t4End = tS2L8 + d4In + d4AfterS2Last;
 xf(t4End + L, "#scene4", "#scene5");
 
-// ----- Scene 5 → wipe 6 -----
+// ----- Scene 5 → wipe 6 (Wow → docs URL hero center → pause → text up → 3D shot → pause → tilt left →
+// instruct + RAG panel swap + caption + tab hint → Chat swap + tilt right) -----
 var t5 = t4End + L + xfd + 0.05;
-tl.from(
-  "#scene5 .wow",
-  { x: -50, opacity: 0, duration: 0.4, ease: "expo.out" },
+tl.set("#s5-zoom-root", { scale: 1, z: 0, transformOrigin: "50% 45%" }, t5);
+tl.set(
+  "#s5-text-col",
+  { left: "50%", top: "50%", xPercent: -50, yPercent: -50, maxHeight: "none", overflow: "visible" },
   t5
 );
-tl.from(
-  "#scene5 .q5",
-  { y: 24, opacity: 0, duration: 0.4, ease: "power2.out" },
-  t5 + 0.1
+tl.set("#scene5 .s5-callouts", { display: "none" }, t5);
+tl.set("#scene5 .wow-w1", { opacity: 0, y: 14 }, t5);
+tl.set("#scene5 .wow-w2", { opacity: 0, y: 14 }, t5);
+tl.set("#scene5 .s5-qw", { opacity: 0, y: 11 }, t5);
+tl.set("#scene5 .s5-goto", { opacity: 0, y: 14, scale: 1 }, t5);
+tl.set("#scene5 .s5-instruct .s5-iw", { opacity: 0 }, t5);
+/* Callouts default display:none in CSS; keep out of flow so faded lines cannot push the next line down. */
+tl.set(
+  "#scene5 .s5-instruct, #scene5 .s5-panel-cap, #scene5 .s5-doc-hint, #scene5 .s5-chat-hint",
+  { display: "none", opacity: 0, y: 0 },
+  t5
 );
-tl.from(
-  "#scene5 .url-pill",
-  { y: 40, scale: 0.85, opacity: 0, duration: 0.5, ease: "back.out(1.35)" },
-  t5 + 0.2
+tl.set("#scene5 .s5-img-docs", { opacity: 1 }, t5);
+tl.set("#scene5 .s5-img-rag, #scene5 .s5-img-chat", { opacity: 0 }, t5);
+tl.set("#s5-shot", { opacity: 0, xPercent: -50, x: 780 }, t5);
+tl.set("#s5-card-root", { transformOrigin: "50% 50%" }, t5);
+
+/* Draft “..” = pause: stagger + holds, not punctuation on the type */
+tl.fromTo(
+  "#scene5 .wow-w1",
+  { opacity: 0, y: 14 },
+  { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" },
+  t5
 );
-var t5End = t5 + 0.2 + 0.5;
+tl.fromTo(
+  "#scene5 .wow-w2",
+  { opacity: 0, y: 12 },
+  { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },
+  t5 + 0.52
+);
+var t5QIn = t5 + 0.96;
+tl.fromTo(
+  "#scene5 .s5-qw",
+  { opacity: 0, y: 11 },
+  {
+    opacity: 1,
+    y: 0,
+    duration: 0.3,
+    stagger: 0.068,
+    ease: "power2.out",
+  },
+  t5QIn
+);
+tl.to(
+  "#scene5 .wow-w1, #scene5 .wow-w2, #scene5 .s5-qw",
+  { opacity: 0, y: -11, duration: 0.32, ease: "power2.in" },
+  t5 + 1.58
+);
+/* URL line: large in center → hold → shrink + move column to top (room for screenshot) */
+var t5GotoIn = t5 + 1.86;
+tl.fromTo(
+  "#scene5 .s5-goto",
+  { opacity: 0, y: 28, scale: 1 },
+  { opacity: 1, y: 0, scale: 1.58, duration: 0.55, ease: "power2.out" },
+  t5GotoIn
+);
+var t5GotoHeroHold = t5GotoIn + 0.55 + 0.62;
+var t5TextToTop = t5GotoHeroHold;
+tl.to(
+  "#scene5 .s5-goto",
+  { scale: 1, duration: 0.52, ease: "power2.inOut" },
+  t5TextToTop
+);
+tl.to(
+  "#s5-text-col",
+  {
+    top: 44,
+    yPercent: 0,
+    maxHeight: 348,
+    overflow: "hidden",
+    duration: 0.58,
+    ease: "power2.inOut",
+  },
+  t5TextToTop
+);
+/* Light recede on the shot only (copy is outside zoom-root) */
+var t5ZoomStart = t5TextToTop - 0.08;
+tl.to(
+  "#s5-zoom-root",
+  { scale: 0.9, z: -48, duration: 2.35, ease: "power1.inOut" },
+  t5ZoomStart
+);
+var t5ShotIn = t5TextToTop + 0.06;
+tl.set(
+  "#s5-card-root",
+  { rotationX: 3.5, rotationY: -14, rotationZ: 0.1, transformOrigin: "50% 50%" },
+  t5ShotIn
+);
+tl.to(
+  "#s5-shot",
+  { opacity: 1, x: 0, duration: 0.68, ease: "power3.out" },
+  t5ShotIn
+);
+var t5ShotSettled = t5ShotIn + 0.68;
+var t5PauseDocs = 0.88;
+var t5RotLeft = t5ShotSettled + t5PauseDocs;
+tl.to(
+  "#s5-card-root",
+  { rotationY: -28, rotationX: 7.5, rotationZ: 0.14, duration: 0.88, ease: "power2.inOut" },
+  t5RotLeft
+);
+var t5ClearGoto = t5RotLeft + 0.82;
+tl.to(
+  "#scene5 .s5-goto",
+  { opacity: 0, y: -14, duration: 0.28, ease: "power2.in" },
+  t5ClearGoto
+);
+var t5TypeIn = t5ClearGoto + 0.12;
+var s5Read = 0.5;
+var s5Between = 0.4;
+var s5Fade = 0.28;
+tl.set("#scene5 .s5-callouts", { display: "flex" }, t5TypeIn);
+tl.set("#scene5 .s5-instruct", { display: "block" }, t5TypeIn);
+tl.to("#scene5 .s5-instruct", { opacity: 1, duration: 0.15 }, t5TypeIn);
+tl.to(
+  "#scene5 .s5-instruct .s5-iw",
+  { opacity: 1, duration: 0.09, stagger: 0.065, ease: "power1.out" },
+  t5TypeIn + 0.08
+);
+/* Instruct complete → read → clear → gap → RAG swap */
+var t5InstructDone = t5TypeIn + 0.08 + 7 * 0.065 + 0.09;
+var t5ClearInstruct = t5InstructDone + s5Read;
+tl.to(
+  "#scene5 .s5-instruct",
+  { opacity: 0, y: -10, duration: s5Fade, ease: "power2.in" },
+  t5ClearInstruct
+);
+tl.set("#scene5 .s5-instruct .s5-iw", { opacity: 0 }, t5ClearInstruct + s5Fade);
+tl.set("#scene5 .s5-instruct", { display: "none" }, t5ClearInstruct + s5Fade);
+var t5SwapRag = t5ClearInstruct + s5Fade + s5Between;
+tl.to("#scene5 .s5-img-docs", { opacity: 0, duration: 0.38, ease: "power1.inOut" }, t5SwapRag);
+tl.to("#scene5 .s5-img-rag", { opacity: 1, duration: 0.42, ease: "power1.inOut" }, t5SwapRag);
+var t5CapIn = t5SwapRag + 0.48 + s5Read;
+tl.set("#scene5 .s5-panel-cap", { display: "block" }, t5CapIn);
+tl.to(
+  "#scene5 .s5-panel-cap",
+  { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" },
+  t5CapIn
+);
+var t5ClearCap = t5CapIn + 0.55 + s5Read;
+tl.to(
+  "#scene5 .s5-panel-cap",
+  { opacity: 0, y: -10, duration: s5Fade, ease: "power2.in" },
+  t5ClearCap
+);
+tl.set("#scene5 .s5-panel-cap", { display: "none" }, t5ClearCap + s5Fade);
+/* Documents line stays on screen with rag-files.png until the chat image swap */
+var t5DocHint = t5ClearCap + s5Fade + s5Between;
+tl.set("#scene5 .s5-doc-hint", { display: "block" }, t5DocHint);
+tl.to(
+  "#scene5 .s5-doc-hint",
+  { opacity: 1, y: 0, duration: 0.48, ease: "power2.out" },
+  t5DocHint
+);
+var t5SwapChat = t5DocHint + 0.48 + s5Read + s5Between;
+tl.to(
+  "#scene5 .s5-doc-hint",
+  { opacity: 0, y: -10, duration: 0.24, ease: "power2.in" },
+  t5SwapChat
+);
+tl.set("#scene5 .s5-doc-hint", { display: "none" }, t5SwapChat + 0.24);
+tl.to("#scene5 .s5-img-rag", { opacity: 0, duration: 0.4, ease: "power1.inOut" }, t5SwapChat);
+tl.to("#scene5 .s5-img-chat", { opacity: 1, duration: 0.42, ease: "power1.inOut" }, t5SwapChat);
+var t5ChatHintIn = t5SwapChat + 0.36;
+tl.set("#scene5 .s5-chat-hint", { display: "block" }, t5ChatHintIn);
+tl.to(
+  "#scene5 .s5-chat-hint",
+  { opacity: 1, y: 0, duration: 0.48, ease: "power2.out" },
+  t5ChatHintIn
+);
+var t5RotRight = t5ChatHintIn + 0.42;
+tl.to(
+  "#s5-card-root",
+  { rotationY: -11, rotationX: 4.2, rotationZ: -0.08, duration: 0.92, ease: "power2.inOut" },
+  t5RotRight
+);
+var t5End = t5RotRight + 0.92 + 0.35;
 var afterWef = runWipe(t5End + L, "#scene5", "#scene6");
 
 // ----- Scene 6 -----

@@ -7,10 +7,61 @@
   style="position: absolute; inset: 0; width: 1920px; height: 1080px"
 >
   <div id="scene5" class="scene">
-    <div class="scene-content" style="justify-content: center; align-items: flex-start">
-      <h2 class="wow">Wow ... Sounds cool!</h2>
-      <p class="q5">How do I check it out?</p>
-      <a class="url-pill" href="https://docs.vowel.to" style="text-decoration: none">docs.vowel.to</a>
+    <div id="s5-perspective" class="s5-perspective" aria-hidden="false">
+      <!-- Copy lives outside zoom-root so it never stacks over the screenshot and is not scale-crushed. -->
+      <div id="s5-text-col" class="s5-text-col">
+        <h2 class="wow">
+          <span class="wow-w1">Wow</span><span class="wow-w2">, sounds cool!</span>
+        </h2>
+        <p class="s5-q">
+          <span class="s5-qw">How</span> <span class="s5-qw">do</span> <span class="s5-qw">I</span>
+          <span class="s5-qw">check</span> <span class="s5-qw">it</span> <span class="s5-qw">out?</span>
+        </p>
+        <p class="s5-goto">Go to <span class="s5-url">docs.vowel.to</span></p>
+        <div class="s5-callouts" aria-hidden="true">
+          <p class="s5-instruct">
+            <span class="s5-iw">Click</span> <span class="s5-iw">the</span> <span class="s5-iw">Turso</span>
+            <span class="s5-iw">button</span> <span class="s5-iw">in</span> <span class="s5-iw">the</span> <span class="s5-iw">lower</span>
+            <span class="s5-iw">left.</span>
+          </p>
+          <p class="s5-panel-cap">That will open the Turso RAG Debug Panel.</p>
+          <p class="s5-doc-hint">
+            <strong>Documents</strong> lists every pre-embedded markdown doc currently in the RAG.
+          </p>
+          <p class="s5-chat-hint">
+            <strong>Chat</strong> is a test surface that scores hits from your prompt.
+          </p>
+        </div>
+      </div>
+      <div id="s5-zoom-root" class="s5-zoom-root">
+        <div id="s5-shot" class="s5-shot">
+          <div class="ui3d" aria-hidden="true">
+            <div class="ui3d-glow sm"></div>
+            <div id="s5-card-root" class="ui3d-sway s5-card-tilt">
+              <div class="s5-img-stack">
+                <img
+                  src="../assets/voweldocs.png"
+                  alt=""
+                  class="s5-img s5-img-docs"
+                  crossorigin="anonymous"
+                />
+                <img
+                  src="../assets/rag-files.png"
+                  alt=""
+                  class="s5-img s5-img-rag"
+                  crossorigin="anonymous"
+                />
+                <img
+                  src="../assets/chat.png"
+                  alt=""
+                  class="s5-img s5-img-chat"
+                  crossorigin="anonymous"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <script>
