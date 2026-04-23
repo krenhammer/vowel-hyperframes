@@ -4,6 +4,7 @@
 - ellipsis belo are used to signify pauses 
 - References to "Zoom in " below should be reusable if possible with parameters, ususally of a parewnt image and zooming in on a subcomponent then focusing on the subcomponent in a different image
 - Ui 3D Reveal - https://hyperframes.heygen.com/catalog/blocks/ui-3d-reveal
+- This should be a 30fps Horizontal video 
 
 <NOTES:END>
 
@@ -21,7 +22,7 @@ So you could say  ... pre-embed your entire docs package
 
 Well ... thats exactly what we did with **voweldocs** 
 
-but wait ... we leveled up one step further  .. we now inject the results of our Turso browser RAG 
+but wait ... we leveled up one step further  .. we now inject the graded results of our Turso browser RAG 
 
 ... into the context of our conversational **voice ai client**
 

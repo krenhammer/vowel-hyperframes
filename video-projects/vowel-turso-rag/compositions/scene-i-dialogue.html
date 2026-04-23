@@ -1,0 +1,65 @@
+<div
+  data-composition-id="turso-rag-sc-i"
+  data-start="0"
+  data-duration="120"
+  data-width="1920"
+  data-height="1080"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px"
+>
+  <div id="scene9" class="scene">
+    <p class="s9-eyebrow" id="s9-eyebrow">What about Conversational Voice?</p>
+    <div class="s9-hero" id="s9-hero" aria-label="Dialogue demo">
+      <!-- One slot: welcome UI, then crossfade to self-host answer (never both full-size at once) -->
+      <div class="s9-layer" id="talk9">
+        <div class="ui3d" aria-hidden="true" style="width: 100%; height: 100%">
+          <div class="ui3d-glow sm"></div>
+          <div class="ui3d-sway" id="sway9-talk">
+            <img
+              src="../assets/voweldocs-talk.png"
+              alt=""
+              class="s9-ui-img"
+              crossorigin="anonymous"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="s9-layer s9-layer-answer" id="self9">
+        <div class="ui3d" aria-hidden="true" style="width: 100%; height: 100%">
+          <div class="ui3d-glow sm"></div>
+          <div class="ui3d-sway" id="sway9-self">
+            <img
+              src="../assets/self-host.png"
+              alt=""
+              class="s9-ui-img"
+              crossorigin="anonymous"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="faux9" id="faux9" aria-hidden="true" title="Tap to start"></div>
+    </div>
+    <div class="s9-bubble-row">
+      <div class="dline" id="d1">
+        <span class="who">Assistant</span>
+        <span class="txt">Welcome to Vowel docs. How can I help?</span>
+      </div>
+      <div class="dline d2" id="d2">
+        <span class="who you">You</span>
+        <span class="txt">How do I self host Vowel?</span>
+      </div>
+    </div>
+    <p class="s9-answer-cap" id="d3">
+      To self-host, clone the open source vowel stack. Set the required environment variables for your STT, TTS, and
+      LLM and run <code>stack:up</code> for the default CPU stack. To interface with your clients you will need an API
+      Key. Would you like more details?
+    </p>
+  </div>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 120);
+      window.__timelines["turso-rag-sc-i"] = tl;
+    })();
+  </script>
+</div>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+      .scene-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="turso-rag-master"
+      data-width="1920"
+      data-height="1080"
+      data-start="0"
+      data-duration="33.6"
+    >
+      <audio
+        id="el-a"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="2"
+        src="assets/bgm.mp3"
+        data-volume="0.55"
+      ></audio>
+
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-a"
+        data-composition-src="compositions/scene-a-title.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-b"
+        data-composition-src="compositions/scene-b-turso-wasm.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="1"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-c"
+        data-composition-src="compositions/scene-c-perf.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="3"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-d"
+        data-composition-src="compositions/scene-d-voweldocs.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="4"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-e"
+        data-composition-src="compositions/scene-e-cta-prime.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="5"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-f"
+        data-composition-src="compositions/scene-f-rag-debug.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="6"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-g"
+        data-composition-src="compositions/scene-g-rag-chat.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="7"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-h"
+        data-composition-src="compositions/scene-h-voice-setup.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="8"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-i"
+        data-composition-src="compositions/scene-i-dialogue.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="9"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        class="scene-layer"
+        data-composition-id="turso-rag-sc-j"
+        data-composition-src="compositions/scene-j-outro.html"
+        data-start="0"
+        data-duration="33.6"
+        data-track-index="10"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+
+      <div
+        id="cover-wipe-a"
+        aria-hidden="true"
+        style="position: absolute; inset: 0; background: #3ecf8e; z-index: 100; transform: translateX(-1920px); pointer-events: none"
+      ></div>
+      <div
+        id="cover-wipe-b"
+        aria-hidden="true"
+        style="position: absolute; inset: 0; background: #1b4d6e; z-index: 99; transform: translateX(-1920px); pointer-events: none"
+      ></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      /* Lint: must reference turso-rag-master in this file; real tl is assigned in script.js (same as sibling projects with external script). */
+      window.__timelines = window.__timelines || {};
+      window.__timelines["turso-rag-master"] =
+        window.__timelines["turso-rag-master"] || gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>
