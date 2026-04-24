@@ -28,6 +28,8 @@ body {
   --scene-pink: #3a1434;
   --scene-purple: #1a0f24;
   --browser-bg-pattern: #0a101c;
+  /* Browser marquee logos (mask fill) — darker than #93c5fd so white captions read on top */
+  --browser-logo-color: #3d5d8c;
 }
 
 #root {
@@ -60,10 +62,10 @@ body {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 220vmin;
-  height: 220vmin;
-  margin-left: -110vmin;
-  margin-top: -110vmin;
+  width: 280vmin;
+  height: 280vmin;
+  margin-left: -140vmin;
+  margin-top: -140vmin;
   transform: rotate(-45deg);
   transform-origin: 50% 50%;
 }
@@ -149,6 +151,16 @@ body {
   }
 }
 
+/* Same loop as Turso, with subpixel nudge so chunk seams don’t leave a 1px background streak */
+@keyframes browser-mrow-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(calc(-50% + 0.5px), 0, 0);
+  }
+}
+
 /* Diagonal browser-engine marquee — “And if we mention … all in the browser.” (same motion as Turso block) */
 .browser-bg-pattern {
   position: absolute;
@@ -163,10 +175,10 @@ body {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 220vmin;
-  height: 220vmin;
-  margin-left: -110vmin;
-  margin-top: -110vmin;
+  width: 280vmin;
+  height: 280vmin;
+  margin-left: -140vmin;
+  margin-top: -140vmin;
   transform: rotate(-45deg);
   transform-origin: 50% 50%;
 }
@@ -177,8 +189,8 @@ body {
   width: 100%;
   font-size: clamp(68px, 6.8vw, 112px);
   line-height: 1;
-  filter: saturate(0.92);
-  opacity: 0.38;
+  /* Darker --browser-logo-color + slightly higher row opacity = readable text */
+  opacity: 0.52;
 }
 .browser-bg-pattern__row {
   position: relative;
@@ -192,7 +204,8 @@ body {
   display: flex;
   width: max-content;
   will-change: transform;
-  animation: turso-mrow-scroll var(--browser-mrow-sec) linear infinite;
+  animation: browser-mrow-scroll var(--browser-mrow-sec) linear infinite;
+  backface-visibility: hidden;
 }
 .browser-bg-pattern__row--alt .browser-bg-pattern__track {
   animation-direction: reverse;
@@ -217,93 +230,37 @@ body {
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 0.38em;
-  padding-right: 0.5em;
+  /* Tight gaps + second-chunk overlap avoid a visible “empty strip” (seam/periodicity) at the clip edge */
+  gap: 0.2em;
+  padding-right: 0.4em;
   flex-shrink: 0;
+}
+.browser-bg-pattern__chunk + .browser-bg-pattern__chunk {
+  margin-left: -1px;
 }
 .browser-bg-cell {
   display: inline-flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.14em;
   flex-shrink: 0;
   font-size: 1em;
   line-height: 1;
 }
-.browser-bg-cell__img {
-  width: 1.05em;
-  height: 1.05em;
+/* SVG logos via mask — 2× the prior 2.1em (≈ base cell size) for hero legibility */
+.browser-bg-cell__logo {
+  width: 4.2em;
+  height: 4.2em;
   flex-shrink: 0;
-  object-fit: contain;
-  display: block;
-}
-.browser-bg-cell__word {
-  font-family: "Outfit", sans-serif;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  color: rgba(190, 210, 245, 0.14);
-}
-
-/*
- * UI screenshots sit in the BACKGROUND (below Turso pattern + karaoke). GSAP animates .ui-bg-shot-wrap
- * (opacity / motion); perspective skew lives on .ui-bg-shot-pivot so it is not wiped by GSAP x/y/scale.
- */
-.ui-shot-backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0 8px clamp(72px, 9vh, 132px);
-  box-sizing: border-box;
-}
-.ui-shot-slab {
-  position: relative;
-  width: calc(100% - 16px);
-  max-width: 1064px;
-  min-height: min(52vh, 1000px);
-  perspective: min(2000px, 220vw);
-  perspective-origin: 58% 40%;
-  transform-style: preserve-3d;
-}
-.ui-bg-shot-wrap {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  max-width: 1064px;
-  margin: 0 auto;
-  opacity: 0;
-  will-change: transform, opacity;
-  transform: translateZ(0);
-  filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.5));
-}
-.ui-bg-shot-pivot {
-  transform-style: preserve-3d;
-  transform-origin: 70% 48%;
-  border-radius: 14px;
-  overflow: hidden;
-  backface-visibility: hidden;
-}
-/* RAG / docs / settings: left side of the capture reads nearer. */
-.ui-bg-shot-pivot--rag {
-  transform: rotateX(3.8deg) rotateY(-16deg) rotateZ(0.06deg);
-}
-/* Vowel / talk UI: same left-weighted board (mic / chrome on the left). */
-.ui-bg-shot-pivot--mic {
-  transform: rotateX(4deg) rotateY(-18deg) rotateZ(0.05deg);
-}
-.ui-bg-shot-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  vertical-align: bottom;
-  object-fit: contain;
-  max-height: min(52vh, 1000px);
+  background-color: var(--browser-logo-color);
+  -webkit-mask-image: var(--browser-logo-src);
+  mask-image: var(--browser-logo-src);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
 }
 
 #karaoke-wrap {
@@ -311,19 +268,15 @@ body {
   inset: 0;
   z-index: 7;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: center;
-  /* Generous bottom inset so multi-line kinetic type never crosses the frame edge */
-  padding: 100px 36px min(240px, 14%);
+  /* Symmetric insets: bottom-heavy padding was optically shoving all beats downward */
+  padding: min(14%, 220px) 36px;
   pointer-events: none;
   box-sizing: border-box;
   overflow: visible;
-}
-/* When a UI grab is on screen, lock captions to the lower half */
-.root--with-float #karaoke-wrap {
-  align-items: flex-end;
-  padding-top: 48%;
-  padding-bottom: min(220px, 13%);
+  min-height: 0;
 }
 /* In-app voice/Q&A: pin caption block to the top, maximum vertical room for one-screen transcript */
 #karaoke-wrap.karaoke-wrap--ai {
@@ -332,15 +285,15 @@ body {
   padding-top: 32px;
   padding-bottom: 40px;
 }
-.root--with-float #karaoke-wrap.karaoke-wrap--ai {
-  /* Float shots still use lower-third captions */
-  align-items: flex-end;
-  padding-top: 48%;
-}
 
 #karaoke-root {
   width: 100%;
   max-width: 1020px;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   text-align: left;
   font-family: "Outfit", sans-serif;
   font-weight: 700;
@@ -351,15 +304,41 @@ body {
   transform-style: preserve-3d;
 }
 
+/* Narration: fill the padded #karaoke-wrap content box (definite height). Flex-only 1/1/0 on the
+   child was still resolving to a short #karaoke-stage in Studio, so .beat-block sat in a band at the top. */
+#karaoke-wrap:not(.karaoke-wrap--ai) #karaoke-root {
+  position: absolute;
+  inset: 0;
+  flex: none;
+  max-width: 1020px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#karaoke-wrap.karaoke-wrap--ai #karaoke-root {
+  /* AI: stay in flow at the top; do not use absolute fill */
+  position: relative;
+  flex: 0 1 auto;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
 /* One transcript “beat” at a time */
 #karaoke-stage {
   position: relative;
   width: 100%;
-  min-height: 400px;
+  flex: 1 1 0;
+  min-height: 0;
   overflow: visible;
+  /* Non-AI: #karaoke-root has a real height, so 100% is unambiguous and beats truly span the 9:16 field */
+  height: 100%;
 }
 #karaoke-wrap.karaoke-wrap--ai #karaoke-stage {
   min-height: 1500px;
+  flex: 0 0 auto;
+  height: auto;
 }
 
 .beat-block {
@@ -368,7 +347,8 @@ body {
   right: 0;
   top: 0;
   bottom: 0;
-  min-height: min-content;
+  /* Not min-content: with top/bottom set, a large min can fight the used height and shift layout */
+  min-height: 0;
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -387,11 +367,12 @@ body {
   align-items: flex-start;
   padding-top: 5%;
 }
-/* Offset from top so the first line does not jump as words appear; keep the block in the upper/mid frame (not the lower half). */
+/* True vertical centering in a full-height #karaoke-stage; .beat-inner stays left (align-left) */
 .beat-block.valign-mid {
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
-  padding-top: clamp(280px, 22%, 480px);
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .beat-block.valign-bottom {
   align-items: flex-end;

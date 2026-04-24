@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <!-- Firefox / Chrome / Edge / WebKit marquee: “And if we mention … all in the browser.” (script toggles opacity) -->
+      <!-- Firefox / Chrome / Edge / WebKit marquee: “And did we mention … all in the browser.” (script toggles opacity) -->
       <div
         id="browser-bg-pattern"
         class="clip browser-bg-pattern"
@@ -47,56 +47,6 @@
       >
         <div class="browser-bg-pattern__rotor">
           <div class="browser-bg-pattern__rows" id="browser-bg-pattern-rows"></div>
-        </div>
-      </div>
-
-      <!-- UI grabs: behind Turso bg pattern + captions (z-index); one visible at a time via script. -->
-      <div id="ui-shot-backdrop" class="ui-shot-backdrop" aria-hidden="true">
-        <div class="ui-shot-slab">
-          <div
-            id="shot-chat"
-            class="clip ui-bg-shot-wrap"
-            data-start="0"
-            data-duration="141.786"
-            data-track-index="10"
-          >
-            <div class="ui-bg-shot-pivot ui-bg-shot-pivot--rag">
-              <img class="ui-bg-shot-img" alt="" src="assets/chat.png" />
-            </div>
-          </div>
-          <div
-            id="shot-config"
-            class="clip ui-bg-shot-wrap"
-            data-start="0"
-            data-duration="141.786"
-            data-track-index="11"
-          >
-            <div class="ui-bg-shot-pivot ui-bg-shot-pivot--rag">
-              <img class="ui-bg-shot-img" alt="" src="assets/config.png" />
-            </div>
-          </div>
-          <div
-            id="shot-apikey"
-            class="clip ui-bg-shot-wrap"
-            data-start="0"
-            data-duration="141.786"
-            data-track-index="12"
-          >
-            <div class="ui-bg-shot-pivot ui-bg-shot-pivot--rag">
-              <img class="ui-bg-shot-img" alt="" src="assets/api-key.png" />
-            </div>
-          </div>
-          <div
-            id="shot-talk"
-            class="clip ui-bg-shot-wrap"
-            data-start="0"
-            data-duration="141.786"
-            data-track-index="13"
-          >
-            <div class="ui-bg-shot-pivot ui-bg-shot-pivot--mic">
-              <img class="ui-bg-shot-img" alt="" src="assets/voweldocs-talk.png" />
-            </div>
-          </div>
         </div>
       </div>
 
@@ -144,8 +94,7 @@
 
       <template id="browser-bg-cell-tpl">
         <div class="browser-bg-cell">
-          <img class="browser-bg-cell__img" alt="" width="24" height="24" decoding="async" />
-          <span class="browser-bg-cell__word"></span>
+          <div class="browser-bg-cell__logo" aria-hidden="true"></div>
         </div>
       </template>
     </div>

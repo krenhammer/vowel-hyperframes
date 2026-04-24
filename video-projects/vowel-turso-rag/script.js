@@ -37,19 +37,19 @@
 
   /** Diagonal rows of Firefox / Chrome / Edge / WebKit marks — same structure as the Turso marquee. */
   var BROWSER_BRANDS = [
-    { src: "assets/logo-firefox.svg", label: "Firefox" },
-    { src: "assets/logo-chrome.svg", label: "Chrome" },
-    { src: "assets/logo-edge.svg", label: "Edge" },
-    { src: "assets/logo-webkit.svg", label: "WebKit" },
+    { src: "assets/logo-firefox.svg" },
+    { src: "assets/logo-chrome.svg" },
+    { src: "assets/logo-edge.svg" },
+    { src: "assets/logo-webkit.svg" },
   ];
   function buildBrowserBgPattern() {
     var host = document.getElementById("browser-bg-pattern-rows");
     var tpl = document.getElementById("browser-bg-cell-tpl");
     if (!host || !tpl || host.childElementCount) return;
     var rowCount = 24;
-    var cellsPerChunk = 7;
     var brandI = 0;
     for (var r = 0; r < rowCount; r++) {
+      var cellsPerChunk = 6 + (r % 3);
       var row = document.createElement("div");
       row.className = "browser-bg-pattern__row" + (r % 2 ? " browser-bg-pattern__row--alt" : "");
       var track = document.createElement("div");
@@ -63,12 +63,12 @@
         for (var c = 0; c < cellsPerChunk; c++) {
           var imp = document.importNode(tpl.content, true);
           var cell = imp.querySelector(".browser-bg-cell");
-          var img = imp.querySelector(".browser-bg-cell__img");
-          var word = imp.querySelector(".browser-bg-cell__word");
+          var logo = imp.querySelector(".browser-bg-cell__logo");
           var b = BROWSER_BRANDS[brandI % BROWSER_BRANDS.length];
           brandI += 1;
-          if (img) img.src = b.src;
-          if (word) word.textContent = b.label;
+          if (logo) {
+            logo.style.setProperty("--browser-logo-src", 'url("' + b.src + '")');
+          }
           if (cell) chunk.appendChild(cell);
         }
         track.appendChild(chunk);
@@ -108,21 +108,6 @@
   /** Pause (sec) after that entrance finishes, before fading the AI beat / revealing the next line. */
   var AI_POST_KINETIC_PAUSE_SEC = 1;
   var wrnd = mulberry32(0x7f4a3c2d ^ (WORDS.length * 0x9e3779b9));
-  var floatActive = 0;
-  function floatEnter() {
-    floatActive += 1;
-    if (floatActive === 1) {
-      var r = document.getElementById("root");
-      if (r) r.classList.add("root--with-float");
-    }
-  }
-  function floatExit() {
-    floatActive = Math.max(0, floatActive - 1);
-    if (floatActive === 0) {
-      var r = document.getElementById("root");
-      if (r) r.classList.remove("root--with-float");
-    }
-  }
 
   function stripPunct(s) {
     return String(s).replace(/[.,?!:;'"'"]/g, "").trim();
@@ -131,15 +116,6 @@
   function isEmWord(w) {
     var t = stripPunct(w.text);
     return /^(RAG|SQLite|WebAssembly|vector|Turso|Turso|vowel|Vowel|docs|WASM|API|LLM)$/i.test(t);
-  }
-
-  function firstWordStart(pred) {
-    for (var j = 0; j < WORDS.length; j++) {
-      if (pred(WORDS[j])) {
-        return WORDS[j].start;
-      }
-    }
-    return null;
   }
 
   function firstWordIndex(pred) {
@@ -384,120 +360,15 @@
     tl.to("#cover-wipe-b", { x: 1080, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.3);
   }
 
-  function popShot(sel, t, hideAt) {
-    var seed =
-      sel.split("").reduce(function (a, c) {
-        return ((a << 5) - a + c.charCodeAt(0)) | 0;
-      }, 9) >>> 0;
-    var srnd = mulberry32(seed ^ 0xc0ffee);
-    var ax = (srnd() - 0.5) * 50;
-    var ay = 20 + srnd() * 35;
-    var sc = 0.9 + srnd() * 0.1;
-
-    tl.call(floatEnter, [], t);
-    tl.fromTo(
-      sel,
-      { opacity: 0, x: ax, y: ay, scale: sc },
-      {
-        opacity: 1,
-        x: 0,
-        y: 0,
-        scale: 1,
-        duration: 0.56,
-        ease: "back.out(1.32)",
-      },
-      t
-    );
-    tl.to(sel, { opacity: 0, y: -24, scale: 0.95, duration: 0.5, ease: "power2.in" }, hideAt);
-    tl.call(floatExit, [], hideAt);
-  }
-
   gsap.set("#turso-bg-pattern", { opacity: 0 });
   gsap.set("#browser-bg-pattern", { opacity: 0 });
   gsap.set("#outro-layer", { opacity: 0 });
-  gsap.set("#shot-chat, #shot-config, #shot-apikey, #shot-talk", { opacity: 0, scale: 0.9 });
   gsap.set("#ow-in, #ow-the, #ow-browser", { opacity: 0 });
   /* Headline visible from frame 0; subline “in / the / browser.” fades in word-by-word. */
   gsap.set("#title-rag", { opacity: 1, scale: 1 });
   gsap.set("#karaoke-wrap", { x: 0, transformOrigin: "50% 50%" });
 
   var beatModels = makeBeatModels(buildBeats());
-
-  /** Screenshot visible for the full caption beat so layout (root--with-float) does not shift mid-sentence. */
-  var IMAGE_LEAD_SEC = 0.55;
-  var IMAGE_LAG_SEC = 0.52;
-
-  function findBeatModelIndexForWordIndex(wordIdx) {
-    for (var bi = 0; bi < beatModels.length; bi++) {
-      var bm = beatModels[bi];
-      if (bm.type === "norm") {
-        var ch = bm.chunk;
-        if (wordIdx >= ch[0].index && wordIdx <= ch[ch.length - 1].index) {
-          return bi;
-        }
-      } else {
-        for (var pi = 0; pi < bm.pairs.length; pi++) {
-          var pr = bm.pairs[pi];
-          if (pr.user) {
-            var u = pr.user;
-            if (wordIdx >= u[0].index && wordIdx <= u[u.length - 1].index) {
-              return bi;
-            }
-          }
-          for (var ac = 0; ac < pr.ai.length; ac++) {
-            var c = pr.ai[ac];
-            if (wordIdx >= c[0].index && wordIdx <= c[c.length - 1].index) {
-              return bi;
-            }
-          }
-        }
-      }
-    }
-    return -1;
-  }
-
-  /**
-   * With one merged AI block, use the pair/sentence that contains the word for screenshot timing
-   * (not the full Welcome–credentials range).
-   */
-  function getPopShotTimeWindowForWord(bm, wordIdx) {
-    if (bm.type !== "ai" || !bm.pairs) {
-      return null;
-    }
-    for (var pi = 0; pi < bm.pairs.length; pi++) {
-      var pr = bm.pairs[pi];
-      if (pr.user) {
-        var u = pr.user;
-        if (wordIdx >= u[0].index && wordIdx <= u[u.length - 1].index) {
-          return { start: u[0].w.start, end: u[u.length - 1].w.end };
-        }
-      }
-      for (var ac = 0; ac < pr.ai.length; ac++) {
-        var c = pr.ai[ac];
-        if (wordIdx >= c[0].index && wordIdx <= c[c.length - 1].index) {
-          return { start: c[0].w.start, end: c[c.length - 1].w.end };
-        }
-      }
-    }
-    return null;
-  }
-
-  function popShotForWordIndex(sel, wordIdx) {
-    if (wordIdx < 0) {
-      return;
-    }
-    var bi = findBeatModelIndexForWordIndex(wordIdx);
-    if (bi < 0) {
-      return;
-    }
-    var bm = beatModels[bi];
-    var win = getPopShotTimeWindowForWord(bm, wordIdx);
-    var tFirst = win ? win.start : beatFirstItem(bm).w.start;
-    var tLast = win ? win.end : beatLastItem(bm).w.end;
-    var tShow = Math.max(0, tFirst - IMAGE_LEAD_SEC);
-    var tHide = Math.max(tLast + IMAGE_LAG_SEC, tShow + 1.15);
-    popShot(sel, tShow, tHide);
-  }
 
   var stage = document.getElementById("karaoke-stage");
 
@@ -789,7 +660,7 @@
 
   runWipe(WIPE_INTRO, "#0c1814");
 
-  /* “And if we mention, this is all in the browser.” — show browser-engine marquee. */
+  /* “And did we mention, this is all in the browser.” — show browser-engine marquee. */
   var iIfWeMentionAnd = firstWordIndex(function (x) {
     return x.text === "And" && x.start >= 10;
   });
@@ -828,49 +699,6 @@
   runWipe(63.95, "#0a101c");
   runWipe(90.92, "#0c1814");
   runWipe(tWipeOutOfAi, "#06080f");
-
-  var tChat = firstWordStart(function (x) {
-    return x.text === "test";
-  });
-  var tCfg = firstWordStart(function (x) {
-    return x.text === "open" && x.start >= 69;
-  });
-  var tKey = firstWordStart(function (x) {
-    return x.text === "API" && x.start >= 70;
-  });
-  var tAiBegin =
-    AI_WORD_FIRST >= 0 && WORDS[AI_WORD_FIRST] ? WORDS[AI_WORD_FIRST].start : null;
-  if (tAiBegin != null) {
-    tl.call(
-      function () {
-        floatActive = 0;
-        var r = document.getElementById("root");
-        if (r) {
-          r.classList.remove("root--with-float");
-        }
-      },
-      [],
-      tAiBegin
-    );
-    tl.set(
-      "#shot-chat, #shot-config, #shot-apikey, #shot-talk",
-      { autoAlpha: 0, opacity: 0, scale: 0.9, x: 0, y: 0 },
-      tAiBegin
-    );
-  }
-
-  var iChat = firstWordIndex(function (x) {
-    return x.text === "test";
-  });
-  var iCfg = firstWordIndex(function (x) {
-    return x.text === "open" && x.start >= 69;
-  });
-  var iKey = firstWordIndex(function (x) {
-    return x.text === "API" && x.start >= 70;
-  });
-  popShotForWordIndex("#shot-chat", iChat);
-  popShotForWordIndex("#shot-config", iCfg);
-  popShotForWordIndex("#shot-apikey", iKey);
 
   tl.fromTo("#outro-layer", { opacity: 0 }, { opacity: 1, duration: 0.55, ease: "power2.out" }, OUTRO_T0);
   tl.fromTo(
