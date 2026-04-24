@@ -2,57 +2,59 @@
   data-composition-id="turso-rag-sc-i"
   data-start="0"
   data-duration="120"
-  data-width="1920"
-  data-height="1080"
-  style="position: absolute; inset: 0; width: 1920px; height: 1080px"
+  data-width="1080"
+  data-height="1920"
+  style="position: absolute; inset: 0; width: 1080px; height: 1920px"
 >
-  <div id="scene9" class="scene">
-    <p class="s9-eyebrow" id="s9-eyebrow">What about Conversational Voice?</p>
-    <div class="s9-hero" id="s9-hero" aria-label="Dialogue demo">
-      <!-- One slot: welcome UI, then crossfade to self-host answer (never both full-size at once) -->
-      <div class="s9-layer" id="talk9">
-        <div class="ui3d" aria-hidden="true" style="width: 100%; height: 100%">
-          <div class="ui3d-glow sm"></div>
-          <div class="ui3d-sway" id="sway9-talk">
-            <img
-              src="../assets/voweldocs-talk.png"
-              alt=""
-              class="s9-ui-img"
-              crossorigin="anonymous"
-            />
+  <div id="scene7" class="scene prime-cta s7-cta">
+    <div class="s5-perspective">
+      <div class="s5-stage">
+        <div class="s5-text-col s7-top-copy">
+          <!-- Match scene 5: DM Sans, muted — not monospace / all-caps -->
+          <p class="s7-eyebrow" id="s7-eyebrow">What about Conversational Voice?</p>
+        </div>
+        <div id="s7-zoom-root" class="s5-zoom-root">
+          <!-- Same stack as scene E: one .s5-shot, 3D card + img only (no extra panel / glow) -->
+          <div class="s5-shot s7-shot-layers" id="s7-shot">
+            <div class="s7-layer" id="talk7">
+              <div class="ui3d" aria-hidden="true">
+                <div class="ui3d-sway s5-card-tilt" id="sway7-talk">
+                  <img
+                    src="../assets/voweldocs-talk.png"
+                    alt=""
+                    class="s7-ui-img"
+                    crossorigin="anonymous"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="s7-layer s7-layer-answer" id="self7">
+              <div class="ui3d" aria-hidden="true">
+                <div class="ui3d-sway s5-card-tilt" id="sway7-self">
+                  <img
+                    src="../assets/self-host.png"
+                    alt=""
+                    class="s7-ui-img"
+                    crossorigin="anonymous"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="faux7" id="faux7" aria-hidden="true" title="Tap to start"></div>
+          </div>
+        </div>
+        <div class="s7-bubble-row">
+          <div class="dline" id="d1">
+            <span class="who">Assistant</span>
+            <span class="txt">Welcome to Vowel docs. How can I help?</span>
+          </div>
+          <div class="dline d2" id="d2">
+            <span class="who you">You</span>
+            <span class="txt">How do I self host Vowel?</span>
           </div>
         </div>
       </div>
-      <div class="s9-layer s9-layer-answer" id="self9">
-        <div class="ui3d" aria-hidden="true" style="width: 100%; height: 100%">
-          <div class="ui3d-glow sm"></div>
-          <div class="ui3d-sway" id="sway9-self">
-            <img
-              src="../assets/self-host.png"
-              alt=""
-              class="s9-ui-img"
-              crossorigin="anonymous"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="faux9" id="faux9" aria-hidden="true" title="Tap to start"></div>
     </div>
-    <div class="s9-bubble-row">
-      <div class="dline" id="d1">
-        <span class="who">Assistant</span>
-        <span class="txt">Welcome to Vowel docs. How can I help?</span>
-      </div>
-      <div class="dline d2" id="d2">
-        <span class="who you">You</span>
-        <span class="txt">How do I self host Vowel?</span>
-      </div>
-    </div>
-    <p class="s9-answer-cap" id="d3">
-      To self-host, clone the open source vowel stack. Set the required environment variables for your STT, TTS, and
-      LLM and run <code>stack:up</code> for the default CPU stack. To interface with your clients you will need an API
-      Key. Would you like more details?
-    </p>
   </div>
   <script>
     (function () {

@@ -2,7 +2,7 @@
   "id": "vowel-turso-rag",
   "name": "Vowel — Turso RAG in the Browser",
   "createdAt": "2026-04-23T00:00:00.000Z",
-  "width": 1920,
-  "height": 1080,
+  "width": 1080,
+  "height": 1920,
   "fps": 30
 }

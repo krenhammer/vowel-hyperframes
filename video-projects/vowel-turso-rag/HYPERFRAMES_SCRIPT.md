@@ -1,6 +1,6 @@
 # Turso RAG in the Browser — HyperFrames production script
 
-Formal authoring document for a **30 fps, 1920×1080** horizontal video. This script maps narrative beats to HyperFrames structure (compositions, tracks, blocks, and assets). Beat rhythm and **layered scene architecture** follow `video-projects/vowel-webmcp/` (single root composition, `data-composition-src` scene layers, shared music bed, parent `script.js` timeline for cross-scene motion and wipes).
+Formal authoring document for a **30 fps, 1080×1920** vertical (9:16) video. This script maps narrative beats to HyperFrames structure (compositions, tracks, blocks, and assets). Beat rhythm and **layered scene architecture** follow `video-projects/vowel-webmcp/` (single root composition, `data-composition-src` scene layers, shared music bed, parent `script.js` timeline for cross-scene motion and wipes).
 
 **Source copy:** `SCRIPT_DRAFT.md` (informal). **Implementation reference:** `vowel-webmcp/index.html` + `vowel-webmcp/script.js`.
 
@@ -11,7 +11,7 @@ Formal authoring document for a **30 fps, 1920×1080** horizontal video. This sc
 | Item | Value |
 |------|--------|
 | Frame rate | 30 fps |
-| Canvas | 1920 × 1080 |
+| Canvas | 1080 × 1920 (9:16) |
 | Master `data-composition-id` | `turso-rag-master` (suggested) |
 | Root `data-duration` | Set from final `tl.duration()` / audio; draft content suggests **~90–120 s** (adjust after VO timing) |
 | Music | One `<audio>` on a dedicated `data-track-index` (e.g. `2`); duck or `data-volume="0"` during dialogue per draft |
@@ -123,41 +123,15 @@ Times below are **target ranges** for authoring; lock after narration/TTS and mu
 
 ---
 
-### Scene F — Turso RAG debug: open + Files tab  
-**File:** `compositions/scene-f-rag-debug.html`  
-**`data-composition-id`:** `turso-rag-sc-f`  
-**Track:** `6`  
-**~48.0 – ~68.0 s**
-
-| Time (approx) | Video / motion | VO |
-|---------------|----------------|-----|
-| 48.0 | Full `voweldocs.png`; **camera zoom** toward **lower area**; fade/swap to `assets/turso-debug-button.png` (draft: “lower left” on final art—verify in PNG) | Click the **Turso RAG debug** control in the corner. |
-| 54.0 | **`ui-3d-reveal`** on `assets/rag-files.png` | The panel opens. One tab shows all pre-embedded docs markdown. |
-| 60.0 | Optional tab highlight motion | (Hold / transition to next tab) |
-
-**Blocks:** `ui-3d-reveal` wired to `rag-files.png`.
-
-**Duplicate draft lines:** The draft repeats `rag-files.png` for multiple tabs; **authoring** should use one asset per tab if exports differ, or the same file with a **UI highlight** (outline/glow) moving between “Files” and “Chat” in the comp timeline.
+**Scenes F & G (removed):** RAG / Chat tab beats are now covered inside **Scene E** (stacked 3D captures + callouts) so F/G compositions are not in the project.
 
 ---
 
-### Scene G — Chat / scoring tab  
-**File:** `compositions/scene-g-rag-chat.html`  
-**`data-composition-id`:** `turso-rag-sc-g`  
-**Track:** `7`  
-**~68.0 – ~78.0 s**
-
-| Time (approx) | Video / motion | VO |
-|---------------|----------------|-----|
-| 68.0 | `ui-3d-reveal` or static zoom on chat UI; use `assets/chat.png` if different from `rag-files.png` | The other tab: a test chat that scores hits returned for your input. |
-
----
-
-### Scene H — Conversational voice: API key + mic  
+### Scene H — Conversational voice: API key + nav (same CTA layout as E)  
 **File:** `compositions/scene-h-voice-setup.html`  
 **`data-composition-id`:** `turso-rag-sc-h`  
-**Track:** `8`  
-**~78.0 – ~98.0 s**
+**Track:** `6` (master timeline scene id **`#scene6`**)  
+**~78.0 – ~98.0 s** (re-time after edit)
 
 | Time (approx) | Video / motion | VO |
 |---------------|----------------|-----|
@@ -171,8 +145,8 @@ Times below are **target ranges** for authoring; lock after narration/TTS and mu
 ### Scene I — Live dialogue (music mute + TTS)  
 **File:** `compositions/scene-i-dialogue.html`  
 **`data-composition-id`:** `turso-rag-sc-i`  
-**Track:** `9`  
-**~98.0 – ~112.0 s**
+**Track:** `7` (master timeline scene id **`#scene7`**)  
+**~98.0 – ~112.0 s** (re-time after edit)
 
 | Time (approx) | Video / motion | Audio |
 |---------------|----------------|--------|
@@ -190,7 +164,7 @@ Times below are **target ranges** for authoring; lock after narration/TTS and mu
 ### Scene J — Outro CTA  
 **File:** `compositions/scene-j-outro.html`  
 **`data-composition-id`:** `turso-rag-sc-j`  
-**Track:** `10`  
+**Track:** `8` (master timeline scene id **`#scene8`**)  
 **~112.0 – end**
 
 | Time (approx) | Video / motion | VO / supers |

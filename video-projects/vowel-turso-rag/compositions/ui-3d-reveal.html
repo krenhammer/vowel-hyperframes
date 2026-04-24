@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
+    <meta name="viewport" content="width=1080, height=1920" />
     <title>ui-3d-reveal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,15 +20,24 @@
       html,
       body {
         margin: 0;
-        width: 1920px;
-        height: 1080px;
+        width: 1080px;
+        height: 1920px;
         overflow: hidden;
         background-color: #0a0a0f;
       }
     </style>
   </head>
   <body>
-    <div data-composition-id="ui-3d-reveal" data-start="0" data-width="1920" data-height="1080" data-duration="13">
+    <div data-composition-id="ui-3d-reveal" data-start="0" data-width="1080" data-height="1920" data-duration="13">
+      <!-- Scales the block’s native 16×9 Figma stage to fit this project’s 9×16 comp (letterboxed). -->
+      <div
+        class="u3d-9x16-fit"
+        style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center"
+      >
+        <div
+          class="u3d-16x9-stage"
+          style="width: 1920px; height: 1080px; flex-shrink: 0; transform: scale(0.5625); transform-origin: center center"
+        >
       <!-- Background: Figma outer canvas dark -->
       <div class="bg-base"></div>
       <div class="bg-glow" id="bgGlow"></div>
@@ -1204,8 +1213,8 @@
 
         [data-composition-id="ui-3d-reveal"] {
           position: relative;
-          width: 1920px;
-          height: 1080px;
+          width: 1080px;
+          height: 1920px;
           overflow: hidden;
           font-family: "Inter", sans-serif;
           background: #111111;
@@ -2901,6 +2910,8 @@
           window.__timelines["ui-3d-reveal"] = tl;
         })();
       </script>
+        </div>
+      </div>
     </div>
   </body>
 </html>

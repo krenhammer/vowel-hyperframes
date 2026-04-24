@@ -11,14 +11,14 @@ function xf(tStart, outSel, inSel) {
 }
 
 function runWipe(wipeT, outSel, inSel) {
-  tl.set("#cover-wipe-a", { x: -1920 }, wipeT);
-  tl.set("#cover-wipe-b", { x: -1920 }, wipeT);
+  tl.set("#cover-wipe-a", { x: -1080 }, wipeT);
+  tl.set("#cover-wipe-b", { x: -1080 }, wipeT);
   tl.to("#cover-wipe-a", { x: 0, duration: 0.2, ease: "power3.inOut" }, wipeT);
   tl.to("#cover-wipe-b", { x: 0, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.05);
   tl.set(outSel, { opacity: 0 }, wipeT + 0.14);
   tl.set(inSel, { opacity: 1 }, wipeT + 0.14);
-  tl.to("#cover-wipe-a", { x: 1920, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.25);
-  tl.to("#cover-wipe-b", { x: 1920, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.3);
+  tl.to("#cover-wipe-a", { x: 1080, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.25);
+  tl.to("#cover-wipe-b", { x: 1080, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.3);
   return wipeT + 0.4;
 }
 
@@ -52,14 +52,16 @@ tl.to(
   2.4
 );
 
-var tS2 = 2.8;
+/* Cover wipe 1 → 2 (Turso — subtle green; timing continues after 0.4s wipe) */
+var tW12 = 2.8;
+runWipe(tW12, "#scene1", "#scene2");
+var tS2 = tW12 + 0.4;
 tl.set(
   "#s2PrologueCenter",
   { display: "flex", autoAlpha: 1, visibility: "visible" },
   tS2
 );
 tl.set("#s2Prologue", { y: 0, autoAlpha: 1 }, tS2);
-tl.to("#scene2", { opacity: 1, duration: 0.35, ease: "power2.out" }, tS2);
 tl.fromTo(
   "#s2TursoHero",
   { scale: 0.32, opacity: 0 },
@@ -125,7 +127,7 @@ tl.to(
   },
   tLabelCorner
 );
-tl.to("#scene2", { backgroundColor: "#0d1b2a", duration: 0.6, ease: "power2.inOut" }, tLabelCorner);
+tl.to("#scene2", { backgroundColor: "#0a1210", duration: 0.6, ease: "power2.inOut" }, tLabelCorner);
 var tS2Head = tLabelCorner + 0.7;
 /* Same beat as prologue k-w: three parts, opacity + y staggered (SCRIPT_DRAFT line 15 = three pause-separated phrases). */
 tl.set("#s2Headline", { autoAlpha: 1 }, tS2Head);
@@ -145,21 +147,10 @@ tl.to(
 );
 var t2ContentEnd = tS2Head + s2H2Stagger * 2 + s2H2PartDur + 0.5;
 var s2Handoff = t2ContentEnd + L;
-tl.to(
-  "#scene2",
-  { clipPath: "inset(0% 0)", duration: 0.5, ease: "power2.inOut" },
-  s2Handoff
-);
-tl.set("#scene1", { opacity: 0 }, s2Handoff + 0.2);
-tl.set("#scene2", { opacity: 0 }, s2Handoff + 0.2);
-tl.to(
-  "#scene3",
-  { opacity: 1, duration: 0.5, ease: "power2.out" },
-  s2Handoff + 0.2
-);
-
+/* Cover wipe 2 → 3 */
+var tAfterW23 = runWipe(s2Handoff, "#scene2", "#scene3");
 // ----- Scene 3 -----
-var t3 = s2Handoff + 0.35;
+var t3 = tAfterW23 + 0.1;
 tl.from("#scene3 .s3h", { y: 40, opacity: 0, duration: 0.5, ease: "expo.out" }, t3);
 tl.from(
   "#scene3 .stat.s1",
@@ -178,7 +169,10 @@ tl.from(
   punchT
 );
 var t3End = punchT + 0.6;
-xf(t3End + L, "#scene3", "#scene4");
+/* Cover wipe 3 → 4 */
+var tW34 = t3End + L;
+var tAfterW34 = runWipe(tW34, "#scene3", "#scene4");
+var t4 = tAfterW34 + 0.05;
 
 // ----- Scene 4: two sections, sec1 fully clears before sec2; line-by-line, with *extra* stillness:
 // (1) after sec1 line 1 — before the pre-embed headline (d4PreLine2).
@@ -186,7 +180,6 @@ xf(t3End + L, "#scene3", "#scene4");
 // (3) after sec1 line 4 — time to read before part one fades (d4AfterS1Last).
 // (4) after sec2 line 3 — extra stillness before the last line of part two (d4PreLast).
 // (5) after sec2 line 4 — time to read that line on screen before the scene handoff (d4AfterS2Last).
-var t4 = t3End + L + xfd + 0.05;
 var d4In = 0.36;
 var d4Gap = 0.1;
 var d4PreLine2 = 0.65;
@@ -214,6 +207,8 @@ d4in("#d4-sec1 .d4l3", tS1L3);
 var tS1L4 = tS1L3 + d4In + d4Gap;
 d4in("#d4-sec1 .d4l4", tS1L4);
 var tS1Out = tS1L4 + d4In + d4AfterS1Last;
+/* “So you could say” (full pink) → “we now inject” (deep purple) */
+tl.to("#scene4", { backgroundColor: "#22122e", duration: 0.55, ease: "power2.inOut" }, tS1Out);
 tl.to("#d4-sec1", { autoAlpha: 0, duration: 0.42, ease: "power2.in" }, tS1Out);
 var tS2Start = tS1Out + 0.42;
 tl.set("#d4-sec2", { autoAlpha: 1 }, tS2Start);
@@ -228,15 +223,11 @@ d4in("#d4-sec2 .d4l8", tS2L8);
 var t4End = tS2L8 + d4In + d4AfterS2Last;
 xf(t4End + L, "#scene4", "#scene5");
 
-// ----- Scene 5 → wipe 6 (Wow → docs URL hero center → pause → text up → 3D shot → pause → tilt left →
-// instruct + RAG panel swap + caption + tab hint → Chat swap + tilt right) -----
+// ----- Scene 5 → 6 crossfade (no cover wipe; covers only 1–2, 2–3, 3–4) -----
 var t5 = t4End + L + xfd + 0.05;
-tl.set("#s5-zoom-root", { scale: 1, z: 0, transformOrigin: "50% 45%" }, t5);
-tl.set(
-  "#s5-text-col",
-  { left: "50%", top: "50%", xPercent: -50, yPercent: -50, maxHeight: "none", overflow: "visible" },
-  t5
-);
+tl.set("#s5-zoom-root", { scale: 1, z: 0, transformOrigin: "50% 50%", display: "none" }, t5);
+tl.set("#s5-text-col", { maxHeight: "none", overflow: "visible", clearProps: "transform,top,left" }, t5);
+/* Do NOT clearProps #s5-stage — its centering is transform: translate(-50%,-50%) in CSS */
 tl.set("#scene5 .s5-callouts", { display: "none" }, t5);
 tl.set("#scene5 .wow-w1", { opacity: 0, y: 14 }, t5);
 tl.set("#scene5 .wow-w2", { opacity: 0, y: 14 }, t5);
@@ -251,7 +242,7 @@ tl.set(
 );
 tl.set("#scene5 .s5-img-docs", { opacity: 1 }, t5);
 tl.set("#scene5 .s5-img-rag, #scene5 .s5-img-chat", { opacity: 0 }, t5);
-tl.set("#s5-shot", { opacity: 0, xPercent: -50, x: 780 }, t5);
+tl.set("#s5-shot", { opacity: 0, x: 440 }, t5);
 tl.set("#s5-card-root", { transformOrigin: "50% 50%" }, t5);
 
 /* Draft “..” = pause: stagger + holds, not punctuation on the type */
@@ -300,18 +291,7 @@ tl.to(
   { scale: 1, duration: 0.52, ease: "power2.inOut" },
   t5TextToTop
 );
-tl.to(
-  "#s5-text-col",
-  {
-    top: 44,
-    yPercent: 0,
-    maxHeight: 348,
-    overflow: "hidden",
-    duration: 0.58,
-    ease: "power2.inOut",
-  },
-  t5TextToTop
-);
+/* Copy stays in the vertically centered stack (no pinning to top). */
 /* Light recede on the shot only (copy is outside zoom-root) */
 var t5ZoomStart = t5TextToTop - 0.08;
 tl.to(
@@ -320,6 +300,7 @@ tl.to(
   t5ZoomStart
 );
 var t5ShotIn = t5TextToTop + 0.06;
+tl.set("#s5-zoom-root", { display: "flex" }, t5ShotIn);
 tl.set(
   "#s5-card-root",
   { rotationX: 3.5, rotationY: -14, rotationZ: 0.1, transformOrigin: "50% 50%" },
@@ -414,146 +395,85 @@ tl.to(
   t5RotRight
 );
 var t5End = t5RotRight + 0.92 + 0.35;
-var afterWef = runWipe(t5End + L, "#scene5", "#scene6");
+var t5to6 = t5End + L;
+xf(t5to6, "#scene5", "#scene6");
+var afterWef = t5to6 + xfd + 0.05;
 
-// ----- Scene 6 -----
+// ----- Scene 6: voice + nav (same layout as scene 5) -----
 var t6 = afterWef;
-tl.from("#scene6 .kicker", { opacity: 0, y: 16, duration: 0.35, ease: "power2.out" }, t6);
-tl.from(
-  "#scene6 .s6h",
-  { opacity: 0, y: 16, duration: 0.4, ease: "expo.out" },
-  t6 + 0.06
-);
-tl.fromTo(
-  "#zoom6",
-  { scale: 1, x: 0, y: 0 },
-  { scale: 1.12, x: 40, y: 24, duration: 1.0, ease: "power2.inOut" },
-  t6 + 0.12
+tl.set("#s6-zoom-root", { scale: 1, z: 0, transformOrigin: "50% 50%", display: "none" }, t6);
+tl.set("#s6-card-root", { transformOrigin: "50% 50%" }, t6);
+tl.set("#s6-shot", { opacity: 0, x: 440 }, t6);
+tl.set(".h6-cap", { opacity: 0, y: 8 }, t6);
+tl.set("#s6-cfg-beat", { autoAlpha: 0 }, t6);
+tl.set(".s6-nav, .s6-mic", { opacity: 0 }, t6);
+tl.from(".h6-sec", { y: 20, opacity: 0, duration: 0.35, ease: "expo.out" }, t6);
+tl.from(".h6-line", { y: 28, opacity: 0, duration: 0.45, ease: "power3.out" }, t6 + 0.06);
+var t6Shot = t6 + 0.2;
+tl.set("#s6-zoom-root", { display: "flex" }, t6Shot);
+tl.set(
+  "#s6-card-root",
+  { rotationX: 3.5, rotationY: -14, rotationZ: 0.1, transformOrigin: "50% 50%" },
+  t6Shot
 );
 tl.to(
-  "#scene6 .debug-ol",
-  { opacity: 1, duration: 0.35, ease: "power2.out" },
-  t6 + 0.2
+  "#s6-shot",
+  { opacity: 1, x: 0, duration: 0.68, ease: "power3.out" },
+  t6Shot
 );
-tl.from(
-  "#scene6 .cap6",
-  { opacity: 0, y: 12, duration: 0.4, ease: "sine.out" },
-  t6 + 0.25
+tl.to(
+  "#s6-card-root",
+  { rotationY: -22, rotationX: 6, rotationZ: 0.12, duration: 0.9, ease: "power2.inOut" },
+  t6Shot + 0.5
 );
-var ragIn = t6 + 0.35;
-tl.fromTo(
-  "#scene6 .rag-3d",
-  { opacity: 0, y: 36 },
-  { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" },
-  ragIn
-);
-var t6End = ragIn + 0.65;
-/* Continuous 3D orbit on the corner panel (no GSAP transform — inner .ui3d-sway animates) */
-tl.set("#sway6-rag", { className: "ui3d-sway sway-on" }, ragIn + 0.7);
-tl.set("#sway6-zoom", { className: "ui3d-sway sway-on" }, t6 + 1.15);
+tl.to(".s6-nav, .s6-mic", { opacity: 1, duration: 0.4, ease: "back.out(1.1)" }, t6Shot + 0.18);
+tl.from(".h6-cap", { opacity: 0, y: 12, duration: 0.4, ease: "sine.out" }, t6Shot + 0.5);
+var t6Swap = t6Shot + 1.2;
+tl.to("#s6-hero-beat", { autoAlpha: 0, duration: 0.45, ease: "power2.in" }, t6Swap);
+tl.to("#s6-cfg-beat", { autoAlpha: 1, duration: 0.55, ease: "power2.out" }, t6Swap + 0.05);
+tl.set("#s6-card-root", { className: "ui3d-sway s5-card-tilt sway-on" }, t6Swap + 0.35);
+var t6End = t6Swap + 0.55 + 0.35;
 xf(t6End + L, "#scene6", "#scene7");
 
-// ----- Scene 7 → wipe 8 -----
+// ----- Scene 7 (duck BGM) — talk UI + lines, self-host + answer (same layout as scene 5) -----
 var t7 = t6End + L + xfd + 0.05;
-tl.from(
-  "#scene7 .s7h",
-  { y: 36, opacity: 0, duration: 0.45, ease: "expo.out" },
-  t7
-);
-tl.from(
-  "#scene7 .s7sub",
-  { y: 20, opacity: 0, duration: 0.4, ease: "power2.out" },
-  t7 + 0.08
-);
-tl.fromTo(
-  "#scene7 .g-3d",
-  { scale: 0.97, opacity: 0, y: 24 },
-  { scale: 1, opacity: 1, y: 0, duration: 0.75, ease: "power3.out" },
-  t7 + 0.12
-);
-tl.set("#sway7-chat", { className: "ui3d-sway sway-on" }, t7 + 0.88);
-var t7End = t7 + 0.12 + 0.75;
-var afterWgh = runWipe(t7End + L, "#scene7", "#scene8");
-
-// ----- Scene 8 -----
-var t8 = afterWgh;
-tl.from(
-  "#scene8 .sec8",
-  { y: 20, opacity: 0, duration: 0.35, ease: "expo.out" },
-  t8
-);
-tl.from(
-  "#scene8 .h8",
-  { y: 28, opacity: 0, duration: 0.45, ease: "power3.out" },
-  t8 + 0.06
-);
-tl.fromTo(
-  "#scene8 .hero8",
-  { scale: 0.98, opacity: 0, y: 20 },
-  { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
-  t8 + 0.1
-);
-tl.to(
-  "#scene8 .nav8",
-  { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.1)" },
-  t8 + 0.18
-);
-tl.from(
-  "#scene8 .cfg8-intro",
-  { opacity: 0, y: 12, duration: 0.35, ease: "sine.out" },
-  t8 + 0.4
-);
-tl.fromTo(
-  "#scene8 .cfg8-3d",
-  { opacity: 0, y: 20 },
-  { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" },
-  t8 + 0.5
-);
-tl.set("#sway8-hero", { className: "ui3d-sway sway-on" }, t8 + 0.62);
-tl.set("#sway8-cfg", { className: "ui3d-sway sway-on" }, t8 + 1.2);
-tl.fromTo(
-  "#scene8 .mic8",
-  { opacity: 0, scale: 0.5, transformOrigin: "50% 50%" },
-  { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.4)" },
-  t8 + 0.65
-);
-var t8End = t8 + 0.65 + 0.4;
-xf(t8End + L, "#scene8", "#scene9");
-
-// ----- Scene 9 (duck BGM) — talk UI + lines, 1s linger, then self-host + answer (no duplicate chrome) -----
-var t9 = t8End + L + xfd + 0.05;
+tl.set("#s7-zoom-root", { display: "none" }, t7);
+tl.set("#s7-shot", { opacity: 0, x: 440 }, t7);
+tl.set("#self7", { opacity: 0 }, t7);
 tl.fromTo(
   "#el-a",
   { volume: 0.55 },
   { volume: 0.1, duration: 0.3, ease: "none" },
-  t9
+  t7
 );
 tl.fromTo(
-  "#s9-eyebrow",
-  { opacity: 0, y: -6 },
-  { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" },
-  t9
+  "#s7-eyebrow",
+  { opacity: 0, y: 10 },
+  { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
+  t7
 );
+tl.set("#s7-zoom-root", { display: "flex" }, t7 + 0.1);
+tl.to("#s7-shot", { opacity: 1, x: 0, duration: 0.65, ease: "power3.out" }, t7 + 0.1);
 tl.fromTo(
-  "#faux9",
+  "#faux7",
   { opacity: 0, scale: 0.88 },
   { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(1.2)" },
-  t9 + 0.05
+  t7 + 0.05
 );
 tl.to(
-  "#faux9",
+  "#faux7",
   { scale: 0.95, yoyo: true, repeat: 1, duration: 0.1, ease: "power1.inOut" },
-  t9 + 0.35
+  t7 + 0.35
 );
 tl.fromTo(
-  "#talk9",
+  "#talk7",
   { opacity: 0, y: 16, scale: 0.99 },
   { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" },
-  t9 + 0.1
+  t7 + 0.1
 );
-tl.set("#sway9-talk", { className: "ui3d-sway sway-on" }, t9 + 0.68);
-var d1T = t9 + 0.5;
-var d2T = t9 + 0.84;
+tl.set("#sway7-talk", { className: "ui3d-sway s5-card-tilt sway-on" }, t7 + 0.68);
+var d1T = t7 + 0.5;
+var d2T = t7 + 0.84;
 tl.fromTo(
   "#d1",
   { opacity: 0, y: 10 },
@@ -567,58 +487,56 @@ tl.fromTo(
   d2T
 );
 var d2End = d2T + 0.38;
-var t9swap = d2End + L;
+var t7swap = d2End + L;
 tl.to(
   "#d1, #d2",
   { opacity: 0, y: -8, duration: 0.22, ease: "power2.in" },
-  t9swap
+  t7swap
 );
 tl.to(
-  "#faux9",
+  "#faux7",
   { opacity: 0, scale: 0.9, duration: 0.2, ease: "power2.in" },
-  t9swap
+  t7swap
 );
 tl.to(
-  "#talk9",
+  "#talk7",
   { opacity: 0, duration: 0.38, ease: "power2.in" },
-  t9swap + 0.04
+  t7swap + 0.04
 );
 tl.to(
-  "#self9",
+  "#self7",
   { opacity: 1, duration: 0.45, ease: "power2.out" },
-  t9swap + 0.1
+  t7swap + 0.1
 );
-tl.set("#sway9-self", { className: "ui3d-sway sway-on" }, t9swap + 0.2);
-tl.set("#d3", { visibility: "visible" }, t9swap + 0.2);
-tl.fromTo(
-  "#d3",
-  { opacity: 0, y: 10 },
-  { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
-  t9swap + 0.2
+tl.set(
+  "#sway7-self",
+  { className: "ui3d-sway s5-card-tilt sway-on" },
+  t7swap + 0.2
 );
-var t9End = t9swap + 0.2 + 0.5;
+/* Long self-host TTS: hold on full-bleed screenshot only (no on-screen wall of text). */
+var t7End = t7swap + 0.55 + 1.0;
 tl.to(
   "#el-a",
   { volume: 0.55, duration: 0.45, ease: "none" },
-  t9End + 0.4
+  t7End + 0.4
 );
-xf(t9End + L, "#scene9", "#scene10");
+xf(t7End + L, "#scene7", "#scene8");
 
-// ----- Scene 10 -----
-var t10 = t9End + L + xfd + 0.05;
+// ----- Scene 8 outro -----
+var t8 = t7End + L + xfd + 0.05;
 tl.from(
-  "#scene10 .out1",
+  "#scene8 .out1",
   { y: 50, opacity: 0, duration: 0.55, ease: "expo.out" },
-  t10
+  t8
 );
 tl.from(
-  "#scene10 .url-pill",
+  "#scene8 .url-pill",
   { y: 30, scale: 0.92, opacity: 0, duration: 0.5, ease: "back.out(1.3)" },
-  t10 + 0.2
+  t8 + 0.2
 );
-var t10End = t10 + 0.2 + 0.5;
+var t8OutEnd = t8 + 0.2 + 0.5;
 var fadeMs = 2.0;
-var totalSec = t10End + L + fadeMs;
+var totalSec = t8OutEnd + L + fadeMs;
 tl.fromTo(
   "#el-a",
   { volume: 0.55 },
