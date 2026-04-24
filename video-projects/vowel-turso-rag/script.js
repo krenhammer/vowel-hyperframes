@@ -83,8 +83,8 @@
       cellMaxCap: "736px",
       minCellSize: "320px",
       backgroundColor: "#121b2e",
-      ringColor: "rgba(55, 189, 248, 0.4)",
-      accentColor: "#37bdf8",
+      ringColor: "rgba(15, 208, 110, 0.4)",
+      accentColor: "#0fd06e",
       pressAnimation: "random",
       seed: 0x5a7e1c3f,
       periodRangeSec: { min: 7.4, max: 17.5 },
@@ -273,6 +273,39 @@
   function isEmWord(w) {
     var t = stripPunct(w.text);
     return /^(RAG|SQLite|WebAssembly|vector|Turso|Turso|vowel|Vowel|docs|WASM|API|LLM)$/i.test(t);
+  }
+
+  /**
+   * First “full power” in the product intro (not “full native” later) — extra Turso green accent.
+   */
+  function isFullPowerEmWord(w, idx) {
+    if (idx < 0 || idx >= WORDS.length) {
+      return false;
+    }
+    var t = stripPunct(w.text);
+    if (t === "full" && idx + 1 < WORDS.length && stripPunct(WORDS[idx + 1].text) === "power") {
+      return true;
+    }
+    if (t === "power" && idx > 0 && stripPunct(WORDS[idx - 1].text) === "full") {
+      return true;
+    }
+    return false;
+  }
+
+  /** Inclusive word span for italic “Turso in the / browser” (first standalone phrase, not outro). */
+  var iTursoInBrowserStart = -1;
+  var iTursoInBrowserEnd = -1;
+  for (var _tib = 0; _tib < WORDS.length - 3; _tib++) {
+    if (
+      /^Turso$/i.test(stripPunct(WORDS[_tib].text)) &&
+      /^in$/i.test(stripPunct(WORDS[_tib + 1].text)) &&
+      /^the$/i.test(stripPunct(WORDS[_tib + 2].text)) &&
+      /^browser/i.test(WORDS[_tib + 3].text)
+    ) {
+      iTursoInBrowserStart = _tib;
+      iTursoInBrowserEnd = _tib + 3;
+      break;
+    }
   }
 
   /**
@@ -570,7 +603,7 @@
 
   function pickPresetIndex(w, i) {
     var flashyCount = 10;
-    if (isEmWord(w)) {
+    if (isEmWord(w) || isFullPowerEmWord(w, i)) {
       return Math.floor(wrnd() * flashyCount);
     }
     return flashyCount + Math.floor(wrnd() * (KINETIC_PRESETS.length - flashyCount));
@@ -615,8 +648,11 @@
       if (isVowelBrandEmWord(w0, prevText)) {
         parts.push("em-vowel");
       }
-      if (isEmWord(w0) && !skipEm) {
+      if (!skipEm && (isEmWord(w0) || isFullPowerEmWord(w0, item.index))) {
         parts.push("em");
+      }
+      if (iTursoInBrowserStart >= 0 && item.index >= iTursoInBrowserStart && item.index <= iTursoInBrowserEnd) {
+        parts.push("phrase-ital");
       }
       var sp = document.createElement("span");
       sp.className = parts.join(" ");
@@ -708,7 +744,7 @@
   var postAiBgmAt = tLastAiEnd != null ? tLastAiEnd + 2 : 119.671;
   var tWipeOutOfAi = Math.max(0.4, postAiBgmAt - 0.52);
 
-  /* “Click the RAG debug…” — indices for blue em glow; tRag* for #rag-debug-bg-marquee (must be before the kw loop). */
+  /* “Click the RAG debug…” — em glow uses Turso mint (see timeline); tRag* for #rag-debug-bg-marquee (must be before the kw loop). */
   var iClickRagDebug = -1;
   for (var _cr0 = 0; _cr0 < WORDS.length - 2; _cr0++) {
     if (
@@ -869,7 +905,7 @@
 
     tl.fromTo(el, fromState, toState, w.start);
 
-    if (isEmWord(w) && !inAi) {
+    if ((isEmWord(w) || isFullPowerEmWord(w, i)) && !inAi) {
       var inRagCta =
         iClickRagDebug >= 0 &&
         iRagCtaLastIdx >= 0 &&
@@ -878,10 +914,10 @@
       if (inRagCta) {
         tl.fromTo(
           el,
-          { textShadow: "0 0 0 rgba(90,200,255,0)" },
+          { textShadow: "0 0 0 rgba(15,208,110,0)" },
           {
             textShadow:
-              "0 0 22px rgba(90,200,255,0.55), 0 0 44px rgba(90,200,255,0.3), 0 0 2px rgba(255,255,255,0.35)",
+              "0 0 22px rgba(15,208,110,0.55), 0 0 44px rgba(15,208,110,0.3), 0 0 2px rgba(255,255,255,0.35)",
             duration: 0.12,
             yoyo: true,
             repeat: 1,

@@ -24,13 +24,13 @@ body {
   --turso-bg: #0a1612;
   --turso-mint: #0fd06e;
   --turso-button-ring: rgba(15, 208, 110, 0.42);
-  /* “Click the RAG debug…” — all blue (no Turso green; see #rag-debug-bg-marquee) */
+  /* “Click the RAG debug…” — Turso-tinted grid + mint caption ems (see #rag-debug-bg-marquee) */
   --rag-debug-section-bg: #040e1e;
-  --rag-debug-cell-fill: rgba(4, 18, 48, 0.92);
-  --rag-debug-border: rgba(90, 190, 255, 0.5);
-  --rag-debug-icon: rgba(120, 205, 255, 0.95);
-  --rag-debug-ring-glow: rgba(70, 160, 255, 0.2);
-  --rag-debug-caption-em: #7ec8ff;
+  --rag-debug-cell-fill: rgba(4, 32, 24, 0.92);
+  --rag-debug-border: rgba(15, 208, 110, 0.45);
+  --rag-debug-icon: rgba(95, 195, 145, 0.95);
+  --rag-debug-ring-glow: rgba(15, 208, 110, 0.22);
+  --rag-debug-caption-em: #0fd06e;
   /* “Get started today” CTA (outro only) — light blue, not product mint */
   --outro-vowel-link: #a8d4ff;
   --outro-vowel-link-border: color-mix(in srgb, #a8d4ff 55%, transparent);
@@ -688,6 +688,7 @@ body {
 #karaoke-wrap.karaoke-wrap--rag-cta #karaoke-stage .kw.em {
   color: var(--rag-debug-caption-em);
   font-weight: 800;
+  font-style: normal;
 }
 
 #karaoke-wrap {
@@ -947,10 +948,17 @@ body {
   line-height: 1.24;
 }
 #karaoke-stage .kw.em {
-  color: var(--accent-2);
+  color: var(--accent);
+  font-weight: 800;
+  font-style: normal;
+}
+/* Product phrase: italic + full Turso mint on “Turso / in / the / browser” (script adds .phrase-ital) */
+#karaoke-stage .kw.phrase-ital {
+  font-style: italic;
+  color: var(--accent);
   font-weight: 800;
 }
-/* Vowel / vowel + brand “docs” / docs.vowel.to — white, lowercase, subtle glow (overrides mint + RAG-CTA blue) */
+/* Vowel / vowel + brand “docs” / docs.vowel.to — white, subtle glow (overrides mint; RAG CTA uses .kw.em) */
 #karaoke-stage .kw.em-vowel,
 #karaoke-wrap.karaoke-wrap--rag-cta #karaoke-stage .kw.em-vowel,
 #karaoke-wrap.karaoke-wrap--rag-cta #karaoke-stage .kw.em.em-vowel {
