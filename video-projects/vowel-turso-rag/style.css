@@ -72,7 +72,7 @@ body {
   gap: 0.42em;
   width: 100%;
   font-size: clamp(72px, 7vw, 120px);
-  /* Match .ribbon-inner sizing */
+  /* Match original Turso ribbon wordmark sizing */
   line-height: 1;
   color: rgba(80, 180, 130, 0.14);
 }
@@ -149,7 +149,7 @@ body {
 }
 
 /*
- * UI screenshots sit in the BACKGROUND (below ribbon + karaoke). GSAP animates .ui-bg-shot-wrap
+ * UI screenshots sit in the BACKGROUND (below Turso pattern + karaoke). GSAP animates .ui-bg-shot-wrap
  * (opacity / motion); perspective skew lives on .ui-bg-shot-pivot so it is not wiped by GSAP x/y/scale.
  */
 .ui-shot-backdrop {
@@ -207,40 +207,6 @@ body {
   vertical-align: bottom;
   object-fit: contain;
   max-height: min(52vh, 1000px);
-}
-
-#turso-ribbon {
-  position: absolute;
-  top: 120px;
-  left: 0;
-  right: 0;
-  z-index: 6;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  pointer-events: none;
-  opacity: 0;
-}
-#turso-ribbon .ribbon-inner {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 0.12em;
-  font-size: clamp(72px, 7vw, 120px);
-  line-height: 1;
-  color: var(--turso-mint);
-}
-#turso-ribbon .turso-svg {
-  width: 1.05em;
-  height: 1.05em;
-  filter: drop-shadow(0 0 24px rgba(74, 222, 128, 0.35));
-}
-#turso-ribbon .turso-wordmark {
-  font-family: "Outfit", sans-serif;
-  font-weight: 900;
-  letter-spacing: -0.03em;
 }
 
 #karaoke-wrap {
@@ -324,11 +290,11 @@ body {
   align-items: flex-start;
   padding-top: 5%;
 }
-/* Fixed offset from top so the first line does not jump as words appear (flex center was re-centering growing content). */
+/* Offset from top so the first line does not jump as words appear; keep the block in the upper/mid frame (not the lower half). */
 .beat-block.valign-mid {
   align-items: flex-start;
   justify-content: flex-start;
-  padding-top: clamp(560px, 38%, 760px);
+  padding-top: clamp(280px, 22%, 480px);
 }
 .beat-block.valign-bottom {
   align-items: flex-end;

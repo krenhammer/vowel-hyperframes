@@ -368,7 +368,6 @@
     tl.call(floatExit, [], hideAt);
   }
 
-  gsap.set("#turso-ribbon", { opacity: 0, y: -36 });
   gsap.set("#turso-bg-pattern", { opacity: 0 });
   gsap.set("#outro-layer", { opacity: 0 });
   gsap.set("#shot-chat, #shot-config, #shot-apikey, #shot-talk", { opacity: 0, scale: 0.9 });
@@ -740,9 +739,6 @@
   /* Opener = “Rag / in / the / browser” — do not start color wipe until headline + sublines have room to read. */
   var OPENER_FADE = WORDS[3].end + 0.5;
   var WIPE_INTRO = OPENER_FADE + 0.2;
-  var TURSO_IN = WIPE_INTRO + 0.4;
-  var TURSO_INNER = TURSO_IN + 0.06;
-
   tl.to("#opener", { opacity: 0, duration: 0.4, ease: "power2.in" }, OPENER_FADE);
   tl.to("#title-rag", { scale: 2.35, y: -90, opacity: 0, duration: 0.5, ease: "power3.in" }, OPENER_FADE + 0.04);
 
@@ -753,27 +749,12 @@
     { opacity: 1, duration: 0.38, ease: "sine.out" },
     WIPE_INTRO + 0.12
   );
-  tl.to("#turso-ribbon", { opacity: 1, y: 0, duration: 0.48, ease: "expo.out" }, TURSO_IN);
-  tl.fromTo(
-    "#turso-ribbon .ribbon-inner",
-    { scale: 0.62, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.5, ease: "expo.out" },
-    TURSO_INNER
-  );
-
-  var tursoPulseT = WORDS[7] && WORDS[7].start ? WORDS[7].start : 3.605;
-  tl.to(
-    "#turso-ribbon .ribbon-inner",
-    { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.inOut" },
-    tursoPulseT
-  );
 
   tl.to(
     "#turso-bg-pattern",
     { opacity: 0, duration: 0.42, ease: "power2.in" },
     8.45
   );
-  tl.to("#turso-ribbon", { opacity: 0, y: -70, duration: 0.48, ease: "power2.in" }, 8.48);
   runWipe(8.58, "#0a101c");
 
   runWipe(22.02, "#3a1434");
