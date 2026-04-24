@@ -24,6 +24,13 @@ body {
   --turso-bg: #0a1612;
   --turso-mint: #0fd06e;
   --turso-button-ring: rgba(15, 208, 110, 0.42);
+  /* “Click the RAG debug…” — all blue (no Turso green; see #rag-debug-bg-marquee) */
+  --rag-debug-section-bg: #040e1e;
+  --rag-debug-cell-fill: rgba(4, 18, 48, 0.92);
+  --rag-debug-border: rgba(90, 190, 255, 0.5);
+  --rag-debug-icon: rgba(120, 205, 255, 0.95);
+  --rag-debug-ring-glow: rgba(70, 160, 255, 0.2);
+  --rag-debug-caption-em: #7ec8ff;
   --wipe-a: #1a3328;
   --wipe-b: #0f211a;
   --scene-slate: #0a101c;
@@ -158,9 +165,9 @@ body {
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(6, 8, 15, 0.45) 0%,
-    rgba(6, 8, 15, 0.58) 45%,
-    rgba(6, 8, 15, 0.48) 100%
+    rgba(2, 12, 32, 0.52) 0%,
+    rgba(6, 18, 44, 0.64) 45%,
+    rgba(2, 10, 28, 0.54) 100%
   );
 }
 
@@ -338,6 +345,9 @@ body {
   opacity: 0;
   background: var(--turso-bg);
 }
+#rag-debug-bg-marquee.turso-circle-bg-pattern {
+  background: var(--rag-debug-section-bg);
+}
 .turso-circle-bg-pattern__rotor {
   position: absolute;
   left: 50%;
@@ -426,11 +436,34 @@ body {
   justify-content: center;
   box-shadow: 0 0 0 1px rgba(15, 208, 110, 0.1);
 }
+#rag-debug-bg-marquee .turso-circle-bg-cell__ring {
+  --aib-btn-delay: 0s;
+  --aib-btn-period: 6.5s;
+  border-color: var(--rag-debug-border);
+  background: var(--rag-debug-cell-fill);
+  box-shadow: 0 0 0 1px var(--rag-debug-ring-glow);
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+/* Same pulse as animated-image-background/AnimatedImageBackground.css (.aib--press .aib__ring) */
+#rag-debug-bg-marquee.turso-circle-bg-pattern--press .turso-circle-bg-cell__ring {
+  animation: aib-btn-press var(--aib-btn-period) ease-in-out infinite;
+  animation-delay: var(--aib-btn-delay);
+}
 .turso-circle-bg-cell__svg {
   width: 55%;
   height: 55%;
   flex-shrink: 0;
   color: rgba(95, 195, 145, 0.82);
+}
+#rag-debug-bg-marquee .turso-circle-bg-cell__svg {
+  color: var(--rag-debug-icon);
+}
+
+/* CTA line only — timeline adds .karaoke-wrap--rag-cta while #rag-debug-bg-marquee is up */
+#karaoke-wrap.karaoke-wrap--rag-cta #karaoke-stage .kw.em {
+  color: var(--rag-debug-caption-em);
+  font-weight: 800;
 }
 
 #karaoke-wrap {

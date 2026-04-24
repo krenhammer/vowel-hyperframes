@@ -18,6 +18,7 @@
   /**
    * “Click the RAG debug…” — same build loop as buildBrowserBgPattern (row / chunk / dual track),
    * but every cell is a Turso SVG inside a circle (no external SVG mask URLs).
+   * Per-cell random press timing matches AnimatedImageBackground (aib-btn-press + --aib-btn-*).
    */
   function buildTursoCircleBgPattern() {
     var host = document.getElementById("turso-circle-bg-pattern-rows");
@@ -25,6 +26,15 @@
     if (!host || !tpl || host.childElementCount) {
       return;
     }
+    var marquee = document.getElementById("rag-debug-bg-marquee");
+    if (marquee) {
+      marquee.classList.add("turso-circle-bg-pattern--press");
+    }
+    /* Slower than default AIB: ~5.5–11s period, desynced starts (see AnimatedImageBackground.js DEF) */
+    var rndPress = mulberry32(0x7e2b9a1d);
+    var prMin = 5.5;
+    var prMax = 11;
+    var maxNeg = 18;
     var rowCount = 24;
     for (var r = 0; r < rowCount; r++) {
       var cellsPerChunk = 6 + (r % 3);
@@ -42,6 +52,13 @@
           var imp = document.importNode(tpl.content, true);
           var cell = imp.querySelector(".turso-circle-bg-cell");
           if (cell) {
+            var ring = cell.querySelector(".turso-circle-bg-cell__ring");
+            if (ring) {
+              var delayS = -rndPress() * maxNeg;
+              var periodS = prMin + rndPress() * (prMax - prMin);
+              ring.style.setProperty("--aib-btn-delay", delayS + "s");
+              ring.style.setProperty("--aib-btn-period", periodS + "s");
+            }
             chunk.appendChild(cell);
           }
         }
@@ -389,7 +406,7 @@
    * Only translate + scale (no spin / rotateZ / rotateX).
    */
   var KINETIC_AI = { from: { y: 18, scale: 0.99 }, ease: "power2.out", origin: "50% 100%" };
-  var BEAT_BGS = ["#0a101c", "#0c1814", "#1a0f24", "#3a1434", "#0f1a2e", "#132018", "#0d1420"];
+  var BEAT_BGS = ["#0a101c", "#0b1424", "#1a0f24", "#3a1434", "#0f1a2e", "#101e32", "#0d1420"];
   var KINETIC_PRESETS = [
     { from: { x: -120, y: 22, scale: 0.4 }, ease: "expo.out", origin: "0% 85%" },
     { from: { x: 120, y: -18, scale: 0.42 }, ease: "expo.out", origin: "100% 85%" },
@@ -537,6 +554,35 @@
   var postAiBgmAt = tLastAiEnd != null ? tLastAiEnd + 2 : 119.671;
   var tWipeOutOfAi = Math.max(0.4, postAiBgmAt - 0.52);
 
+  /* “Click the RAG debug…” — indices for blue em glow; tRag* for #rag-debug-bg-marquee (must be before the kw loop). */
+  var iClickRagDebug = -1;
+  for (var _cr0 = 0; _cr0 < WORDS.length - 2; _cr0++) {
+    if (
+      stripPunct(WORDS[_cr0].text) === "Click" &&
+      stripPunct(WORDS[_cr0 + 1].text) === "the" &&
+      /^RAG$/i.test(stripPunct(WORDS[_cr0 + 2].text)) &&
+      WORDS[_cr0].start < 50
+    ) {
+      iClickRagDebug = _cr0;
+      break;
+    }
+  }
+  var tRagButtonBgIn = iClickRagDebug >= 0 ? Math.max(0, WORDS[iClickRagDebug].start - 0.22) : 43.4;
+  var tRagButtonBgOut = 46.58;
+  var iRagCtaLastIdx = -1;
+  if (iClickRagDebug >= 0) {
+    for (var _dk0 = iClickRagDebug; _dk0 < WORDS.length; _dk0++) {
+      if (WORDS[_dk0].text === "docs." && WORDS[_dk0].end < 50 && WORDS[_dk0].start > 44) {
+        tRagButtonBgOut = WORDS[_dk0].end + 0.32;
+        iRagCtaLastIdx = _dk0;
+        break;
+      }
+    }
+  }
+  if (iClickRagDebug >= 0 && iRagCtaLastIdx < 0) {
+    iRagCtaLastIdx = Math.min(iClickRagDebug + 22, WORDS.length - 1);
+  }
+
   /* In-app Q&A: keep #turso-bg-pattern at 0 — full grid behind chat hurt legibility; stage-bg + wipe color only. */
 
   tl.set(".beat-block", { autoAlpha: 0, y: 48, scale: 0.93 }, 0);
@@ -591,19 +637,40 @@
     tl.fromTo(el, fromState, toState, w.start);
 
     if (isEmWord(w) && !inAi) {
-      tl.fromTo(
-        el,
-        { textShadow: "0 0 0 rgba(15,208,110,0)" },
-        {
-          textShadow:
-            "0 0 22px rgba(15,208,110,0.55), 0 0 44px rgba(15,208,110,0.32), 0 0 2px rgba(255,255,255,0.35)",
-          duration: 0.12,
-          yoyo: true,
-          repeat: 1,
-          ease: "power2.out",
-        },
-        w.start + enterDur * 0.15
-      );
+      var inRagCta =
+        iClickRagDebug >= 0 &&
+        iRagCtaLastIdx >= 0 &&
+        i >= iClickRagDebug &&
+        i <= iRagCtaLastIdx;
+      if (inRagCta) {
+        tl.fromTo(
+          el,
+          { textShadow: "0 0 0 rgba(90,200,255,0)" },
+          {
+            textShadow:
+              "0 0 22px rgba(90,200,255,0.55), 0 0 44px rgba(90,200,255,0.3), 0 0 2px rgba(255,255,255,0.35)",
+            duration: 0.12,
+            yoyo: true,
+            repeat: 1,
+            ease: "power2.out",
+          },
+          w.start + enterDur * 0.15
+        );
+      } else {
+        tl.fromTo(
+          el,
+          { textShadow: "0 0 0 rgba(15,208,110,0)" },
+          {
+            textShadow:
+              "0 0 22px rgba(15,208,110,0.55), 0 0 44px rgba(15,208,110,0.32), 0 0 2px rgba(255,255,255,0.35)",
+            duration: 0.12,
+            yoyo: true,
+            repeat: 1,
+            ease: "power2.out",
+          },
+          w.start + enterDur * 0.15
+        );
+      }
     }
   }
 
@@ -743,30 +810,7 @@
   var tBrowserPatternIn = iIfWeMentionAnd >= 0 ? Math.max(0, WORDS[iIfWeMentionAnd].start - 0.04) : 15.25;
   var tBrowserPatternOut = iMentionInTheBrowser >= 0 ? WORDS[iMentionInTheBrowser].end + 0.32 : 17.7;
 
-  /* RAG debug: #rag-debug-bg-marquee (SVG circles). Voweldocs CTA: #turso-bg-pattern (PNG grid + scrim). */
-  var iClickRagDebug = -1;
-  for (var _cr = 0; _cr < WORDS.length - 2; _cr++) {
-    if (
-      stripPunct(WORDS[_cr].text) === "Click" &&
-      stripPunct(WORDS[_cr + 1].text) === "the" &&
-      /^RAG$/i.test(stripPunct(WORDS[_cr + 2].text)) &&
-      WORDS[_cr].start < 50
-    ) {
-      iClickRagDebug = _cr;
-      break;
-    }
-  }
-  var tRagButtonBgIn = iClickRagDebug >= 0 ? Math.max(0, WORDS[iClickRagDebug].start - 0.22) : 43.4;
-  var tRagButtonBgOut = 46.58;
-  if (iClickRagDebug >= 0) {
-    for (var _dk = iClickRagDebug; _dk < WORDS.length; _dk++) {
-      if (WORDS[_dk].text === "docs." && WORDS[_dk].end < 50 && WORDS[_dk].start > 44) {
-        tRagButtonBgOut = WORDS[_dk].end + 0.32;
-        break;
-      }
-    }
-  }
-
+  /* RAG CTA times: iClickRagDebug / tRagButton* / iRagCtaLastIdx are defined above the kw loop. */
   var iClickVoweldocsNav = -1;
   for (var _vn = 0; _vn < WORDS.length - 2; _vn++) {
     if (
@@ -801,8 +845,29 @@
   runWipe(8.58, "#0a101c");
 
   if (iClickRagDebug >= 0) {
+    tl.set("#stage-bg", { backgroundColor: "#050f22" }, Math.max(0, tRagButtonBgIn - 0.1));
+    tl.call(
+      function () {
+        var k = document.getElementById("karaoke-wrap");
+        if (k) {
+          k.classList.add("karaoke-wrap--rag-cta");
+        }
+      },
+      [],
+      tRagButtonBgIn
+    );
     tl.to("#rag-debug-bg-marquee", { opacity: 1, duration: 0.4, ease: "sine.out" }, tRagButtonBgIn);
     tl.to("#rag-debug-bg-marquee", { opacity: 0, duration: 0.45, ease: "power2.in" }, tRagButtonBgOut);
+    tl.call(
+      function () {
+        var k2 = document.getElementById("karaoke-wrap");
+        if (k2) {
+          k2.classList.remove("karaoke-wrap--rag-cta");
+        }
+      },
+      [],
+      tRagButtonBgOut
+    );
   }
   if (iClickVoweldocsNav >= 0) {
     tl.to("#turso-bg-pattern", { opacity: 1, duration: 0.4, ease: "sine.out" }, tVoweldocsNavBgIn);
