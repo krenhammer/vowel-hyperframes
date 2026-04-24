@@ -103,9 +103,9 @@
   }
 
   /**
-   * One on-screen beat = one full sentence (ends with . ? or !). Every word in that sentence lives in the
-   * same beat so the whole sentence stays on screen together until the next sentence.
-   * AI dialogue: consecutive sentences in [Welcome … credentials] merge into one beat (see below).
+   * One on-screen beat = one full sentence (ends with . ? or !), except the in-app segment [Welcome …
+   * credentials] which is a single `ai-full` beat so the full transcript (including "Welcome to Voweldocs")
+   * stays on one page with words still animating in.
    */
   function buildBeats() {
     var raw = buildSentenceBeats();
@@ -122,8 +122,9 @@
     }
     var aiPairs = expandAiRangeChunks(raw, aiStartSi, aiEndSi);
     var merged = raw.slice(0, aiStartSi);
-    for (var p = 0; p < aiPairs.length; p++) {
-      merged.push({ kind: "ai-pair", pair: aiPairs[p] });
+    /* One on-screen block for entire in-app section (Welcome … credentials) so nothing replaces previous lines. */
+    if (aiPairs.length) {
+      merged.push({ kind: "ai-full", pairs: aiPairs });
     }
     for (var r = aiEndSi + 1; r < raw.length; r++) {
       merged.push(raw[r]);
@@ -149,7 +150,7 @@
 
   /**
    * Replace the contiguous AI demo sentence chunks with [intro-only | user+AI pairs].
-   * Each pair is one beat so Q and A stay on screen together.
+   * Rendered as a single “ai-full” beat: all rows stay on one frame, words still animate in by time.
    */
   function expandAiRangeChunks(raw, aiStartSi, aiEndSi) {
     var sub = raw.slice(aiStartSi, aiEndSi + 1);
@@ -203,13 +204,21 @@
     var out = [];
     for (var i = 0; i < rawBeats.length; i++) {
       var e = rawBeats[i];
-      if (e && e.kind === "ai-pair") {
-        out.push({ type: "ai", pair: e.pair });
+      if (e && e.kind === "ai-full") {
+        out.push({ type: "ai", pairs: e.pairs });
       } else {
         out.push({ type: "norm", chunk: e });
       }
     }
     return out;
+  }
+
+  function wordCountInPairs(pairs) {
+    var n = 0;
+    for (var p = 0; p < pairs.length; p++) {
+      n += wordCountInPair(pairs[p]);
+    }
+    return n;
   }
 
   function wordCountInPair(pair) {
@@ -228,10 +237,11 @@
     if (bm.type === "norm") {
       return bm.chunk[0];
     }
-    if (bm.pair.user) {
-      return bm.pair.user[0];
+    var pr = bm.pairs[0];
+    if (pr.user) {
+      return pr.user[0];
     }
-    return bm.pair.ai[0][0];
+    return pr.ai[0][0];
   }
 
   function beatLastItem(bm) {
@@ -239,7 +249,8 @@
       var c = bm.chunk;
       return c[c.length - 1];
     }
-    var lastAiCh = bm.pair.ai[bm.pair.ai.length - 1];
+    var pr = bm.pairs[bm.pairs.length - 1];
+    var lastAiCh = pr.ai[pr.ai.length - 1];
     return lastAiCh[lastAiCh.length - 1];
   }
 
@@ -342,21 +353,50 @@
           return bi;
         }
       } else {
-        if (bm.pair.user) {
-          var u = bm.pair.user;
-          if (wordIdx >= u[0].index && wordIdx <= u[u.length - 1].index) {
-            return bi;
+        for (var pi = 0; pi < bm.pairs.length; pi++) {
+          var pr = bm.pairs[pi];
+          if (pr.user) {
+            var u = pr.user;
+            if (wordIdx >= u[0].index && wordIdx <= u[u.length - 1].index) {
+              return bi;
+            }
           }
-        }
-        for (var ac = 0; ac < bm.pair.ai.length; ac++) {
-          var c = bm.pair.ai[ac];
-          if (wordIdx >= c[0].index && wordIdx <= c[c.length - 1].index) {
-            return bi;
+          for (var ac = 0; ac < pr.ai.length; ac++) {
+            var c = pr.ai[ac];
+            if (wordIdx >= c[0].index && wordIdx <= c[c.length - 1].index) {
+              return bi;
+            }
           }
         }
       }
     }
     return -1;
+  }
+
+  /**
+   * With one merged AI block, use the pair/sentence that contains the word for screenshot timing
+   * (not the full Welcome–credentials range).
+   */
+  function getPopShotTimeWindowForWord(bm, wordIdx) {
+    if (bm.type !== "ai" || !bm.pairs) {
+      return null;
+    }
+    for (var pi = 0; pi < bm.pairs.length; pi++) {
+      var pr = bm.pairs[pi];
+      if (pr.user) {
+        var u = pr.user;
+        if (wordIdx >= u[0].index && wordIdx <= u[u.length - 1].index) {
+          return { start: u[0].w.start, end: u[u.length - 1].w.end };
+        }
+      }
+      for (var ac = 0; ac < pr.ai.length; ac++) {
+        var c = pr.ai[ac];
+        if (wordIdx >= c[0].index && wordIdx <= c[c.length - 1].index) {
+          return { start: c[0].w.start, end: c[c.length - 1].w.end };
+        }
+      }
+    }
+    return null;
   }
 
   function popShotForWordIndex(sel, wordIdx) {
@@ -368,8 +408,9 @@
       return;
     }
     var bm = beatModels[bi];
-    var tFirst = beatFirstItem(bm).w.start;
-    var tLast = beatLastItem(bm).w.end;
+    var win = getPopShotTimeWindowForWord(bm, wordIdx);
+    var tFirst = win ? win.start : beatFirstItem(bm).w.start;
+    var tLast = win ? win.end : beatLastItem(bm).w.end;
     var tShow = Math.max(0, tFirst - IMAGE_LEAD_SEC);
     var tHide = Math.max(tLast + IMAGE_LAG_SEC, tShow + 1.15);
     popShot(sel, tShow, tHide);
@@ -377,12 +418,12 @@
 
   var stage = document.getElementById("karaoke-stage");
 
-  function appendKwSpans(container, chunk) {
+  function appendKwSpans(container, chunk, skipEm) {
     for (var ci = 0; ci < chunk.length; ci++) {
       var item = chunk[ci];
       var w0 = item.w;
       var sp = document.createElement("span");
-      sp.className = "kw" + (isEmWord(w0) ? " em" : "");
+      sp.className = "kw" + (isEmWord(w0) && !skipEm ? " em" : "");
       sp.id = "kw-" + item.index;
       sp.textContent = w0.text + " ";
       container.appendChild(sp);
@@ -395,8 +436,9 @@
     block.id = "beat-" + bi;
     block.className = "beat-block";
     if (isAiBeatModel(bm)) {
-      block.className += " beat-ai align-left valign-mid";
-      if (wordCountInPair(bm.pair) > 10) {
+      /* Top-aligned, compact type so the whole in-app section fits on one frame. */
+      block.className += " beat-ai align-left valign-top";
+      if (wordCountInPairs(bm.pairs) > 24) {
         block.className += " beat-tight";
       }
     } else {
@@ -412,25 +454,64 @@
     block.appendChild(inner);
 
     if (isAiBeatModel(bm)) {
-      if (bm.pair.user) {
-        var userRow = document.createElement("div");
-        userRow.className = "ai-dialog-user";
-        appendKwSpans(userRow, bm.pair.user);
-        inner.appendChild(userRow);
-        var gapEl = document.createElement("div");
-        gapEl.className = "ai-dialog-speaker-gap";
-        inner.appendChild(gapEl);
+      for (var pi = 0; pi < bm.pairs.length; pi++) {
+        var pr = bm.pairs[pi];
+        if (pr.user) {
+          var userRow = document.createElement("div");
+          userRow.className = "ai-dialog-user";
+          appendKwSpans(userRow, pr.user, true);
+          inner.appendChild(userRow);
+          var gapEl = document.createElement("div");
+          gapEl.className = "ai-dialog-speaker-gap";
+          inner.appendChild(gapEl);
+        }
+        var aiRow = document.createElement("div");
+        aiRow.className = "ai-dialog-ai";
+        for (var ac = 0; ac < pr.ai.length; ac++) {
+          appendKwSpans(aiRow, pr.ai[ac], true);
+        }
+        inner.appendChild(aiRow);
+        if (pi < bm.pairs.length - 1) {
+          var turnGap = document.createElement("div");
+          turnGap.className = "ai-dialog-turn-gap";
+          inner.appendChild(turnGap);
+        }
       }
-      var aiRow = document.createElement("div");
-      aiRow.className = "ai-dialog-ai";
-      for (var ac = 0; ac < bm.pair.ai.length; ac++) {
-        appendKwSpans(aiRow, bm.pair.ai[ac]);
-      }
-      inner.appendChild(aiRow);
     } else {
       appendKwSpans(inner, bm.chunk);
     }
     stage.appendChild(block);
+  }
+
+  var tFirstAiBeat = null;
+  var tLastAiEnd = null;
+  for (var _abi = 0; _abi < beatModels.length; _abi++) {
+    if (isAiBeatModel(beatModels[_abi])) {
+      if (tFirstAiBeat == null) {
+        tFirstAiBeat = beatFirstItem(beatModels[_abi]).w.start;
+      }
+      tLastAiEnd = beatLastItem(beatModels[_abi]).w.end;
+    }
+  }
+  if (tFirstAiBeat != null) {
+    tl.call(
+      function () {
+        var w = document.getElementById("karaoke-wrap");
+        if (w) w.classList.add("karaoke-wrap--ai");
+      },
+      [],
+      Math.max(0, tFirstAiBeat - 0.22)
+    );
+  }
+  if (tLastAiEnd != null) {
+    tl.call(
+      function () {
+        var w = document.getElementById("karaoke-wrap");
+        if (w) w.classList.remove("karaoke-wrap--ai");
+      },
+      [],
+      tLastAiEnd + 0.18
+    );
   }
 
   tl.set(".beat-block", { autoAlpha: 0, y: 48, scale: 0.93 }, 0);
