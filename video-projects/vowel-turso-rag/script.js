@@ -275,6 +275,28 @@
     return /^(RAG|SQLite|WebAssembly|vector|Turso|Turso|vowel|Vowel|docs|WASM|API|LLM)$/i.test(t);
   }
 
+  /**
+   * “vowel” / “Vowel” / docs.vowel.to / “docs” immediately after “vowel” (Vowel docs) — white + glow in CSS.
+   * Does not mark generic emphasized “docs” (e.g. “entire docs package”).
+   */
+  function isVowelBrandEmWord(w, prevWordText) {
+    var raw = w.text;
+    var t = stripPunct(w.text);
+    if (/^vowel$/i.test(t)) {
+      return true;
+    }
+    if (/docs\.vowel\.to/i.test(raw)) {
+      return true;
+    }
+    if (/^voweldocs$/i.test(t)) {
+      return true;
+    }
+    if (prevWordText != null && /^docs\.?$/i.test(t) && /^vowel$/i.test(stripPunct(prevWordText))) {
+      return true;
+    }
+    return false;
+  }
+
   function firstWordIndex(pred) {
     for (var j = 0; j < WORDS.length; j++) {
       if (pred(WORDS[j])) {
@@ -588,8 +610,16 @@
     for (var ci = 0; ci < chunk.length; ci++) {
       var item = chunk[ci];
       var w0 = item.w;
+      var prevText = ci > 0 ? chunk[ci - 1].w.text : null;
+      var parts = ["kw"];
+      if (isVowelBrandEmWord(w0, prevText)) {
+        parts.push("em-vowel");
+      }
+      if (isEmWord(w0) && !skipEm) {
+        parts.push("em");
+      }
       var sp = document.createElement("span");
-      sp.className = "kw" + (isEmWord(w0) && !skipEm ? " em" : "");
+      sp.className = parts.join(" ");
       sp.id = "kw-" + item.index;
       sp.textContent = w0.text + " ";
       container.appendChild(sp);

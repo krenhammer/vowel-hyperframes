@@ -31,6 +31,9 @@ body {
   --rag-debug-icon: rgba(120, 205, 255, 0.95);
   --rag-debug-ring-glow: rgba(70, 160, 255, 0.2);
   --rag-debug-caption-em: #7ec8ff;
+  /* “Get started today” CTA (outro only) — light blue, not product mint */
+  --outro-vowel-link: #a8d4ff;
+  --outro-vowel-link-border: color-mix(in srgb, #a8d4ff 55%, transparent);
   --wipe-a: #1a3328;
   --wipe-b: #0f211a;
   --scene-slate: #0a101c;
@@ -192,8 +195,8 @@ body {
   height: 100%;
 }
 /*
- * RAG tab backgrounds: same marquee mechanics as .turso-bg-marquee (row / track / 2× chunk, alternating
- * scroll). AnimatedImageBackground marquee was unreliable here; this DOM matches the working Turso pattern.
+ * RAG tab backgrounds: same row / track / 2× chunk as Turso, but PNG rotor is not rotated (horizontal drift).
+ * AnimatedImageBackground marquee was unreliable here; this DOM matches the working Turso pattern.
  */
 .rag-screenshot-marquee {
   position: absolute;
@@ -202,15 +205,15 @@ body {
   pointer-events: none;
   background: #0a1424;
 }
+/* PNG strips scroll horizontally; SVG marquees (Turso / browser / doc icons / RAG circle) keep diagonal/vertical rotors. */
 .rag-screenshot-marquee__rotor {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 580vmin;
-  height: 580vmin;
-  margin-left: -290vmin;
-  margin-top: -290vmin;
-  transform: rotate(-45deg);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  transform: none;
   transform-origin: 50% 50%;
   background: #0a1424;
 }
@@ -263,7 +266,7 @@ body {
   user-select: none;
   -webkit-user-drag: none;
 }
-/* Vowel API key configuration: same tile treatment as file/chat marquees (diagonal field = .rag-screenshot-marquee__rotor only). */
+/* Vowel API key configuration: same tile treatment as file/chat marquees. */
 .rag-screenshot-marquee--config-api {
   background: #071018;
 }
@@ -947,10 +950,31 @@ body {
   color: var(--accent-2);
   font-weight: 800;
 }
-/* AI overlay never uses cyan emphasis (wins over rule above) */
+/* Vowel / vowel + brand “docs” / docs.vowel.to — white, lowercase, subtle glow (overrides mint + RAG-CTA blue) */
+#karaoke-stage .kw.em-vowel,
+#karaoke-wrap.karaoke-wrap--rag-cta #karaoke-stage .kw.em-vowel,
+#karaoke-wrap.karaoke-wrap--rag-cta #karaoke-stage .kw.em.em-vowel {
+  color: #fff;
+  text-transform: lowercase;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.35), 0 0 22px rgba(255, 255, 255, 0.18);
+}
+/* AI overlay never uses mint emphasis (wins over rule above) */
 #karaoke-stage .beat-block.beat-ai .kw.em {
   color: #f2f2f2;
   font-weight: 400;
+}
+#karaoke-stage .beat-block.beat-ai .kw.em-vowel {
+  color: #fff;
+  text-transform: lowercase;
+  font-weight: 400;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.32), 0 0 20px rgba(255, 255, 255, 0.14);
+}
+#karaoke-stage .beat-block.beat-ai .kw.em.em-vowel {
+  color: #fff;
+  text-transform: lowercase;
+  font-weight: 400;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.32), 0 0 20px rgba(255, 255, 255, 0.14);
 }
 
 #opener {
@@ -1023,11 +1047,11 @@ body {
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 52px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--outro-vowel-link);
   text-decoration: none;
   padding: 18px 36px;
   border-radius: 14px;
-  border: 2px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  border: 2px solid var(--outro-vowel-link-border);
   align-self: flex-start;
   text-align: left;
 }
