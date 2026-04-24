@@ -1,0 +1,49 @@
+<!--
+  BounceFloatAssets — drop (staggered) → float → optional bounce exit.
+
+  1) Copy this project’s:
+     - bounce-float-assets/BounceFloatAssets.css
+     - bounce-float-assets/BounceFloatAssets.js
+  2) Link CSS in <head> and include JS after GSAP, before your timeline script.
+  3) Add a full-bleed host inside your root composition (class="clip" on wrapper per HyperFrames):
+-->
+
+<div
+  id="bfa-host"
+  class="clip"
+  style="position: absolute; inset: 0; z-index: 0"
+  data-start="0"
+  data-duration="30"
+  data-track-index="2"
+  aria-hidden="true"
+></div>
+
+<!--
+  4) In your script (after gsap + window.__timelines[...]):
+
+  var bfa = new BounceFloatAssets("#bfa-host", {
+    sources: ["assets/icon-a.svg", "assets/icon-b.png"],
+    perSourceCount: 1,
+    sizes: [48, 56],
+    // sizes can also match each source: [ 48, 56 ] with perSourceCount: 1
+    // or one size per instance when length === sources.length * perSourceCount
+    sizePx: 64,
+    seed: 0x1a2b3c4d,
+    centerBias: 0.72,
+    dropStagger: 0.1,
+    bounceExitDuration: 0.55,
+    exitMode: "linger",
+    // exitMode: "staggered" + exitStagger: 0.12
+  });
+  bfa.addToTimeline(tl, {
+    timeDropStart: 0,
+    timeFloatStart: 1.2,
+    timeExitStart: 8,
+    bounceExitDuration: 0.5,
+  });
+
+  exitMode: "linger" (default) — all items bounce up together at timeExitStart.
+  "staggered" — each item exits at timeExitStart + i * exitStagger.
+
+  If you omit timeExitStart, only drop + a finite default float is scheduled (defaultFloatBobs).
+-->

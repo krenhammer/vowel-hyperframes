@@ -1,0 +1,83 @@
+/**
+ * BounceFloatAssets — full-bleed layer of dropped / floating / exiting assets.
+ * Scope: .bfa* only. Include once per page; stack under content with z-index.
+ */
+
+.bfa {
+  --bfa-z: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  box-sizing: border-box;
+  z-index: var(--bfa-z);
+}
+
+.bfa__layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.bfa__item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+.bfa__mover {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+.bfa__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
+}
+
+/* backgroundColor + single-color art: mask the asset, fill = contrast vs scene */
+.bfa--bg-tinted {
+  --bfa-icon-fill: #8a5a6c;
+}
+.bfa--bg-tinted .bfa__mask {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bfa-icon-fill);
+  -webkit-mask-image: var(--bfa-item-mask);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-image: var(--bfa-item-mask);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+.bfa--bg-tinted .bfa__mover {
+  /* crisp edge on busy fields; no glow */
+  filter: drop-shadow(0 0.5px 0 rgba(0, 0, 0, 0.35));
+}
+
+/* Optional: <object> for SVG (same layout as img) */
+.bfa__object {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}

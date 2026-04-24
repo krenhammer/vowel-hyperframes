@@ -70,7 +70,7 @@
   }
   buildTursoCircleBgPattern();
 
-  /** Voweldocs nav CTA: -45° grid, 2× cells, random per-button press; assets/voweldocs-button.png */
+  /** Voweldocs nav CTA: -45° grid, large cells, random per-button press; assets/voweldocs-button.png */
   function buildVoweldocsNavAib() {
     var host = document.getElementById("voweldocs-cta-aib-host");
     if (!host || !window.AnimatedImageBackground) {
@@ -79,9 +79,9 @@
     return new window.AnimatedImageBackground(host, {
       imageSrc: "assets/voweldocs-button.png",
       angleDeg: -45,
-      cellSize: "min(20.8rem, 100%)",
-      cellMaxCap: "368px",
-      minCellSize: "160px",
+      cellSize: "min(41.6rem, 100%)",
+      cellMaxCap: "736px",
+      minCellSize: "320px",
       backgroundColor: "#121b2e",
       ringColor: "rgba(55, 189, 248, 0.4)",
       accentColor: "#37bdf8",
@@ -212,6 +212,63 @@
     }
     return -1;
   }
+
+  /** Same pixel size as .browser-bg-cell__logo (4.2em × --rows font-size). */
+  function browserLogoSizePx() {
+    var w = document.documentElement ? document.documentElement.clientWidth : 1080;
+    var fs = Math.max(68, Math.min(112, w * 0.068));
+    return Math.round(fs * 4.2);
+  }
+
+  /** `color` for `.kw` — drives BounceFloatAssets vs light caption (matches --text, #e8eef8). */
+  function readKaraokeCaptionTextColor() {
+    var el = document.querySelector("#karaoke-wrap .beat-block .kw") || document.querySelector("#karaoke-stage .kw");
+    if (el) {
+      var c = getComputedStyle(el).color;
+      if (c && c !== "rgba(0, 0, 0, 0)" && c !== "transparent") {
+        return c;
+      }
+    }
+    return "rgb(232, 238, 248)";
+  }
+
+  var docTypeIconsBfa = null;
+  function buildDocsTypeIconsScene() {
+    var host = document.getElementById("docs-type-icons-host");
+    if (!host || !window.BounceFloatAssets) {
+      return;
+    }
+    var sz = browserLogoSizePx();
+    docTypeIconsBfa = new window.BounceFloatAssets(host, {
+      /* file-doc / -pdf / -txt / -md: Phosphor Icons (MIT) — vendor-phosphor-*.svg in assets/ */
+      sources: [
+        "assets/vendor-phosphor-file-doc.svg",
+        "assets/vendor-phosphor-file-pdf.svg",
+        "assets/vendor-phosphor-file-txt.svg",
+        "assets/vendor-phosphor-file-md.svg",
+      ],
+      /* Ties Phosphor SVGs to the stage; `captionTextColor` keeps icons below karaoke in hierarchy */
+      backgroundColor: "#3a1434",
+      captionTextColor: readKaraokeCaptionTextColor(),
+      iconCaptionLuminanceMinGap: 0.28,
+      iconTintToWhite: 0.19,
+      perSourceCount: 3,
+      sizePx: sz,
+      centerBias: 0.38,
+      placementOrder: "centerOut",
+      seed: 0x2c7e19a4,
+      dropStagger: 0.055,
+      dropDuration: 0.65,
+      floatYAmpPx: 7,
+      floatXAmpPx: 5,
+      floatDuration: 1.45,
+      defaultFloatBobs: 4,
+      bounceOnExit: false,
+      className: "bfa--doc-icons",
+      minSeparationPx: Math.max(8, Math.round(sz * 0.035)),
+    });
+  }
+  buildDocsTypeIconsScene();
 
   function isSentenceEnd(w) {
     return /[.?!]$/.test(w.text);
@@ -450,6 +507,7 @@
   gsap.set("#rag-debug-bg-marquee", { opacity: 0 });
   gsap.set("#turso-bg-pattern", { opacity: 0 });
   gsap.set("#browser-bg-pattern", { opacity: 0 });
+  gsap.set("#docs-type-icons-bg", { autoAlpha: 0 });
   gsap.set("#outro-layer", { opacity: 0 });
   gsap.set("#ow-in, #ow-the, #ow-browser", { opacity: 0 });
   /* Headline visible from frame 0; subline “in / the / browser.” fades in word-by-word. */
@@ -810,6 +868,17 @@
   var tBrowserPatternIn = iIfWeMentionAnd >= 0 ? Math.max(0, WORDS[iIfWeMentionAnd].start - 0.04) : 15.25;
   var tBrowserPatternOut = iMentionInTheBrowser >= 0 ? WORDS[iMentionInTheBrowser].end + 0.32 : 17.7;
 
+  /* “You can load up hundreds of documents …” — doc-type BounceFloat (center-out, no bounce exit). */
+  var iYouHundreds = firstWordIndex(function (x) {
+    return stripPunct(x.text) === "You" && x.start > 9 && x.start < 12;
+  });
+  var iSub50Millis = firstWordIndex(function (x) {
+    return /milliseconds/i.test(x.text) && x.start < 20;
+  });
+  var tDocIconsIn = iYouHundreds >= 0 ? Math.max(0, WORDS[iYouHundreds].start - 0.16) : 10.66;
+  var tDocIconsOut = iSub50Millis >= 0 ? WORDS[iSub50Millis].end + 0.3 : 15.12;
+  var tDocIconsFloatStop = tDocIconsOut - 0.12;
+
   /* RAG CTA times: iClickRagDebug / tRagButton* / iRagCtaLastIdx are defined above the kw loop. */
   var iClickVoweldocsNav = -1;
   for (var _vn = 0; _vn < WORDS.length - 2; _vn++) {
@@ -884,6 +953,34 @@
     { opacity: 0, duration: 0.42, ease: "power2.in" },
     tBrowserPatternOut
   );
+
+  if (docTypeIconsBfa) {
+    tl.call(
+      function syncDocTypeIconsToStageBg() {
+        var b = document.getElementById("stage-bg");
+        if (!b || !docTypeIconsBfa) {
+          return;
+        }
+        var c = getComputedStyle(b).backgroundColor;
+        if (c && c !== "rgba(0, 0, 0, 0)" && c !== "transparent") {
+          docTypeIconsBfa.setBackgroundColor(c, readKaraokeCaptionTextColor());
+        }
+      },
+      [],
+      tDocIconsIn + 0.08
+    );
+    tl.to("#docs-type-icons-bg", { autoAlpha: 1, duration: 0.3, ease: "sine.out" }, tDocIconsIn);
+    docTypeIconsBfa.addToTimeline(tl, {
+      timeDropStart: tDocIconsIn + 0.04,
+      timeExitStart: tDocIconsFloatStop,
+      bounceOnExit: false,
+    });
+    tl.to(
+      "#docs-type-icons-bg",
+      { autoAlpha: 0, duration: 0.42, ease: "power2.in" },
+      tDocIconsOut
+    );
+  }
 
   runWipe(22.02, "#3a1434");
   runWipe(40.28, "#1a0f24");
