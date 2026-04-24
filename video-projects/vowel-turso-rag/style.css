@@ -1,5 +1,4 @@
-/* Shared + per-scene layout (vowel-webmcp pattern: one CSS file, #scene1 … #sceneN) */
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,800&family=JetBrains+Mono:wght@500;600&display=swap");
 
 * {
   margin: 0;
@@ -11,146 +10,38 @@ body {
   width: 1080px;
   height: 1920px;
   overflow: hidden;
-  background: #0a0a0f;
+  background: #06080f;
   font-family: "DM Sans", system-ui, sans-serif;
 }
 
 :root {
   --bg-deep: #06080f;
-  --bg-panel: #0c1220;
   --text: #e8eef8;
-  --muted: #8b9bb8;
+  --muted: #7a8aa8;
   --accent: #3ecf8e;
   --accent-2: #4cc9f0;
-  --hot: #f4a261;
-  --chrome: linear-gradient(120deg, #e8eef8 0%, #4cc9f0 45%, #3ecf8e 100%);
-  /* Turso: subtle green (scene 2 + cover wipes end on this hue) */
   --turso-bg: #0c1814;
-  --turso-bg-deep: #0a1210;
-  --turso-hero-mint: #5dc896;
-  --wipe-turso-a: #1a3328;
-  --wipe-turso-b: #0f211a;
-  /* Scene 3 (perf) — cool slate that bridges into scene 4 */
-  --scene3-bg: #0a101c;
-  /* scene 4: “So you could say” (sec1) vs “we now inject” (sec2) — background tweened in script.js */
-  /* “So you could say” (sec1) — full rose/magenta; sec2 tweens to inject purple in script.js */
-  --s4-so-pink: #4a1840;
-  --s4-inject-purple: #22122e;
+  --turso-mint: #5dc896;
+  --wipe-a: #1a3328;
+  --wipe-b: #0f211a;
+  --scene-slate: #0a101c;
+  --scene-pink: #3a1434;
+  --scene-purple: #1a0f24;
 }
 
-/* 3D snapshot treatment (same visual language as the ui-3d-reveal block — perspective card, off-axis, continuous orbit; works with static PNGs). */
-.ui3d {
+#root {
   position: relative;
-  width: 100%;
-  max-width: 100%;
-  perspective: 2200px;
-  perspective-origin: 44% 36%;
-  transform-style: preserve-3d;
-}
-.ui3d-glow {
-  position: absolute;
-  inset: -10% -8% -12% -8%;
-  background: radial-gradient(ellipse 72% 58% at 50% 38%, rgba(76, 201, 240, 0.2), rgba(62, 207, 142, 0.08) 45%, transparent 70%);
-  filter: blur(40px);
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.9;
-}
-.ui3d-glow.sm {
-  filter: blur(24px);
-  inset: -6% -4% -8% -4%;
-  opacity: 0.75;
-}
-.ui3d-sway {
-  position: relative;
-  z-index: 1;
-  transform-style: preserve-3d;
-  will-change: transform;
-  backface-visibility: hidden;
-  border-radius: inherit;
-  transform: rotateX(5deg) rotateY(-28deg) translateZ(0) rotateZ(0.2deg);
-}
-/* Applied by master script after the entrance; infinite deterministic orbit (Y/X/Z + Z translate). */
-.ui3d-sway.sway-on {
-  animation: ui3d-orbit 8.5s ease-in-out 0.3s infinite;
-}
-/* Desync motion between stacked shots so orbits do not read as one locked loop. */
-#s5-card-root,
-#s6-card-root {
-  animation-delay: 0.1s;
-}
-#sway7-talk {
-  animation-delay: 0.15s;
-}
-#sway7-self {
-  animation-delay: 0.25s;
-}
-@keyframes ui3d-orbit {
-  0% {
-    transform: rotateX(5deg) rotateY(-28deg) translateZ(0) rotateZ(0.2deg);
-  }
-  25% {
-    transform: rotateX(3.5deg) rotateY(-18deg) translateZ(16px) rotateZ(-0.12deg);
-  }
-  50% {
-    transform: rotateX(6.2deg) rotateY(-36deg) translateZ(4px) rotateZ(0.08deg);
-  }
-  75% {
-    transform: rotateX(4.1deg) rotateY(-22deg) translateZ(12px) rotateZ(0.18deg);
-  }
-  100% {
-    transform: rotateX(5deg) rotateY(-28deg) translateZ(0) rotateZ(0.2deg);
-  }
-}
-
-.scene {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 1080px;
   height: 1920px;
   overflow: hidden;
 }
 
-.scene-content {
-  width: 100%;
-  height: 100%;
-  padding: 100px 140px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 28px;
-}
-
-/* Scenes 1–2: typography + layout match vowel-webmcp scene-01 + scene-02 */
-#scene1 {
-  background: #0a0a0f;
-}
-#scene1 .scene-content {
-  padding: 80px 120px;
-  gap: 24px;
-}
-#scene1 .title {
-  font-family: "Outfit", sans-serif;
-  font-size: 320px;
-  font-weight: 900;
-  color: #fff;
-  line-height: 0.85;
-  letter-spacing: -10px;
-  text-align: center;
-}
-#scene1 .ready {
-  font-family: "Outfit", sans-serif;
-  font-size: 72px;
-  font-weight: 700;
-  color: #fff;
-  text-align: center;
-  letter-spacing: 20px;
-  margin-top: 40px;
-}
-#scene1 .ready span {
-  display: inline-block;
-  opacity: 1;
+#stage-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg-deep);
+  pointer-events: none;
 }
 
 #cover-wipe-a,
@@ -159,761 +50,232 @@ body {
   inset: 0;
   transform: translateX(-1080px);
   pointer-events: none;
+  z-index: 120;
 }
 #cover-wipe-a {
-  z-index: 100;
-  background: var(--wipe-turso-a);
+  background: var(--wipe-a);
 }
 #cover-wipe-b {
-  z-index: 99;
-  background: var(--wipe-turso-b);
+  z-index: 119;
+  background: var(--wipe-b);
 }
 
-#scene2 {
-  background: var(--turso-bg);
-}
-/* Single full-frame host: no in-flow "ghost" height; override .scene-content flex (was shifting layout). */
-#scene2 .scene2-stack.scene-content {
-  display: block !important;
-  flex-direction: initial;
-  justify-content: initial;
-  align-items: initial;
-  gap: 0;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-  margin: 0;
-  padding: 0 !important;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-#scene2 .s2-prologue-center {
+/* Floating UI screenshots — no 3D; gentle bob + shadow */
+/* Do not CSS-animate transform here — GSAP owns opacity/y/scale on these imgs */
+.float-shot {
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 120px;
-  box-sizing: border-box;
-  z-index: 1;
-  text-align: center;
+  z-index: 8;
+  width: 460px;
+  height: auto;
+  border-radius: 14px;
+  filter: drop-shadow(0 28px 56px rgba(0, 0, 0, 0.55));
+  opacity: 0;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
-#scene2 .s2-post-layer {
+
+#turso-ribbon {
   position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  overflow: visible;
-}
-#scene2 .s2-post-layer .label,
-#scene2 .s2-post-layer .headline {
-  position: absolute;
+  top: 120px;
   left: 0;
   right: 0;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  max-width: none;
+  z-index: 6;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 64px 120px;
-  box-sizing: border-box;
-  text-align: center;
-  margin: 0;
-  pointer-events: auto;
-  z-index: 1;
-}
-/* Headline is a later sibling; at opacity: 0 it still stacks above the label. Keep the question on top. */
-#scene2 .s2-post-layer #s2Label {
-  z-index: 3;
-  /* More horizontal room so “How does this work?” stays one line at large sizes */
-  padding-left: 24px;
-  padding-right: 24px;
-}
-#scene2 .s2-post-layer #s2Headline {
-  z-index: 2;
-}
-#scene2 .s2-post-layer .label {
-  font-family: "Outfit", sans-serif;
-  /* One line on 1080px canvas; do not set max-width < 100% or the question wraps */
-  font-size: clamp(112px, 10.5vw, 200px);
-  font-weight: 800;
-  color: #fff;
-  text-transform: none;
-  letter-spacing: 0.02em;
-  line-height: 1.1;
-  max-width: 100%;
-  box-sizing: border-box;
-  white-space: nowrap;
-  text-wrap: nowrap;
-  transform-origin: 50% 50%;
-}
-#scene2 .s2-post-layer .headline {
-  font-family: "Outfit", sans-serif;
-  font-size: 64px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.12;
-  max-width: 1700px;
-}
-#scene2 .s2-post-layer .headline .s2-h2-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.42em;
-  margin: 0;
-  max-width: 100%;
-  line-height: 1.22;
-}
-#scene2 .s2-post-layer .headline .s2-h2-line {
-  display: block;
-  text-wrap: balance;
+  gap: 20px;
+  pointer-events: none;
   opacity: 0;
-  transform: translateY(8px);
-  will-change: transform, opacity;
 }
-#scene2 .s2-post-layer .headline em {
-  color: #4895ef;
-  font-style: normal;
-}
-#scene2 .s2-prologue {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 1500px;
-  flex: 0 0 auto;
-  transform: translateZ(0);
-  will-change: transform, opacity;
-}
-#scene2 .s2-turso-hero {
+#turso-ribbon .ribbon-inner {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center; /* mark height = word cap / em box */
-  justify-content: center;
-  gap: 0.14em;
-  /* One em — logo uses 1em square, TURSO uses 1em type (Outfit) */
-  font-size: clamp(110px, 8.2vw, 200px);
-  line-height: 1;
-  color: var(--turso-hero-mint);
-  transform-origin: 50% 50%;
-  will-change: transform, opacity;
-}
-#scene2 .s2-turso-word {
-  font-family: "Outfit", sans-serif;
-  font-size: 1em;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  text-align: start;
-  white-space: nowrap;
-  padding: 0;
-  margin: 0;
-  color: inherit;
-}
-#scene2 .s2-turso-logo {
-  display: block;
-  /* Match TURSO cap height; slight nudge for optical balance with the word */
-  width: 1.08em;
-  height: 1.08em;
-  flex: 0 0 auto;
-  filter: drop-shadow(0 0 28px rgba(74, 222, 128, 0.4));
-}
-#scene2 .s2-kinetic {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.4em;
+  justify-content: center;
+  gap: 0.12em;
+  font-size: clamp(72px, 7vw, 120px);
+  line-height: 1;
+  color: var(--turso-mint);
+}
+#turso-ribbon .turso-svg {
+  width: 1.05em;
+  height: 1.05em;
+  filter: drop-shadow(0 0 24px rgba(74, 222, 128, 0.35));
+}
+#turso-ribbon .turso-wordmark {
+  font-family: "Outfit", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+#karaoke-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 200px 40px 220px;
+  pointer-events: none;
+}
+#karaoke-root {
   width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0 0.5rem;
+  max-width: 1000px;
+  text-align: center;
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1.32;
+  color: var(--text);
+  perspective: 1100px;
+  transform-style: preserve-3d;
+}
+
+/* One transcript “beat” at a time — prevents the teleprompter wall-of-text */
+#karaoke-stage {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  max-height: 1000px;
+  overflow: hidden;
+}
+
+.beat-block {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 12px;
+  box-sizing: border-box;
+  text-align: center;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  flex: 0 0 auto;
-}
-#scene2 .s2-kinetic .s2-line {
-  font-family: "Outfit", sans-serif;
-  font-size: clamp(64px, 5.8vw, 108px);
-  font-weight: 700;
-  color: #e8eef8;
-  line-height: 1.2;
-  margin: 0;
-}
-#scene2 .s2-kinetic .k-w {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(8px);
-}
-#scene2 .s2-kinetic .s2-rag {
-  color: #4cc9f0;
-  font-weight: 800;
-}
-#scene3 {
-  background: var(--scene3-bg);
-}
-#scene3 .s3h {
-  font-size: 64px;
-  font-weight: 700;
-  color: var(--text);
-}
-#scene3 .stat-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 32px 48px;
-  align-items: flex-end;
-}
-#scene3 .stat {
-  font-size: 52px;
-  font-weight: 800;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-#scene3 .stat small {
-  display: block;
-  font-size: 22px;
-  font-weight: 500;
-  color: var(--accent-2);
-  margin-top: 8px;
-}
-#scene3 .punch {
-  font-size: 48px;
-  font-weight: 800;
-  color: #e8eef8;
-}
-#scene3 .punch .grad {
-  background: var(--chrome);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-#scene4 {
-  /* One type scale for the whole two-part beat: match the pre-embed headline. */
-  --d4-size: clamp(36px, 3.2vw, 48px);
-  /* Sec1 “So you could say” — sec2 = inject beat (tweened purple in script.js) */
-  background: var(--s4-so-pink);
-}
-#scene4 .scene4-inner {
-  box-sizing: border-box;
-  padding: 64px 120px 64px;
-  height: 100%;
-  min-height: 100%;
-  max-height: 1920px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-/* Sec1 and sec2 occupy the same frame so the swap doesn’t reflow. */
-#scene4 .d4-stage {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  min-height: 640px;
-}
-#scene4 .d4-sec {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  transform: translateY(-50%);
-  box-sizing: border-box;
-}
-#d4-sec1 {
-  z-index: 1;
-}
-#d4-sec2 {
-  z-index: 2;
-}
-#scene4 .d4-line,
-#scene4 p.d4-line,
-#scene4 h2.d4-line {
-  font-family: "Outfit", system-ui, sans-serif;
-  color: var(--text);
-  margin: 0;
-  text-align: left;
-  width: 100%;
-  max-width: 100%;
-}
-#scene4 .d4-kick,
-#scene4 .s4h,
-#scene4 h2.s4h.d4-line,
-#scene4 p.d4-line {
-  font-size: var(--d4-size);
-  line-height: 1.2;
-  color: var(--text);
-}
-#scene4 .d4-kick {
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-#scene4 .s4h,
-#scene4 h2.s4h.d4-line {
-  font-weight: 700;
-}
-#scene4 p.d4-line:not(.d4-kick) {
-  font-weight: 500;
-}
-
-/* Part one only — “So you could say …” screen: much larger type for vertical readability */
-#d4-sec1 {
-  gap: 1.35rem;
-}
-#d4-sec1 .d4-kick {
-  font-size: clamp(58px, 6.4vw, 86px) !important;
-  line-height: 1.1;
-  letter-spacing: 0.08em;
-}
-#d4-sec1 .s4h,
-#d4-sec1 h2.s4h.d4-line {
-  font-size: clamp(52px, 5.5vw, 76px) !important;
-  line-height: 1.14;
-}
-#d4-sec1 p.d4-line:not(.d4-kick) {
-  font-size: clamp(44px, 4.5vw, 62px) !important;
-  line-height: 1.22;
-}
-
-/* Part two — “we now inject the graded results …” (RAG + voice client + erudite discussion) */
-#d4-sec2 {
-  gap: 1.35rem;
-}
-#d4-sec2 .d4l5,
-#d4-sec2 .d4l6 {
-  font-size: clamp(50px, 5.1vw, 70px) !important;
-  line-height: 1.16;
-  font-weight: 600;
-}
-#d4-sec2 .d4l7,
-#d4-sec2 .d4l8 {
-  font-size: clamp(44px, 4.5vw, 62px) !important;
-  line-height: 1.22;
-  font-weight: 500;
-}
-
-#scene4 .d4-line strong,
-#scene4 .d4-emu {
-  color: #4cc9f0;
-  font-style: normal;
-  font-weight: 700;
-}
-
-/*
- * .prime-cta: shared CTA / screenshot stack (scenes 5, 6, 7) in the 1080×1920 box.
- * Vertically center the whole .s5-stage in the frame — top-only alignment left ~half the canvas
- * empty (dead black) below the shot. .s5-perspective uses display:contents so .s5-stage is the flex child.
- */
-.prime-cta {
-  /* Scenes E / H / I: one scale — do not one-off .wow / .h6- / .s7- sizes elsewhere */
-  --prime-cta-hero: clamp(72px, 6.5vw, 120px);
-  --prime-cta-kicker: clamp(28px, 2.6vw, 40px);
-  --prime-cta-sub: clamp(32px, 2.85vw, 46px);
-  background: var(--bg-deep);
-  width: 1080px;
-  height: 1920px;
-  min-height: 1920px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(32px, 3vh, 48px) 0;
-  box-sizing: border-box;
-}
-.prime-cta .s5-perspective {
-  display: contents;
-}
-.prime-cta .s5-stage {
-  position: relative;
-  left: auto;
-  top: auto;
-  transform: none;
-  justify-self: center;
-  align-self: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  /* Tight copy → screenshot; min-height on text was removed (was 760px — huge dead air) */
-  gap: clamp(14px, 1.2vh, 22px);
-  width: 100%;
-  max-width: 1800px;
-  padding: 0 56px;
-  box-sizing: border-box;
-}
-.prime-cta .s5-zoom-root {
-  display: none;
-  position: relative;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  transform-style: preserve-3d;
   transform-origin: 50% 50%;
-  will-change: transform;
-  z-index: 1;
-  pointer-events: none;
-  flex-shrink: 0;
 }
-.prime-cta .s5-text-col {
-  position: relative;
-  width: min(1600px, 92vw);
-  padding: 0 48px;
-  text-align: center;
-  z-index: 2;
-  pointer-events: none;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.2em;
-  flex-shrink: 0;
-}
-#scene5 .s5-callouts {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
+
+.beat-inner {
   width: 100%;
-  margin: 0;
-  padding: 0;
-}
-#scene5 .wow,
-#scene6 .h6-line,
-#scene7 .s7-eyebrow {
-  font-family: "Outfit", sans-serif;
-  font-size: var(--prime-cta-hero);
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.12;
-  text-wrap: balance;
+  max-width: 940px;
   text-align: center;
-  width: 100%;
-  margin: 0;
 }
-#scene5 .wow {
-  margin: 0 0 0.35em;
-}
-#scene7 .s7-eyebrow {
-  margin: 0 0 0.2em;
-}
-#scene5 .wow .wow-w1,
-#scene5 .wow .wow-w2 {
-  display: inline;
-}
-#scene6 .h6-sec,
-#scene5 .s5-q {
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: var(--prime-cta-kicker);
-  font-weight: 500;
-  color: var(--muted);
+
+.beat-block.beat-tight .kw {
+  font-size: 46px;
   line-height: 1.3;
-  text-align: center;
-  width: 100%;
-  text-wrap: balance;
-  letter-spacing: 0.02em;
-  margin: 0;
 }
-#scene6 .h6-sec {
-  margin: 0 0 0.2em;
-}
-#scene5 .s5-q {
-  margin: 0.15em 0 0.5em;
-}
-#scene5 .s5-q .s5-qw {
+
+/* inline-block: transforms apply; GSAP owns motion */
+#karaoke-stage .kw {
   display: inline-block;
-  margin-right: 0.22em;
-  will-change: transform, opacity;
-}
-#scene5 .s5-q .s5-qw:last-child {
-  margin-right: 0;
-}
-/* One type size for all scene-5 CTA / callout lines */
-#scene5 .s5-goto {
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: var(--prime-cta-sub);
-  font-weight: 600;
-  color: var(--muted);
-  margin: 0;
-  line-height: 1.28;
-}
-#scene5 .s5-goto .s5-url {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 1em;
-  color: var(--accent-2);
-  font-weight: 600;
-}
-#scene5 .s5-instruct,
-#scene5 .s5-panel-lead,
-#scene5 .s5-tab-docs,
-#scene5 .s5-tab-chat {
-  display: none;
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: var(--prime-cta-sub);
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.28;
-  text-wrap: balance;
-  width: 100%;
-  max-width: min(56rem, 92vw);
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-#scene5 .s5-instruct,
-#scene5 .s5-panel-lead {
-  color: var(--text);
-}
-#scene5 .s5-tab-docs,
-#scene5 .s5-tab-chat {
-  color: var(--muted);
-}
-#scene5 .s5-instruct .s5-iw {
-  display: inline-block;
-  margin-right: 0.18em;
+  margin-right: 0.12em;
+  margin-bottom: 0.06em;
   opacity: 0;
-}
-#scene5 .s5-instruct .s5-iw:last-child {
-  margin-right: 0;
-}
-#scene5 .s5-panel-lead,
-#scene5 .s5-tab-docs,
-#scene5 .s5-tab-chat {
-  opacity: 0;
-}
-.prime-cta .s5-img-stack {
-  position: relative;
-  width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  /* Stable box before images decode (avoids layout jump in Studio / hot reload). */
-  min-height: 400px;
-  aspect-ratio: 8 / 5;
-  background: rgba(0, 0, 0, 0.2);
-}
-.prime-cta .s5-img-stack .s5-img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-#scene5 .s5-img-rag,
-#scene5 .s5-img-chat {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  opacity: 0;
-}
-/* Larger product shots — nearly full 9:16 width */
-.prime-cta .s5-shot {
-  position: relative;
-  width: min(1040px, 100%);
-  max-width: 1040px;
-  margin: 0 auto;
-  z-index: 1;
-  opacity: 0;
-  border-radius: 12px;
-  overflow: visible;
-  filter: drop-shadow(0 28px 56px rgba(0, 0, 0, 0.55));
-}
-/* Perspective: pronounced twist without extreme skew */
-.prime-cta .s5-shot .ui3d {
-  perspective: min(4400px, 250vw);
-  perspective-origin: 50% 42%;
-}
-.prime-cta .s5-shot .ui3d-sway {
-  border-radius: 12px;
-  overflow: hidden;
-}
-/* Baseline tilt; GSAP pushes a stronger left / right twist */
-.prime-cta .s5-card-tilt {
-  transform: rotateX(3.5deg) rotateY(-14deg) translateZ(0) rotateZ(0.1deg);
-  animation: none !important;
+  transform-origin: 50% 80%;
   transform-style: preserve-3d;
+  will-change: transform, opacity;
+  vertical-align: baseline;
+  font-size: 64px;
+  line-height: 1.26;
+}
+#karaoke-stage .kw.em {
+  color: var(--accent-2);
+  font-weight: 800;
 }
 
-/* h6-sec = kicker; h6-line = hero (see #scene5 .wow, #scene7 .s7-eyebrow group above) */
-#scene6 .s6-hero-beat {
-  position: relative;
-}
-#scene6 .s6-cfg-beat {
+#opener {
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-}
-#scene6 .s6-nav {
-  position: absolute;
-  top: 4%;
-  right: 3%;
-  width: 12%;
-  height: auto;
-  opacity: 0;
-  pointer-events: none;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
-}
-#scene6 .s6-mic {
-  position: absolute;
-  bottom: 5%;
-  right: 6%;
-  width: 14%;
-  height: auto;
-  opacity: 0;
-  pointer-events: none;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
-}
-#scene6 .h6-cap {
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: var(--prime-cta-sub);
-  font-weight: 600;
-  color: var(--muted);
-  text-align: center;
-  width: 100%;
-  max-width: min(56rem, 96vw);
-  margin: 0.35em 0 0;
-  line-height: 1.28;
-  text-wrap: balance;
-  padding: 0 12px;
-  box-sizing: border-box;
-}
-
-/* Scene 7: no DOM caption rows; masks paint over baked-in chrome in PNGs. */
-/* Stack like scene E: one .s5-shot, grid-stacked layers — match E/H image block size. */
-#scene7 .s5-shot.s7-shot-layers {
-  position: relative;
-  display: grid;
-  min-height: 400px;
-  min-width: 0;
-  aspect-ratio: 8 / 5;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  overflow: visible;
-}
-#scene7 .s5-shot.s7-shot-layers .s7-layer {
-  grid-area: 1 / 1;
-  position: relative;
-  z-index: 1;
+  inset: 0;
+  z-index: 15;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  box-sizing: border-box;
-}
-#scene7 .s5-shot.s7-shot-layers #self7 {
-  z-index: 2;
-}
-#scene7 .s5-shot.s7-shot-layers .ui3d {
-  width: 100%;
-  max-width: 100%;
-}
-#scene7 .s5-shot.s7-shot-layers .ui3d-sway {
-  width: 100%;
-  max-width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-}
-#scene7 #talk7 {
-  opacity: 0;
-  z-index: 1;
-}
-#scene7 #self7 {
-  opacity: 0;
-  z-index: 2;
   pointer-events: none;
+  background: transparent;
 }
-/* Framed shot + solid masks over baked-in docs UI (mic FAB, assistant popover). Percents track the PNG layout. */
-#scene7 .s7-shot-frame {
-  position: relative;
-  width: 100%;
-  border-radius: 10px;
-  overflow: hidden;
-  line-height: 0;
-}
-#scene7 .s7-shot-frame .s7-ui-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 10px;
-  vertical-align: bottom;
-}
-#scene7 .s7-chrome-mask {
-  position: absolute;
-  pointer-events: none;
-  z-index: 2;
-  box-sizing: border-box;
-}
-#scene7 .s7-mask-fab {
-  right: 1.2%;
-  bottom: 1.6%;
-  width: 16%;
-  height: 22%;
-  max-height: 24%;
-  border-radius: 999px;
-  background: #0a0a0c;
-  box-shadow: 0 0 0 3px #0a0a0c;
-}
-/* Bottom “Assistant / welcome” style strip inside self-host capture */
-#scene7 .s7-mask-bottom {
-  left: 2%;
-  bottom: 2%;
-  width: 96%;
-  height: 24%;
-  border-radius: 10px;
-  background: #0a0a0c;
-  box-shadow: 0 0 0 2px #0a0a0c;
-}
-/* TTS “to self host…” copy is not shown on screen — use audio track only. */
-
-#scene8 {
-  background: var(--bg-deep);
-}
-#scene8 .out1 {
-  font-size: 72px;
-  font-weight: 800;
+#opener-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
   text-align: center;
-  max-width: 1200px;
-  color: var(--text);
-  margin: 0;
+  padding: 0 80px;
 }
-#scene8 .url-pill {
+#title-rag {
+  font-family: "Outfit", sans-serif;
+  font-size: 300px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 0.85;
+  letter-spacing: -12px;
+  opacity: 0;
+  transform-origin: 50% 50%;
+}
+.opener-sub {
+  font-family: "Outfit", sans-serif;
+  font-size: 68px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.18em;
+}
+.opener-sub span {
   display: inline-block;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 56px;
-  font-weight: 600;
-  margin-top: 8px;
-  padding: 20px 36px;
-  border-radius: 12px;
-  border: 2px solid rgba(62, 207, 142, 0.5);
-  color: #3ecf8e;
-  text-decoration: none;
+  opacity: 0;
 }
 
-#scene2,
-#scene3,
-#scene4,
-#scene5,
-#scene6,
-#scene7,
-#scene8 {
+#outro-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 80px 72px;
+  text-align: center;
+  background: radial-gradient(ellipse 80% 70% at 50% 40%, #0f1728 0%, #06080f 62%);
   opacity: 0;
+  pointer-events: none;
+}
+#outro-layer .out-hero {
+  font-family: "Outfit", sans-serif;
+  font-size: 64px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+  max-width: 920px;
+}
+#outro-layer .out-url {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 52px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 18px 36px;
+  border-radius: 14px;
+  border: 2px solid rgba(62, 207, 142, 0.45);
+}
+#outro-layer .out-attr {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: rgba(232, 238, 248, 0.38);
+  line-height: 1.45;
+  max-width: 880px;
+  margin-top: 1.2em;
+}
+
+/* Film grain veil */
+.grain-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 110;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

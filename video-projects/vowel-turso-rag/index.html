@@ -4,137 +4,222 @@
     <meta charset="UTF-8" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Outfit:wght@400;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@500;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      #root {
-        position: relative;
-        width: 1080px;
-        height: 1920px;
-        overflow: hidden;
-      }
-      .scene-layer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 1080px;
-        height: 1920px;
-      }
-    </style>
   </head>
   <body>
     <div
       id="root"
-      data-composition-id="turso-rag-master"
+      data-composition-id="vowel-turso-rag-master"
       data-width="1080"
       data-height="1920"
       data-start="0"
-      data-duration="47.5"
+      data-duration="139.786"
     >
+      <!-- Narration + BGM: separate <audio> tags, different data-track-index (HyperFrames mixer) -->
       <audio
-        id="el-a"
+        id="voice"
+        preload="auto"
         data-start="0"
-        data-duration="47.5"
-        data-track-index="2"
-        src="assets/bgm.mp3"
-        data-volume="0.55"
+        data-duration="139.786"
+        data-track-index="0"
+        src="assets/turso-rag.wav"
+        data-volume="1"
+      ></audio>
+      <!--
+        BGM: sequential clips; render mix uses data-volume + data-media-start only.
+        Silent: from "Welcome" (88.242s) through AI demo + 1s pause after "credentials." (→ 118.671s), then bed back.
+      -->
+      <audio
+        id="bgm-pre"
+        preload="auto"
+        data-start="0"
+        data-duration="88.242"
+        data-track-index="1"
+        data-media-start="0"
+        src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3"
+        data-volume="0.22"
+      ></audio>
+      <audio
+        id="bgm-dialogue"
+        preload="auto"
+        data-start="88.242"
+        data-duration="30.429"
+        data-track-index="1"
+        data-media-start="88.242"
+        src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3"
+        data-volume="0"
+      ></audio>
+      <audio
+        id="bgm-post"
+        preload="auto"
+        data-start="118.671"
+        data-duration="17.115"
+        data-track-index="1"
+        data-media-start="118.671"
+        src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3"
+        data-volume="0.22"
+      ></audio>
+      <!-- Last 4s: bed out of the mix (GSAP does not affect audio in render) -->
+      <audio
+        id="bgm-outro-silence"
+        preload="auto"
+        data-start="135.786"
+        data-duration="4"
+        data-track-index="1"
+        data-media-start="135.786"
+        src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3"
+        data-volume="0"
       ></audio>
 
       <div
-        class="scene-layer"
-        data-composition-id="turso-rag-sc-a"
-        data-composition-src="compositions/scene-a-title.html"
+        id="stage-bg"
+        class="clip"
         data-start="0"
-        data-duration="47.5"
-        data-track-index="0"
-        data-width="1080"
-        data-height="1920"
-      ></div>
-      <div
-        class="scene-layer"
-        data-composition-id="turso-rag-sc-b"
-        data-composition-src="compositions/scene-b-turso-wasm.html"
-        data-start="0"
-        data-duration="47.5"
-        data-track-index="1"
-        data-width="1080"
-        data-height="1920"
-      ></div>
-      <div
-        class="scene-layer"
-        data-composition-id="turso-rag-sc-c"
-        data-composition-src="compositions/scene-c-perf.html"
-        data-start="0"
-        data-duration="47.5"
-        data-track-index="3"
-        data-width="1080"
-        data-height="1920"
-      ></div>
-      <div
-        class="scene-layer"
-        data-composition-id="turso-rag-sc-d"
-        data-composition-src="compositions/scene-d-voweldocs.html"
-        data-start="0"
-        data-duration="47.5"
-        data-track-index="4"
-        data-width="1080"
-        data-height="1920"
-      ></div>
-      <div
-        class="scene-layer"
-        data-composition-id="turso-rag-sc-e"
-        data-composition-src="compositions/scene-e-cta-prime.html"
-        data-start="0"
-        data-duration="47.5"
-        data-track-index="5"
-        data-width="1080"
-        data-height="1920"
-      ></div>
-      <div
-        class="scene-layer"
-        data-composition-id="turso-rag-sc-h"
-        data-composition-src="compositions/scene-h-voice-setup.html"
-        data-start="0"
-        data-duration="47.5"
-        data-track-index="6"
-        data-width="1080"
-        data-height="1920"
-      ></div>
-      <div
-        class="scene-layer"
-        data-composition-id="turso-rag-sc-i"
-        data-composition-src="compositions/scene-i-dialogue.html"
-        data-start="0"
-        data-duration="47.5"
-        data-track-index="7"
-        data-width="1080"
-        data-height="1920"
-      ></div>
-      <div
-        class="scene-layer"
-        data-composition-id="turso-rag-sc-j"
-        data-composition-src="compositions/scene-j-outro.html"
-        data-start="0"
-        data-duration="47.5"
-        data-track-index="8"
-        data-width="1080"
-        data-height="1920"
+        data-duration="139.786"
+        data-track-index="2"
       ></div>
 
       <div id="cover-wipe-a" aria-hidden="true"></div>
       <div id="cover-wipe-b" aria-hidden="true"></div>
+
+      <div
+        id="turso-ribbon"
+        class="clip"
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="3"
+      >
+        <div class="ribbon-inner" aria-label="Turso">
+          <svg
+            class="turso-svg"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              fill="currentColor"
+              d="m23.31.803-.563-.42-1.11 1.189-.891-1.286-.512.235.704 1.798-.326.35L18.082 0l-.574.284 2.25 4.836-2.108.741h-.05l-1.143-1.359-1.144 1.36H8.687l-1.144-1.36-1.146 1.363H6.36l-2.12-.745L6.491.284 5.919 0l-2.53 2.668-.327-.349.705-1.798-.512-.236-.89 1.287L1.253.382.69.804 2.42 3.69l-.89.939.311 2.375 2.061.787L3.9 8.817H1.947v.444l.755 1.078 1.197.433v6.971l3.057 4.55L7.657 24l1.101-1.606L9.9 24l.999-1.606L12 24l1.102-1.606L14.1 24l1.141-1.606L16.343 24l.701-1.706 3.058-4.55v-6.972l1.196-.433.756-1.078v-.444h-1.952l.003-1.03 2.054-.784.311-2.375-.89-.939zm-8.93 18.718H8.033l.793-1.615.794 1.615.793-1.083.793 1.083.794-1.083.793 1.083.793-1.615.794 1.615zm3.886-7.39-3.3 1.084-.143 3.061-2.827.627-2.826-.627-.142-3.06-3.3-1.085v-1.635l4.266 1.21-.052 4.126h4.109l-.052-4.127 4.266-1.209z"
+            />
+          </svg>
+          <span class="turso-wordmark">TURSO</span>
+        </div>
+      </div>
+
+      <div
+        id="karaoke-wrap"
+        class="clip"
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="4"
+      >
+        <div id="karaoke-root" aria-live="polite">
+          <div id="karaoke-stage"></div>
+        </div>
+      </div>
+
+      <img
+        id="shot-voweldocs"
+        class="clip float-shot"
+        alt=""
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="10"
+        src="assets/voweldocs.png"
+        style="left: 48px; top: 520px; width: 440px"
+      />
+      <img
+        id="shot-ragdebug"
+        class="clip float-shot"
+        alt=""
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="11"
+        src="assets/turso-debug-button.png"
+        style="right: 40px; top: 640px; width: 480px"
+      />
+      <img
+        id="shot-chat"
+        class="clip float-shot"
+        alt=""
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="12"
+        src="assets/chat.png"
+        style="left: 56px; top: 720px; width: 500px"
+      />
+      <img
+        id="shot-config"
+        class="clip float-shot"
+        alt=""
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="13"
+        src="assets/config.png"
+        style="right: 48px; top: 560px; width: 460px"
+      />
+      <img
+        id="shot-apikey"
+        class="clip float-shot"
+        alt=""
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="14"
+        src="assets/api-key.png"
+        style="left: 64px; top: 600px; width: 470px"
+      />
+      <img
+        id="shot-talk"
+        class="clip float-shot"
+        alt=""
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="15"
+        src="assets/voweldocs-talk.png"
+        style="right: 52px; top: 680px; width: 490px"
+      />
+
+      <div
+        id="opener"
+        class="clip"
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="5"
+      >
+        <div id="opener-inner">
+          <div id="title-rag">RAG</div>
+          <div class="opener-sub">
+            <span id="ow-in">in</span>
+            <span id="ow-the">the</span>
+            <span id="ow-browser">browser.</span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="outro-layer"
+        class="clip"
+        data-start="0"
+        data-duration="139.786"
+        data-track-index="6"
+      >
+        <p class="out-hero">Get started today at</p>
+        <a class="out-url" href="https://vowel.to">https://vowel.to</a>
+        <p class="out-attr">
+          Music: «Memory Lane» by Joseph Sacco (Independent Music Licensing Collective — IMLC), licensed under
+          <a href="https://creativecommons.org/licenses/by/4.0/" style="color: inherit">CC BY 4.0</a>.
+          <a href="https://freemusicarchive.org/music/independent-music-licensing-collective-imlc/new-signings-compilation/joseph-sacco-memory-lane/" style="color: inherit">Free Music Archive</a>.
+        </p>
+      </div>
+
+      <div class="grain-veil" aria-hidden="true"></div>
     </div>
 
+    <script src="transcript-words.js"></script>
     <script src="script.js"></script>
     <script>
-      /* Lint: must reference turso-rag-master in this file; real tl is assigned in script.js (same as sibling projects with external script). */
+      /* Lint: static registration check; script.js assigns the real timeline first (sync). */
       window.__timelines = window.__timelines || {};
-      window.__timelines["turso-rag-master"] =
-        window.__timelines["turso-rag-master"] || gsap.timeline({ paused: true });
+      window.__timelines["vowel-turso-rag-master"] =
+        window.__timelines["vowel-turso-rag-master"] || gsap.timeline({ paused: true });
     </script>
   </body>
 </html>

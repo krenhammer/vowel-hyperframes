@@ -1,513 +1,367 @@
-/* One second hold (linger) after the last motion in a beat, then the next transition. */
-window.__timelines = window.__timelines || {};
-var tl = gsap.timeline({ paused: true });
+/* global gsap */
+(function () {
+  window.__timelines = window.__timelines || {};
+  var WORDS = window.TURSO_RAG_WORDS;
+  var tl = gsap.timeline({ paused: true });
 
-var xfd = 0.45;
-var L = 1;
+  if (!WORDS || !WORDS.length) {
+    console.error(
+      "[vowel-turso-rag] TURSO_RAG_WORDS missing — ensure transcript-words.js loads before script.js"
+    );
+    tl.set({}, {}, 0.1);
+    window.__timelines["vowel-turso-rag-master"] = tl;
+    return;
+  }
 
-function xf(tStart, outSel, inSel) {
-  tl.to(outSel, { opacity: 0, duration: xfd, ease: "power2.inOut" }, tStart);
-  tl.to(inSel, { opacity: 1, duration: xfd, ease: "power2.inOut" }, tStart);
-}
+  /** Deterministic PRNG — HyperFrames forbids Math.random() on timeline. */
+  function mulberry32(seed) {
+    return function () {
+      var t = (seed += 0x6d2b79f5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
 
-function runWipe(wipeT, outSel, inSel) {
-  tl.set("#cover-wipe-a", { x: -1080 }, wipeT);
-  tl.set("#cover-wipe-b", { x: -1080 }, wipeT);
-  tl.to("#cover-wipe-a", { x: 0, duration: 0.2, ease: "power3.inOut" }, wipeT);
-  tl.to("#cover-wipe-b", { x: 0, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.05);
-  tl.set(outSel, { opacity: 0 }, wipeT + 0.14);
-  tl.set(inSel, { opacity: 1 }, wipeT + 0.14);
-  tl.to("#cover-wipe-a", { x: 1080, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.25);
-  tl.to("#cover-wipe-b", { x: 1080, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.3);
-  return wipeT + 0.4;
-}
+  var NARRATION_END = WORDS[WORDS.length - 1].end;
+  var OUTRO_HOLD = 10;
+  var TOTAL = NARRATION_END + OUTRO_HOLD;
+  var wrnd = mulberry32(0x7f4a3c2d ^ (WORDS.length * 0x9e3779b9));
 
-// ===== Scenes 1–2 =====
-// Scene 1: RAG + “in / the / Browser!” — Scene 2: TURSO + SiTurso mark → move up → kinetic copy →
-// “How does this work?” → shrink to kicker, then WASM in three parts (kinetic-style stagger)
-tl.set("#scene2 .k-w, #s2Label", { opacity: 0 }, 0);
-tl.set("#s2Headline", { autoAlpha: 0 }, 0);
-tl.set("#s2Headline .s2-h2-line", { opacity: 0, y: 8 }, 0);
-tl.set("#s2Kinetic", { opacity: 0, visibility: "hidden" }, 0);
+  function stripPunct(s) {
+    return String(s).replace(/[.,?!:;'"'"]/g, "").trim();
+  }
 
-tl.from(
-  "#scene1 .ready .word1",
-  { y: 60, opacity: 0, scale: 2, duration: 0.15, ease: "power4.out" },
-  0.3
-);
-tl.from(
-  "#scene1 .ready .word2",
-  { y: 60, opacity: 0, scale: 2, duration: 0.15, ease: "power4.out" },
-  0.6
-);
-tl.from(
-  "#scene1 .ready .word3",
-  { y: 60, opacity: 0, scale: 2, duration: 0.15, ease: "elastic.out(1, 0.3)" },
-  0.9
-);
-tl.to("#scene1 .ready", { opacity: 0, duration: 0.3 }, 2.1);
-tl.to(
-  "#scene1",
-  { scale: 3, backgroundColor: "#ffffff", duration: 0.6, ease: "power2.inOut" },
-  2.4
-);
+  function isEmWord(w) {
+    var t = stripPunct(w.text);
+    return /^(RAG|SQLite|WebAssembly|vector|Terso|Turso|vowel|Vowel|docs|WASM|API|LLM)$/i.test(t);
+  }
 
-/* Cover wipe 1 → 2 (Turso — subtle green; timing continues after 0.4s wipe) */
-var tW12 = 2.8;
-runWipe(tW12, "#scene1", "#scene2");
-var tS2 = tW12 + 0.4;
-tl.set(
-  "#s2PrologueCenter",
-  { display: "flex", autoAlpha: 1, visibility: "visible" },
-  tS2
-);
-tl.set("#s2Prologue", { y: 0, autoAlpha: 1 }, tS2);
-tl.fromTo(
-  "#s2TursoHero",
-  { scale: 0.32, opacity: 0 },
-  { scale: 1, opacity: 1, duration: 0.42, ease: "expo.out" },
-  tS2
-);
-var t2bMove = tS2 + 0.5;
-/* Lift logo + lines together (keeps vertical rhythm) */
-tl.to("#s2Prologue", { y: -64, duration: 0.38, ease: "power2.out" }, t2bMove);
-var tKin0 = t2bMove + 0.4;
-tl.set("#s2Kinetic", { visibility: "visible" }, tKin0);
-tl.to("#s2Kinetic", { opacity: 1, duration: 0.2, ease: "power1.out" }, tKin0);
+  function firstWordStart(pred) {
+    for (var j = 0; j < WORDS.length; j++) {
+      if (pred(WORDS[j])) {
+        return WORDS[j].start;
+      }
+    }
+    return null;
+  }
 
-var tL1 = tKin0 + 0.22;
-var pauseAB = 0.32;
-var pauseBC = 0.32;
-tl.to(
-  "#scene2 .s2-line1 .k-w",
-  { opacity: 1, y: 0, duration: 0.16, stagger: 0.07, ease: "power2.out" },
-  tL1
-);
-var tL2s = tL1 + 0.16 + 0.07 * 3 + 0.12 + pauseAB;
-tl.to(
-  "#scene2 .s2-line2 .k-w",
-  { opacity: 1, y: 0, duration: 0.16, stagger: 0.08, ease: "power2.out" },
-  tL2s
-);
-var tL3s = tL2s + 0.16 + 0.08 * 4 + 0.1 + pauseBC;
-tl.to(
-  "#scene2 .s2-line3 .k-w",
-  { opacity: 1, y: 0, duration: 0.16, stagger: 0.08, ease: "power2.out" },
-  tL3s
-);
-var tAfterKinetic = tL3s + 0.16 + 0.08 * 2 + 0.12;
-/* Prologue must fully clear before the title (no overlap with HOW DOES THIS WORK) */
-var tPrologueOut = tAfterKinetic + 0.2;
-tl.to(
-  "#s2PrologueCenter",
-  { autoAlpha: 0, duration: 0.5, ease: "power2.in" },
-  tPrologueOut
-);
-tl.set("#s2PrologueCenter", { display: "none" }, tPrologueOut + 0.5);
-tl.set("#s2Prologue", { y: 0, transform: "none" }, tPrologueOut + 0.5);
-var tLabelIn = tPrologueOut + 0.58;
-tl.set("#s2Label", { transformOrigin: "50% 50%" }, tLabelIn);
-tl.fromTo(
-  "#s2Label",
-  { scale: 1.1, opacity: 0 },
-  { scale: 1, opacity: 1, duration: 0.45, ease: "expo.out" },
-  tLabelIn
-);
-var tLabelCorner = tLabelIn + 1.0;
-/* Do NOT set transform: "none" or top/left: "auto" here — that nukes scale and breaks full-bleed layout. */
-tl.to(
-  "#s2Label",
-  {
-    scale: 0.46,
-    color: "#4895ef",
-    y: -320,
-    transformOrigin: "50% 50%",
-    duration: 0.6,
-    ease: "power3.inOut",
-  },
-  tLabelCorner
-);
-tl.to("#scene2", { backgroundColor: "#0a1210", duration: 0.6, ease: "power2.inOut" }, tLabelCorner);
-var tS2Head = tLabelCorner + 0.7;
-/* Same beat as prologue k-w: three parts, opacity + y staggered (SCRIPT_DRAFT line 15 = three pause-separated phrases). */
-tl.set("#s2Headline", { autoAlpha: 1 }, tS2Head);
-/* Pauses between parts ~ same energy as s2-line1 → s2-line2 (pauseAB 0.32) but compressed for this stack */
-var s2H2Stagger = 0.24;
-var s2H2PartDur = 0.18;
-tl.to(
-  "#s2Headline .s2-h2-line",
-  {
-    opacity: 1,
-    y: 0,
-    duration: s2H2PartDur,
-    stagger: s2H2Stagger,
-    ease: "power2.out",
-  },
-  tS2Head
-);
-var t2ContentEnd = tS2Head + s2H2Stagger * 2 + s2H2PartDur + 0.5;
-var s2Handoff = t2ContentEnd + L;
-/* Cover wipe 2 → 3 */
-var tAfterW23 = runWipe(s2Handoff, "#scene2", "#scene3");
-// ----- Scene 3 -----
-var t3 = tAfterW23 + 0.1;
-tl.from("#scene3 .s3h", { y: 40, opacity: 0, duration: 0.5, ease: "expo.out" }, t3);
-tl.from(
-  "#scene3 .stat.s1",
-  { x: -30, opacity: 0, duration: 0.45, ease: "power3.out" },
-  t3 + 0.1
-);
-tl.from(
-  "#scene3 .stat.s2",
-  { x: 30, opacity: 0, duration: 0.45, ease: "power3.out" },
-  t3 + 0.22
-);
-var punchT = t3 + 0.5;
-tl.from(
-  "#scene3 .punch",
-  { y: 50, scale: 0.96, opacity: 0, duration: 0.6, ease: "back.out(1.25)" },
-  punchT
-);
-var t3End = punchT + 0.6;
-/* Cover wipe 3 → 4 */
-var tW34 = t3End + L;
-var tAfterW34 = runWipe(tW34, "#scene3", "#scene4");
-var t4 = tAfterW34 + 0.05;
+  /**
+   * One on-screen beat = one sentence, or a clause after a comma.
+   * Break only when a word ends with `,` `.` `?` or `!` — do not split on pauses or word count.
+   */
+  function isClauseOrSentenceBoundary(w) {
+    var t = w.text;
+    return /[.?!,]$/.test(t);
+  }
 
-// ----- Scene 4: two sections, sec1 fully clears before sec2; line-by-line, with *extra* stillness:
-// (1) after sec1 line 1 — before the pre-embed headline (d4PreLine2).
-// (2) after sec1 line 2 — before “Well / voweldocs” (d4AfterS1L2).
-// (3) after sec1 line 4 — time to read before part one fades (d4AfterS1Last).
-// (4) after sec2 line 3 — extra stillness before the last line of part two (d4PreLast).
-// (5) after sec2 line 4 — time to read that line on screen before the scene handoff (d4AfterS2Last).
-var d4In = 0.36;
-var d4Gap = 0.1;
-var d4PreLine2 = 0.65;
-var d4AfterS1L2 = 0.9;
-var d4AfterS1Last = 1.25;
-var d4PreLast = 1.1;
-var d4AfterS2Last = 1.35;
-var d4Ease = "power2.out";
-function d4in(sel, tStart) {
-  tl.fromTo(
-    sel,
-    { opacity: 0, y: 12 },
-    { opacity: 1, y: 0, duration: d4In, ease: d4Ease },
-    tStart
+  function buildBeats() {
+    var beats = [];
+    var chunk = [];
+    for (var i = 4; i < WORDS.length; i++) {
+      var w = WORDS[i];
+      chunk.push({ index: i, w: w });
+      if (isClauseOrSentenceBoundary(w)) {
+        beats.push(chunk);
+        chunk = [];
+      }
+    }
+    if (chunk.length) {
+      beats.push(chunk);
+    }
+    return beats;
+  }
+
+  /**
+   * Kinetic preset: `from` is the off-state; all words land at x/y 0, scale 1, no rotation (readability on vertical).
+   * Only translate + scale (no spin / rotateZ / rotateX).
+   */
+  var KINETIC_PRESETS = [
+    { from: { x: -120, y: 22, scale: 0.4 }, ease: "expo.out", origin: "0% 85%" },
+    { from: { x: 120, y: -18, scale: 0.42 }, ease: "expo.out", origin: "100% 85%" },
+    { from: { y: 100, scale: 0.48 }, ease: "back.out(1.4)", origin: "50% 100%" },
+    { from: { y: -80, scale: 1.45 }, ease: "power4.out", origin: "50% 0%" },
+    { from: { scale: 0.12 }, ease: "expo.out", origin: "50% 80%" },
+    { from: { x: -80, y: 55, scale: 0.52 }, ease: "circ.out", origin: "0% 90%" },
+    { from: { x: 85, y: 52, scale: 0.5 }, ease: "circ.out", origin: "100% 90%" },
+    { from: { y: 75, scale: 0.5 }, ease: "power3.out", origin: "50% 100%" },
+    { from: { x: -48, y: 38, scale: 0.68, skewX: 10 }, ease: "power2.out", origin: "20% 80%" },
+    { from: { x: 50, y: -32, scale: 0.7, skewY: 8 }, ease: "power2.out", origin: "80% 30%" },
+    { from: { scale: 1.55 }, ease: "power3.inOut", origin: "50% 50%" },
+    { from: { x: -95, y: -42, scale: 0.58 }, ease: "sine.out", origin: "40% 20%" },
+    { from: { x: 90, y: -40, scale: 0.56 }, ease: "sine.out", origin: "60% 20%" },
+    { from: { y: 85, x: 32, scale: 0.42 }, ease: "back.out(1.2)", origin: "70% 100%" },
+    { from: { y: 80, x: -38, scale: 0.44 }, ease: "back.out(1.2)", origin: "30% 100%" },
+    { from: { scale: 0.22 }, ease: "expo.out", origin: "50% 80%" },
+  ];
+
+  function pickPresetIndex(w, i) {
+    var flashyCount = 10;
+    if (isEmWord(w)) {
+      return Math.floor(wrnd() * flashyCount);
+    }
+    return flashyCount + Math.floor(wrnd() * (KINETIC_PRESETS.length - flashyCount));
+  }
+
+  function runWipe(wipeT, bgHex) {
+    tl.set("#cover-wipe-a", { x: -1080 }, wipeT);
+    tl.set("#cover-wipe-b", { x: -1080 }, wipeT);
+    tl.to("#cover-wipe-a", { x: 0, duration: 0.2, ease: "power3.inOut" }, wipeT);
+    tl.to("#cover-wipe-b", { x: 0, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.05);
+    if (bgHex) {
+      tl.set("#stage-bg", { backgroundColor: bgHex }, wipeT + 0.14);
+    }
+    tl.to("#cover-wipe-a", { x: 1080, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.25);
+    tl.to("#cover-wipe-b", { x: 1080, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.3);
+  }
+
+  function popShot(sel, t, hideAt) {
+    var seed =
+      sel.split("").reduce(function (a, c) {
+        return ((a << 5) - a + c.charCodeAt(0)) | 0;
+      }, 9) >>> 0;
+    var srnd = mulberry32(seed ^ 0xc0ffee);
+    var ax = (srnd() - 0.5) * 80;
+    var ay = 30 + srnd() * 60;
+    var sc = 0.75 + srnd() * 0.16;
+
+    tl.fromTo(
+      sel,
+      { opacity: 0, x: ax, y: ay, scale: sc },
+      {
+        opacity: 1,
+        x: 0,
+        y: 0,
+        scale: 1,
+        duration: 0.56,
+        ease: "back.out(1.32)",
+      },
+      t
+    );
+    tl.to(sel, { opacity: 0, y: -40, scale: 0.92, duration: 0.5, ease: "power2.in" }, hideAt);
+  }
+
+  gsap.set("#turso-ribbon", { opacity: 0, y: -36 });
+  gsap.set("#outro-layer", { opacity: 0 });
+  gsap.set(
+    "#shot-voweldocs, #shot-ragdebug, #shot-chat, #shot-config, #shot-apikey, #shot-talk",
+    { opacity: 0, scale: 0.9 }
   );
-}
-tl.set("#d4-sec1 .d4-line, #d4-sec2 .d4-line", { opacity: 0, y: 12 }, 0);
-tl.set("#d4-sec2", { autoAlpha: 0 }, 0);
-var tS1L1 = t4;
-d4in("#d4-sec1 .d4l1", tS1L1);
-var tS1L2 = tS1L1 + d4In + d4Gap + d4PreLine2;
-d4in("#d4-sec1 .d4l2", tS1L2);
-var tS1L3 = tS1L2 + d4In + d4Gap + d4AfterS1L2;
-d4in("#d4-sec1 .d4l3", tS1L3);
-var tS1L4 = tS1L3 + d4In + d4Gap;
-d4in("#d4-sec1 .d4l4", tS1L4);
-var tS1Out = tS1L4 + d4In + d4AfterS1Last;
-/* “So you could say” (full pink) → “we now inject” (deep purple) */
-tl.to("#scene4", { backgroundColor: "#22122e", duration: 0.55, ease: "power2.inOut" }, tS1Out);
-tl.to("#d4-sec1", { autoAlpha: 0, duration: 0.42, ease: "power2.in" }, tS1Out);
-var tS2Start = tS1Out + 0.42;
-tl.set("#d4-sec2", { autoAlpha: 1 }, tS2Start);
-var tS2L5 = tS2Start + 0.06;
-d4in("#d4-sec2 .d4l5", tS2L5);
-var tS2L6 = tS2L5 + d4In + d4Gap;
-d4in("#d4-sec2 .d4l6", tS2L6);
-var tS2L7 = tS2L6 + d4In + d4Gap;
-d4in("#d4-sec2 .d4l7", tS2L7);
-var tS2L8 = tS2L7 + d4In + d4Gap + d4PreLast;
-d4in("#d4-sec2 .d4l8", tS2L8);
-var t4End = tS2L8 + d4In + d4AfterS2Last;
-xf(t4End + L, "#scene4", "#scene5");
+  gsap.set("#ow-in, #ow-the, #ow-browser", { opacity: 0 });
+  gsap.set("#title-rag", { opacity: 0, scale: 0.48 });
+  gsap.set("#karaoke-wrap", { x: 0, transformOrigin: "50% 50%" });
 
-// ----- Scene 5 → 6 crossfade (no cover wipe; covers only 1–2, 2–3, 3–4) -----
-var t5 = t4End + L + xfd + 0.05;
-tl.set("#s5-zoom-root", { scale: 1, z: 0, transformOrigin: "50% 50%", display: "none" }, t5);
-tl.set("#s5-text-col", { maxHeight: "none", overflow: "visible", clearProps: "transform,top,left", y: 0 }, t5);
-/* Do NOT clearProps #s5-stage — its centering is transform: translate(-50%,-50%) in CSS */
-tl.set("#scene5 .s5-callouts", { display: "none" }, t5);
-tl.set("#scene5 .wow-w1", { opacity: 0, y: 14 }, t5);
-tl.set("#scene5 .wow-w2", { opacity: 0, y: 14 }, t5);
-tl.set("#scene5 .s5-qw", { opacity: 0, y: 11 }, t5);
-tl.set("#scene5 .s5-goto", { opacity: 0, y: 14, scale: 1 }, t5);
-tl.set("#scene5 .s5-instruct .s5-iw", { opacity: 0 }, t5);
-/* Callouts default display:none in CSS; keep out of flow so faded lines cannot push the next line down. */
-tl.set(
-  "#scene5 .s5-instruct, #scene5 .s5-panel-lead, #scene5 .s5-tab-docs, #scene5 .s5-tab-chat",
-  { display: "none", opacity: 0, y: 0 },
-  t5
-);
-tl.set("#scene5 .s5-img-docs", { opacity: 1 }, t5);
-tl.set("#scene5 .s5-img-rag, #scene5 .s5-img-chat", { opacity: 0 }, t5);
-tl.set("#s5-shot", { opacity: 0, x: 440 }, t5);
-tl.set("#s5-card-root", { transformOrigin: "50% 50%" }, t5);
+  var beats = buildBeats();
+  var stage = document.getElementById("karaoke-stage");
+  for (var bi = 0; bi < beats.length; bi++) {
+    var block = document.createElement("div");
+    block.id = "beat-" + bi;
+    block.className = "beat-block";
+    if (beats[bi].length > 10) {
+      block.className += " beat-tight";
+    }
+    block.style.zIndex = String(20 + bi);
+    var inner = document.createElement("div");
+    inner.className = "beat-inner";
+    block.appendChild(inner);
+    for (var ci = 0; ci < beats[bi].length; ci++) {
+      var item = beats[bi][ci];
+      var w0 = item.w;
+      var sp = document.createElement("span");
+      sp.className = "kw" + (isEmWord(w0) ? " em" : "");
+      sp.id = "kw-" + item.index;
+      sp.textContent = w0.text + " ";
+      inner.appendChild(sp);
+    }
+    stage.appendChild(block);
+  }
 
-/* Draft “..” = pause: stagger + holds, not punctuation on the type */
-tl.fromTo(
-  "#scene5 .wow-w1",
-  { opacity: 0, y: 14 },
-  { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" },
-  t5
-);
-tl.fromTo(
-  "#scene5 .wow-w2",
-  { opacity: 0, y: 12 },
-  { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" },
-  t5 + 0.52
-);
-var t5QIn = t5 + 0.96;
-tl.fromTo(
-  "#scene5 .s5-qw",
-  { opacity: 0, y: 11 },
-  {
-    opacity: 1,
-    y: 0,
-    duration: 0.3,
-    stagger: 0.068,
-    ease: "power2.out",
-  },
-  t5QIn
-);
-tl.to(
-  "#scene5 .wow-w1, #scene5 .wow-w2, #scene5 .s5-qw",
-  { opacity: 0, y: -11, duration: 0.32, ease: "power2.in" },
-  t5 + 1.58
-);
-/* URL line: large hero in center → pause → shrink + lift (clear of screenshot) */
-var t5GotoIn = t5 + 1.86;
-tl.fromTo(
-  "#scene5 .s5-goto",
-  { opacity: 0, y: 28, scale: 1 },
-  { opacity: 1, y: 0, scale: 1.88, duration: 0.58, ease: "power2.out" },
-  t5GotoIn
-);
-var t5GotoHeroHold = t5GotoIn + 0.58 + 0.92;
-var t5TextToTop = t5GotoHeroHold;
-tl.to(
-  "#scene5 .s5-goto",
-  { scale: 0.9, y: -168, duration: 0.68, ease: "power2.inOut" },
-  t5TextToTop
-);
-tl.to(
-  "#s5-text-col",
-  { y: -132, duration: 0.68, ease: "power2.inOut" },
-  t5TextToTop
-);
-/* Light recede on the shot only (copy is outside zoom-root) */
-var t5ZoomStart = t5TextToTop - 0.08;
-tl.to(
-  "#s5-zoom-root",
-  { scale: 0.9, z: -48, duration: 2.35, ease: "power1.inOut" },
-  t5ZoomStart
-);
-var t5ShotIn = t5TextToTop + 0.06;
-tl.set("#s5-zoom-root", { display: "flex" }, t5ShotIn);
-tl.set(
-  "#s5-card-root",
-  { rotationX: 3.5, rotationY: -14, rotationZ: 0.1, transformOrigin: "50% 50%" },
-  t5ShotIn
-);
-tl.to(
-  "#s5-shot",
-  { opacity: 1, x: 0, duration: 0.68, ease: "power3.out" },
-  t5ShotIn
-);
-var t5ShotSettled = t5ShotIn + 0.68;
-var t5PauseDocs = 1.12;
-var t5RotLeft = t5ShotSettled + t5PauseDocs;
-tl.to(
-  "#s5-card-root",
-  { rotationY: -28, rotationX: 7.5, rotationZ: 0.14, duration: 0.88, ease: "power2.inOut" },
-  t5RotLeft
-);
-var t5ClearGoto = t5RotLeft + 0.82;
-tl.to(
-  "#scene5 .s5-goto",
-  { opacity: 0, y: -14, duration: 0.28, ease: "power2.in" },
-  t5ClearGoto
-);
-var t5TypeIn = t5ClearGoto + 0.12;
-var s5Read = 0.5;
-var s5Between = 0.4;
-var s5Fade = 0.28;
-tl.set("#scene5 .s5-callouts", { display: "flex" }, t5TypeIn);
-tl.set("#scene5 .s5-instruct", { display: "block" }, t5TypeIn);
-tl.to("#scene5 .s5-instruct", { opacity: 1, duration: 0.15 }, t5TypeIn);
-tl.to(
-  "#scene5 .s5-instruct .s5-iw",
-  { opacity: 1, duration: 0.09, stagger: 0.065, ease: "power1.out" },
-  t5TypeIn + 0.08
-);
-/* Instruct complete → read → clear → gap → RAG swap */
-var t5InstructDone = t5TypeIn + 0.08 + 7 * 0.065 + 0.09;
-var t5ClearInstruct = t5InstructDone + s5Read;
-tl.to(
-  "#scene5 .s5-instruct",
-  { opacity: 0, y: -10, duration: s5Fade, ease: "power2.in" },
-  t5ClearInstruct
-);
-tl.set("#scene5 .s5-instruct .s5-iw", { opacity: 0 }, t5ClearInstruct + s5Fade);
-tl.set("#scene5 .s5-instruct", { display: "none" }, t5ClearInstruct + s5Fade);
-var t5SwapRag = t5ClearInstruct + s5Fade + s5Between;
-tl.to("#scene5 .s5-img-docs", { opacity: 0, duration: 0.38, ease: "power1.inOut" }, t5SwapRag);
-tl.to("#scene5 .s5-img-rag", { opacity: 1, duration: 0.42, ease: "power1.inOut" }, t5SwapRag);
-var t5LeadIn = t5SwapRag + 0.44 + 0.32;
-tl.set("#scene5 .s5-panel-lead", { display: "block" }, t5LeadIn);
-tl.fromTo(
-  "#scene5 .s5-panel-lead",
-  { opacity: 0, y: 16 },
-  { opacity: 1, y: 0, duration: 0.52, ease: "power3.out" },
-  t5LeadIn
-);
-var t5TabDocsIn = t5LeadIn + 0.52 + 0.38;
-tl.set("#scene5 .s5-tab-docs", { display: "block" }, t5TabDocsIn);
-tl.fromTo(
-  "#scene5 .s5-tab-docs",
-  { opacity: 0, y: 14 },
-  { opacity: 1, y: 0, duration: 0.54, ease: "power2.out" },
-  t5TabDocsIn
-);
-var t5HoldRagRead = t5TabDocsIn + 0.54 + s5Read + 0.62;
-tl.to(
-  "#scene5 .s5-tab-docs",
-  { opacity: 0, y: -10, duration: 0.32, ease: "power2.in" },
-  t5HoldRagRead
-);
-tl.set("#scene5 .s5-tab-docs", { display: "none" }, t5HoldRagRead + 0.32);
-/* Same layout: crossfade stack only; card root stays put. Swing rotationY back toward the right. */
-var t5SwapChat = t5HoldRagRead + 0.18;
-tl.to("#scene5 .s5-img-rag", { opacity: 0, duration: 0.42, ease: "power1.inOut" }, t5SwapChat);
-tl.to("#scene5 .s5-img-chat", { opacity: 1, duration: 0.44, ease: "power1.inOut" }, t5SwapChat);
-tl.to(
-  "#s5-card-root",
-  { rotationY: 14, rotationX: 3.6, rotationZ: -0.07, duration: 1.05, ease: "power2.inOut" },
-  t5SwapChat
-);
-var t5TabChatIn = t5SwapChat + 0.48;
-tl.set("#scene5 .s5-tab-chat", { display: "block" }, t5TabChatIn);
-tl.fromTo(
-  "#scene5 .s5-tab-chat",
-  { opacity: 0, y: 14 },
-  { opacity: 1, y: 0, duration: 0.52, ease: "power2.out" },
-  t5TabChatIn
-);
-var t5End = t5TabChatIn + 0.52 + 0.55 + 0.35;
-var t5to6 = t5End + L;
-xf(t5to6, "#scene5", "#scene6");
-var afterWef = t5to6 + xfd + 0.05;
+  tl.set(".beat-block", { autoAlpha: 0, y: 48, scale: 0.93 }, 0);
+  tl.set("#karaoke-stage .kw", { autoAlpha: 0 }, 0);
 
-// ----- Scene 6: voice + nav (same layout as scene 5) -----
-var t6 = afterWef;
-tl.set("#s6-zoom-root", { scale: 1, z: 0, transformOrigin: "50% 50%", display: "none" }, t6);
-tl.set("#s6-card-root", { transformOrigin: "50% 50%" }, t6);
-tl.set("#s6-shot", { opacity: 0, x: 440 }, t6);
-tl.set(".h6-cap", { opacity: 0, y: 8 }, t6);
-tl.set("#s6-cfg-beat", { autoAlpha: 0 }, t6);
-tl.set(".s6-nav, .s6-mic", { opacity: 0 }, t6);
-tl.from(".h6-sec", { y: 20, opacity: 0, duration: 0.35, ease: "expo.out" }, t6);
-tl.from(".h6-line", { y: 28, opacity: 0, duration: 0.45, ease: "power3.out" }, t6 + 0.06);
-var t6Shot = t6 + 0.2;
-tl.set("#s6-zoom-root", { display: "flex" }, t6Shot);
-tl.set(
-  "#s6-card-root",
-  { rotationX: 3.5, rotationY: -14, rotationZ: 0.1, transformOrigin: "50% 50%" },
-  t6Shot
-);
-tl.to(
-  "#s6-shot",
-  { opacity: 1, x: 0, duration: 0.68, ease: "power3.out" },
-  t6Shot
-);
-tl.to(
-  "#s6-card-root",
-  { rotationY: -22, rotationX: 6, rotationZ: 0.12, duration: 0.9, ease: "power2.inOut" },
-  t6Shot + 0.5
-);
-tl.to(".s6-nav, .s6-mic", { opacity: 1, duration: 0.4, ease: "back.out(1.1)" }, t6Shot + 0.18);
-tl.from(".h6-cap", { opacity: 0, y: 12, duration: 0.4, ease: "sine.out" }, t6Shot + 0.5);
-var t6Swap = t6Shot + 1.2;
-tl.to("#s6-hero-beat", { autoAlpha: 0, duration: 0.45, ease: "power2.in" }, t6Swap);
-tl.to("#s6-cfg-beat", { autoAlpha: 1, duration: 0.55, ease: "power2.out" }, t6Swap + 0.05);
-tl.set("#s6-card-root", { className: "ui3d-sway s5-card-tilt sway-on" }, t6Swap + 0.35);
-var t6End = t6Swap + 0.55 + 0.35;
-xf(t6End + L, "#scene6", "#scene7");
+  for (var bj = 0; bj < beats.length; bj++) {
+    var b = beats[bj];
+    var firstT = b[0].w.start;
+    var tClearPrev = Math.max(0, firstT - 0.38);
+    var tBringIn = firstT - 0.2;
+    if (bj > 0) {
+      tl.to(
+        "#beat-" + (bj - 1),
+        { autoAlpha: 0, y: -32, scale: 0.97, duration: 0.34, ease: "power2.in" },
+        tClearPrev
+      );
+    }
+    tl.fromTo(
+      "#beat-" + bj,
+      { autoAlpha: 0, y: 36, scale: 0.94 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.42, ease: "power3.out" },
+      tBringIn
+    );
+  }
 
-// ----- Scene 7 (duck BGM) — talk UI + lines, self-host + answer (same layout as scene 5) -----
-var t7 = t6End + L + xfd + 0.05;
-tl.set("#s7-zoom-root", { display: "none" }, t7);
-tl.set("#s7-shot", { opacity: 0, x: 440 }, t7);
-tl.set("#self7", { opacity: 0 }, t7);
-tl.fromTo(
-  "#el-a",
-  { volume: 0.55 },
-  { volume: 0.1, duration: 0.3, ease: "none" },
-  t7
-);
-tl.fromTo(
-  "#s7-eyebrow",
-  { opacity: 0, y: 10 },
-  { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
-  t7
-);
-tl.set("#s7-zoom-root", { display: "flex" }, t7 + 0.1);
-tl.to("#s7-shot", { opacity: 1, x: 0, duration: 0.65, ease: "power3.out" }, t7 + 0.1);
-tl.fromTo(
-  "#talk7",
-  { opacity: 0, y: 16, scale: 0.99 },
-  { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "power3.out" },
-  t7 + 0.1
-);
-tl.set("#sway7-talk", { className: "ui3d-sway s5-card-tilt sway-on" }, t7 + 0.68);
-/* Hold on talk still (VO); no on-screen assistant rows or faux mic — same pacing as former d1/d2 beat. */
-var t7swap = t7 + 0.84 + 0.38 + L;
-tl.to(
-  "#talk7",
-  { opacity: 0, duration: 0.38, ease: "power2.in" },
-  t7swap + 0.04
-);
-tl.to(
-  "#self7",
-  { opacity: 1, duration: 0.45, ease: "power2.out" },
-  t7swap + 0.1
-);
-tl.set(
-  "#sway7-self",
-  { className: "ui3d-sway s5-card-tilt sway-on" },
-  t7swap + 0.2
-);
-/* Long self-host TTS: hold on full-bleed screenshot only (no on-screen wall of text). */
-var t7End = t7swap + 0.55 + 1.0;
-tl.to(
-  "#el-a",
-  { volume: 0.55, duration: 0.45, ease: "none" },
-  t7End + 0.4
-);
-xf(t7End + L, "#scene7", "#scene8");
+  for (var i = 4; i < WORDS.length; i++) {
+    var w = WORDS[i];
+    var el = document.getElementById("kw-" + i);
+    var gap = w.end - w.start;
+    var jitter = 0.82 + wrnd() * 0.38;
+    var enterDur = Math.max(0.13, Math.min(0.4, (gap + 0.14) * jitter));
 
-// ----- Scene 8 outro -----
-var t8 = t7End + L + xfd + 0.05;
-tl.from(
-  "#scene8 .out1",
-  { y: 50, opacity: 0, duration: 0.55, ease: "expo.out" },
-  t8
-);
-tl.from(
-  "#scene8 .url-pill",
-  { y: 30, scale: 0.92, opacity: 0, duration: 0.5, ease: "back.out(1.3)" },
-  t8 + 0.2
-);
-var t8OutEnd = t8 + 0.2 + 0.5;
-var fadeMs = 2.0;
-var totalSec = t8OutEnd + L + fadeMs;
-tl.fromTo(
-  "#el-a",
-  { volume: 0.55 },
-  { volume: 0, duration: fadeMs, ease: "power1.out" },
-  totalSec - fadeMs
-);
+    var pIdx = pickPresetIndex(w, i);
+    var preset = KINETIC_PRESETS[pIdx];
+    var fromState = Object.assign({ autoAlpha: 0, force3D: true, transformOrigin: preset.origin || "50% 80%" }, preset.from);
+    var toState = {
+      autoAlpha: 1,
+      x: 0,
+      y: 0,
+      scale: 1,
+      rotateZ: 0,
+      rotateX: 0,
+      skewX: 0,
+      skewY: 0,
+      duration: enterDur,
+      ease: preset.ease,
+      immediateRender: false,
+      overwrite: "auto",
+      transformOrigin: preset.origin || "50% 80%",
+    };
 
-tl.set({}, {}, totalSec);
-window.__timelines["turso-rag-master"] = tl;
+    tl.fromTo(el, fromState, toState, w.start);
+
+    if (isEmWord(w)) {
+      tl.fromTo(
+        el,
+        { textShadow: "0 0 0 rgba(76,201,240,0)" },
+        {
+          textShadow:
+            "0 0 22px rgba(76,201,240,0.65), 0 0 46px rgba(62,207,142,0.35), 0 0 2px rgba(255,255,255,0.4)",
+          duration: 0.12,
+          yoyo: true,
+          repeat: 1,
+          ease: "power2.out",
+        },
+        w.start + enterDur * 0.15
+      );
+    }
+  }
+
+  tl.fromTo(
+    "#title-rag",
+    { scale: 0.42, opacity: 0 },
+    { scale: 1, opacity: 1, duration: 0.36, ease: "expo.out" },
+    WORDS[0].start
+  );
+  tl.to(
+    "#title-rag",
+    { scale: 1.06, duration: 0.06, yoyo: true, repeat: 1, ease: "power2.inOut" },
+    WORDS[0].start + 0.08
+  );
+
+  tl.from("#ow-in", { y: 72, opacity: 0, scale: 2.05, duration: 0.16, ease: "power4.out" }, WORDS[1].start);
+  tl.from("#ow-the", { y: 72, opacity: 0, scale: 2.05, duration: 0.16, ease: "power4.out" }, WORDS[2].start);
+  tl.from(
+    "#ow-browser",
+    { y: 72, opacity: 0, scale: 2.05, duration: 0.18, ease: "elastic.out(1, 0.32)" },
+    WORDS[3].start
+  );
+
+  tl.to("#opener", { opacity: 0, duration: 0.42, ease: "power2.in" }, 1.4);
+  tl.to("#title-rag", { scale: 2.35, y: -90, opacity: 0, duration: 0.5, ease: "power3.in" }, 1.44);
+
+  runWipe(1.56, "#0c1814");
+
+  tl.to("#turso-ribbon", { opacity: 1, y: 0, duration: 0.48, ease: "expo.out" }, 2.02);
+  tl.fromTo(
+    "#turso-ribbon .ribbon-inner",
+    { scale: 0.62, opacity: 0 },
+    { scale: 1, opacity: 1, duration: 0.5, ease: "expo.out" },
+    2.08
+  );
+
+  var tursoPulseT = WORDS[7] && WORDS[7].start ? WORDS[7].start : 3.605;
+  tl.to(
+    "#turso-ribbon .ribbon-inner",
+    { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.inOut" },
+    tursoPulseT
+  );
+
+  tl.to("#turso-ribbon", { opacity: 0, y: -70, duration: 0.48, ease: "power2.in" }, 8.48);
+  runWipe(8.58, "#0a101c");
+
+  runWipe(22.02, "#3a1434");
+  runWipe(40.28, "#1a0f24");
+  runWipe(63.95, "#0a101c");
+  runWipe(90.92, "#0c1814");
+  runWipe(119.15, "#06080f");
+
+  var tDocs = firstWordStart(function (x) {
+    return /^vowel$/i.test(x.text);
+  });
+  var tRagUi = firstWordStart(function (x) {
+    return x.text === "Click" && x.start >= 43;
+  });
+  var tChat = firstWordStart(function (x) {
+    return x.text === "test";
+  });
+  var tCfg = firstWordStart(function (x) {
+    return x.text === "open" && x.start >= 69;
+  });
+  var tKey = firstWordStart(function (x) {
+    return x.text === "API" && x.start >= 70;
+  });
+  var tTalk = firstWordStart(function (x) {
+    return x.text === "Welcome";
+  });
+
+  if (tDocs != null) {
+    popShot("#shot-voweldocs", tDocs, tDocs + 4.1);
+  }
+  if (tRagUi != null) {
+    popShot("#shot-ragdebug", tRagUi, tRagUi + 4.35);
+  }
+  if (tChat != null) {
+    popShot("#shot-chat", tChat, tChat + 4.5);
+  }
+  if (tCfg != null) {
+    popShot("#shot-config", tCfg, tCfg + 4.0);
+  }
+  if (tKey != null) {
+    popShot("#shot-apikey", tKey, tKey + 4.25);
+  }
+  if (tTalk != null) {
+    popShot("#shot-talk", tTalk, tTalk + 5.2);
+  }
+
+  tl.fromTo("#outro-layer", { opacity: 0 }, { opacity: 1, duration: 0.55, ease: "power2.out" }, NARRATION_END);
+  tl.fromTo(
+    "#outro-layer .out-hero",
+    { y: 40, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.52, ease: "expo.out" },
+    NARRATION_END + 0.06
+  );
+  tl.fromTo(
+    "#outro-layer .out-url",
+    { scale: 0.88, opacity: 0 },
+    { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.22)" },
+    NARRATION_END + 0.2
+  );
+  tl.fromTo(
+    "#outro-layer .out-attr",
+    { opacity: 0, y: 12 },
+    { opacity: 1, y: 0, duration: 0.48, ease: "sine.out" },
+    NARRATION_END + 0.42
+  );
+
+  /* BGM levels (incl. dialogue mute + outro) are in index.html — HyperFrames does not use GSAP volume in the mix. */
+
+  if (beats.length) {
+    var lastBi = beats.length - 1;
+    tl.to(
+      "#beat-" + lastBi,
+      { autoAlpha: 0, y: -28, scale: 0.97, duration: 0.42, ease: "power2.in" },
+      Math.max(0, NARRATION_END - 0.42)
+    );
+  }
+
+  tl.set({}, {}, TOTAL);
+  window.__timelines["vowel-turso-rag-master"] = tl;
+})();
