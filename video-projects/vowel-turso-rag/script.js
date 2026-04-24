@@ -35,6 +35,50 @@
   }
   buildTursoBgPattern();
 
+  /** Diagonal rows of Firefox / Chrome / Edge / WebKit marks — same structure as the Turso marquee. */
+  var BROWSER_BRANDS = [
+    { src: "assets/logo-firefox.svg", label: "Firefox" },
+    { src: "assets/logo-chrome.svg", label: "Chrome" },
+    { src: "assets/logo-edge.svg", label: "Edge" },
+    { src: "assets/logo-webkit.svg", label: "WebKit" },
+  ];
+  function buildBrowserBgPattern() {
+    var host = document.getElementById("browser-bg-pattern-rows");
+    var tpl = document.getElementById("browser-bg-cell-tpl");
+    if (!host || !tpl || host.childElementCount) return;
+    var rowCount = 24;
+    var cellsPerChunk = 7;
+    var brandI = 0;
+    for (var r = 0; r < rowCount; r++) {
+      var row = document.createElement("div");
+      row.className = "browser-bg-pattern__row" + (r % 2 ? " browser-bg-pattern__row--alt" : "");
+      var track = document.createElement("div");
+      track.className = "browser-bg-pattern__track";
+      for (var half = 0; half < 2; half++) {
+        var chunk = document.createElement("div");
+        chunk.className = "browser-bg-pattern__chunk";
+        if (half === 1) {
+          chunk.setAttribute("aria-hidden", "true");
+        }
+        for (var c = 0; c < cellsPerChunk; c++) {
+          var imp = document.importNode(tpl.content, true);
+          var cell = imp.querySelector(".browser-bg-cell");
+          var img = imp.querySelector(".browser-bg-cell__img");
+          var word = imp.querySelector(".browser-bg-cell__word");
+          var b = BROWSER_BRANDS[brandI % BROWSER_BRANDS.length];
+          brandI += 1;
+          if (img) img.src = b.src;
+          if (word) word.textContent = b.label;
+          if (cell) chunk.appendChild(cell);
+        }
+        track.appendChild(chunk);
+      }
+      row.appendChild(track);
+      host.appendChild(row);
+    }
+  }
+  buildBrowserBgPattern();
+
   if (!WORDS || !WORDS.length) {
     console.error(
       "[vowel-turso-rag] TURSO_RAG_WORDS missing — ensure transcript-words.js loads before script.js"
@@ -369,6 +413,7 @@
   }
 
   gsap.set("#turso-bg-pattern", { opacity: 0 });
+  gsap.set("#browser-bg-pattern", { opacity: 0 });
   gsap.set("#outro-layer", { opacity: 0 });
   gsap.set("#shot-chat, #shot-config, #shot-apikey, #shot-talk", { opacity: 0, scale: 0.9 });
   gsap.set("#ow-in, #ow-the, #ow-browser", { opacity: 0 });
@@ -744,6 +789,16 @@
 
   runWipe(WIPE_INTRO, "#0c1814");
 
+  /* “And if we mention, this is all in the browser.” — show browser-engine marquee. */
+  var iIfWeMentionAnd = firstWordIndex(function (x) {
+    return x.text === "And" && x.start >= 10;
+  });
+  var iMentionInTheBrowser = firstWordIndex(function (x) {
+    return x.text === "browser." && x.start > 10 && x.start < 22;
+  });
+  var tBrowserPatternIn = iIfWeMentionAnd >= 0 ? Math.max(0, WORDS[iIfWeMentionAnd].start - 0.04) : 15.25;
+  var tBrowserPatternOut = iMentionInTheBrowser >= 0 ? WORDS[iMentionInTheBrowser].end + 0.32 : 17.7;
+
   tl.to(
     "#turso-bg-pattern",
     { opacity: 1, duration: 0.38, ease: "sine.out" },
@@ -756,6 +811,17 @@
     8.45
   );
   runWipe(8.58, "#0a101c");
+
+  tl.to(
+    "#browser-bg-pattern",
+    { opacity: 1, duration: 0.36, ease: "sine.out" },
+    tBrowserPatternIn
+  );
+  tl.to(
+    "#browser-bg-pattern",
+    { opacity: 0, duration: 0.42, ease: "power2.in" },
+    tBrowserPatternOut
+  );
 
   runWipe(22.02, "#3a1434");
   runWipe(40.28, "#1a0f24");

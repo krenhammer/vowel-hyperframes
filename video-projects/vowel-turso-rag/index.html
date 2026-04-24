@@ -36,6 +36,20 @@
         </div>
       </div>
 
+      <!-- Firefox / Chrome / Edge / WebKit marquee: “And if we mention … all in the browser.” (script toggles opacity) -->
+      <div
+        id="browser-bg-pattern"
+        class="clip browser-bg-pattern"
+        data-start="0"
+        data-duration="141.786"
+        data-track-index="15"
+        aria-hidden="true"
+      >
+        <div class="browser-bg-pattern__rotor">
+          <div class="browser-bg-pattern__rows" id="browser-bg-pattern-rows"></div>
+        </div>
+      </div>
+
       <!-- UI grabs: behind Turso bg pattern + captions (z-index); one visible at a time via script. -->
       <div id="ui-shot-backdrop" class="ui-shot-backdrop" aria-hidden="true">
         <div class="ui-shot-slab">
@@ -125,6 +139,13 @@
             />
           </svg>
           <span class="turso-bg-cell__word">TURSO</span>
+        </div>
+      </template>
+
+      <template id="browser-bg-cell-tpl">
+        <div class="browser-bg-cell">
+          <img class="browser-bg-cell__img" alt="" width="24" height="24" decoding="async" />
+          <span class="browser-bg-cell__word"></span>
         </div>
       </template>
     </div>

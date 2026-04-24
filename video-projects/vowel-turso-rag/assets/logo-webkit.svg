@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-hidden="true">
+  <title>WebKit</title>
+  <!-- Stylized globe + meridians (engine / “web” motif; not the registered WebKit wordmark). -->
+  <circle cx="12" cy="12" r="9.25" fill="none" stroke="#5ac8fa" stroke-width="1.35" opacity="0.95"/>
+  <ellipse cx="12" cy="12" rx="3.2" ry="9.25" fill="none" stroke="#5ac8fa" stroke-width="1.1" opacity="0.85"/>
+  <path fill="none" stroke="#5ac8fa" stroke-width="1.1" opacity="0.85" d="M3 12h18M12 3c2.8 3.2 2.8 14.8 0 18M12 3c-2.8 3.2-2.8 14.8 0 18"/>
+</svg>
