@@ -660,9 +660,9 @@ body {
   font-weight: 600;
 }
 #scene5 .s5-instruct,
-#scene5 .s5-panel-cap,
-#scene5 .s5-doc-hint,
-#scene5 .s5-chat-hint {
+#scene5 .s5-panel-lead,
+#scene5 .s5-tab-docs,
+#scene5 .s5-tab-chat {
   display: none;
   font-family: "DM Sans", system-ui, sans-serif;
   font-size: var(--prime-cta-sub);
@@ -677,11 +677,11 @@ body {
   text-align: center;
 }
 #scene5 .s5-instruct,
-#scene5 .s5-panel-cap {
+#scene5 .s5-panel-lead {
   color: var(--text);
 }
-#scene5 .s5-doc-hint,
-#scene5 .s5-chat-hint {
+#scene5 .s5-tab-docs,
+#scene5 .s5-tab-chat {
   color: var(--muted);
 }
 #scene5 .s5-instruct .s5-iw {
@@ -692,17 +692,10 @@ body {
 #scene5 .s5-instruct .s5-iw:last-child {
   margin-right: 0;
 }
-#scene5 .s5-panel-cap {
+#scene5 .s5-panel-lead,
+#scene5 .s5-tab-docs,
+#scene5 .s5-tab-chat {
   opacity: 0;
-}
-#scene5 .s5-doc-hint,
-#scene5 .s5-chat-hint {
-  opacity: 0;
-}
-#scene5 .s5-doc-hint strong,
-#scene5 .s5-chat-hint strong {
-  color: var(--accent-2);
-  font-weight: 600;
 }
 .prime-cta .s5-img-stack {
   position: relative;
@@ -804,51 +797,7 @@ body {
   box-sizing: border-box;
 }
 
-/* Scene 7: dialogue (same CTA frame; do not override stage gap — match .prime-cta .s5-stage) */
-#scene7 .s7-bubble-row {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: min(1040px, 100%);
-  margin: 0.5rem auto 0;
-  box-sizing: border-box;
-  padding: 0 8px;
-}
-#scene7 .dline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 12px 20px;
-  font-size: var(--prime-cta-kicker);
-  line-height: 1.4;
-  color: var(--text);
-  padding: 14px 20px;
-  background: rgba(8, 12, 24, 0.88);
-  border-radius: 8px;
-  border-left: 3px solid var(--accent-2);
-  opacity: 0;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-}
-#scene7 .dline.d2 {
-  border-left-color: #3ecf8e;
-  opacity: 0;
-}
-#scene7 .dline .who {
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--hot);
-  flex: 0 0 100%;
-}
-#scene7 .dline .who.you {
-  color: #3ecf8e;
-}
-#scene7 .dline .txt {
-  font-weight: 500;
-  flex: 1 1 200px;
-}
+/* Scene 7: no DOM caption rows; masks paint over baked-in chrome in PNGs. */
 /* Stack like scene E: one .s5-shot, grid-stacked layers — match E/H image block size. */
 #scene7 .s5-shot.s7-shot-layers {
   position: relative;
@@ -892,24 +841,46 @@ body {
   z-index: 2;
   pointer-events: none;
 }
-#scene7 .s7-ui-img {
+/* Framed shot + solid masks over baked-in docs UI (mic FAB, assistant popover). Percents track the PNG layout. */
+#scene7 .s7-shot-frame {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  line-height: 0;
+}
+#scene7 .s7-shot-frame .s7-ui-img {
   width: 100%;
   height: auto;
   display: block;
   border-radius: 10px;
+  vertical-align: bottom;
 }
-#scene7 .faux7 {
+#scene7 .s7-chrome-mask {
   position: absolute;
-  right: 8%;
-  bottom: 6%;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #3ecf8e, #2a8f6a);
-  box-shadow: 0 4px 20px rgba(62, 207, 142, 0.45);
-  z-index: 3;
-  opacity: 0;
-  transform: scale(0.92);
+  pointer-events: none;
+  z-index: 2;
+  box-sizing: border-box;
+}
+#scene7 .s7-mask-fab {
+  right: 1.2%;
+  bottom: 1.6%;
+  width: 16%;
+  height: 22%;
+  max-height: 24%;
+  border-radius: 999px;
+  background: #0a0a0c;
+  box-shadow: 0 0 0 3px #0a0a0c;
+}
+/* Bottom “Assistant / welcome” style strip inside self-host capture */
+#scene7 .s7-mask-bottom {
+  left: 2%;
+  bottom: 2%;
+  width: 96%;
+  height: 24%;
+  border-radius: 10px;
+  background: #0a0a0c;
+  box-shadow: 0 0 0 2px #0a0a0c;
 }
 /* TTS “to self host…” copy is not shown on screen — use audio track only. */
 

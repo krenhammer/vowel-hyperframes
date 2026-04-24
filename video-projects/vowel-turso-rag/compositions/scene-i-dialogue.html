@@ -14,43 +14,38 @@
           <p class="s7-eyebrow" id="s7-eyebrow">What about Conversational Voice?</p>
         </div>
         <div id="s7-zoom-root" class="s5-zoom-root">
-          <!-- Same stack as scene E: one .s5-shot, 3D card + img only (no extra panel / glow) -->
+          <!-- Doc still → self-host still. Masks paint over baked mic FAB + assistant popover in captures (no DOM faux mic / caption rows). -->
           <div class="s5-shot s7-shot-layers" id="s7-shot">
             <div class="s7-layer" id="talk7">
               <div class="ui3d" aria-hidden="true">
                 <div class="ui3d-sway s5-card-tilt" id="sway7-talk">
-                  <img
-                    src="../assets/voweldocs-talk.png"
-                    alt=""
-                    class="s7-ui-img"
-                    crossorigin="anonymous"
-                  />
+                  <div class="s7-shot-frame">
+                    <img
+                      src="../assets/voweldocs.png"
+                      alt=""
+                      class="s7-ui-img"
+                      crossorigin="anonymous"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
             <div class="s7-layer s7-layer-answer" id="self7">
               <div class="ui3d" aria-hidden="true">
                 <div class="ui3d-sway s5-card-tilt" id="sway7-self">
-                  <img
-                    src="../assets/self-host.png"
-                    alt=""
-                    class="s7-ui-img"
-                    crossorigin="anonymous"
-                  />
+                  <div class="s7-shot-frame">
+                    <img
+                      src="../assets/self-host.png"
+                      alt=""
+                      class="s7-ui-img"
+                      crossorigin="anonymous"
+                    />
+                    <div class="s7-chrome-mask s7-mask-fab" aria-hidden="true"></div>
+                    <div class="s7-chrome-mask s7-mask-bottom" aria-hidden="true"></div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="faux7" id="faux7" aria-hidden="true" title="Tap to start"></div>
-          </div>
-        </div>
-        <div class="s7-bubble-row">
-          <div class="dline" id="d1">
-            <span class="who">Assistant</span>
-            <span class="txt">Welcome to Vowel docs. How can I help?</span>
-          </div>
-          <div class="dline d2" id="d2">
-            <span class="who you">You</span>
-            <span class="txt">How do I self host Vowel?</span>
           </div>
         </div>
       </div>
