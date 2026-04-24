@@ -44,6 +44,110 @@ body {
   pointer-events: none;
 }
 
+/* Diagonal moving Turso watermark (opener handoff → end of first beat); sub-green, behind UI + lyrics */
+.turso-bg-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  /* Same deep green as Turso wipe; pattern sits on top */
+  background: var(--turso-bg);
+}
+.turso-bg-pattern__rotor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 220vmin;
+  height: 220vmin;
+  margin-left: -110vmin;
+  margin-top: -110vmin;
+  transform: rotate(-45deg);
+  transform-origin: 50% 50%;
+}
+.turso-bg-pattern__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42em;
+  width: 100%;
+  font-size: clamp(72px, 7vw, 120px);
+  /* Match .ribbon-inner sizing */
+  line-height: 1;
+  color: rgba(80, 180, 130, 0.14);
+}
+.turso-bg-pattern__row {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 1;
+  flex: 0 0 auto;
+  --turso-mrow-sec: 38s;
+}
+.turso-bg-pattern__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: turso-mrow-scroll var(--turso-mrow-sec) linear infinite;
+}
+.turso-bg-pattern__row--alt .turso-bg-pattern__track {
+  animation-direction: reverse;
+}
+.turso-bg-pattern__row:nth-child(5n) {
+  --turso-mrow-sec: 32s;
+}
+.turso-bg-pattern__row:nth-child(5n + 1) {
+  --turso-mrow-sec: 44s;
+}
+.turso-bg-pattern__row:nth-child(5n + 2) {
+  --turso-mrow-sec: 36s;
+}
+.turso-bg-pattern__row:nth-child(5n + 3) {
+  --turso-mrow-sec: 40s;
+}
+.turso-bg-pattern__row:nth-child(5n + 4) {
+  --turso-mrow-sec: 34s;
+}
+.turso-bg-pattern__chunk {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.38em;
+  padding-right: 0.5em;
+  flex-shrink: 0;
+}
+.turso-bg-cell {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.12em;
+  color: inherit;
+  flex-shrink: 0;
+  font-size: 1em;
+  line-height: 1;
+}
+.turso-bg-cell__svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex-shrink: 0;
+}
+.turso-bg-cell__word {
+  font-family: "Outfit", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: inherit;
+}
+@keyframes turso-mrow-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 /*
  * UI screenshots sit in the BACKGROUND (below ribbon + karaoke). GSAP animates .ui-bg-shot-wrap
  * (opacity / motion); perspective skew lives on .ui-bg-shot-pivot so it is not wiped by GSAP x/y/scale.

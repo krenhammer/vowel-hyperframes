@@ -4,6 +4,37 @@
   var WORDS = window.TURSO_RAG_WORDS;
   var tl = gsap.timeline({ paused: true });
 
+  /** Fills #turso-bg-pattern-rows: diagonal 45° rows, alternating scroll direction (CSS marquee). */
+  function buildTursoBgPattern() {
+    var host = document.getElementById("turso-bg-pattern-rows");
+    var tpl = document.getElementById("turso-bg-cell-tpl");
+    if (!host || !tpl || host.childElementCount) return;
+    var rowCount = 24;
+    var cellsPerChunk = 7;
+    for (var r = 0; r < rowCount; r++) {
+      var row = document.createElement("div");
+      row.className = "turso-bg-pattern__row" + (r % 2 ? " turso-bg-pattern__row--alt" : "");
+      var track = document.createElement("div");
+      track.className = "turso-bg-pattern__track";
+      for (var half = 0; half < 2; half++) {
+        var chunk = document.createElement("div");
+        chunk.className = "turso-bg-pattern__chunk";
+        if (half === 1) {
+          chunk.setAttribute("aria-hidden", "true");
+        }
+        for (var c = 0; c < cellsPerChunk; c++) {
+          var imp = document.importNode(tpl.content, true);
+          var cell = imp.querySelector(".turso-bg-cell");
+          if (cell) chunk.appendChild(cell);
+        }
+        track.appendChild(chunk);
+      }
+      row.appendChild(track);
+      host.appendChild(row);
+    }
+  }
+  buildTursoBgPattern();
+
   if (!WORDS || !WORDS.length) {
     console.error(
       "[vowel-turso-rag] TURSO_RAG_WORDS missing — ensure transcript-words.js loads before script.js"
@@ -338,6 +369,7 @@
   }
 
   gsap.set("#turso-ribbon", { opacity: 0, y: -36 });
+  gsap.set("#turso-bg-pattern", { opacity: 0 });
   gsap.set("#outro-layer", { opacity: 0 });
   gsap.set("#shot-chat, #shot-config, #shot-apikey, #shot-talk", { opacity: 0, scale: 0.9 });
   gsap.set("#ow-in, #ow-the, #ow-browser", { opacity: 0 });
@@ -716,6 +748,11 @@
 
   runWipe(WIPE_INTRO, "#0c1814");
 
+  tl.to(
+    "#turso-bg-pattern",
+    { opacity: 1, duration: 0.38, ease: "sine.out" },
+    WIPE_INTRO + 0.12
+  );
   tl.to("#turso-ribbon", { opacity: 1, y: 0, duration: 0.48, ease: "expo.out" }, TURSO_IN);
   tl.fromTo(
     "#turso-ribbon .ribbon-inner",
@@ -731,6 +768,11 @@
     tursoPulseT
   );
 
+  tl.to(
+    "#turso-bg-pattern",
+    { opacity: 0, duration: 0.42, ease: "power2.in" },
+    8.45
+  );
   tl.to("#turso-ribbon", { opacity: 0, y: -70, duration: 0.48, ease: "power2.in" }, 8.48);
   runWipe(8.58, "#0a101c");
 
