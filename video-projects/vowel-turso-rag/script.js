@@ -93,6 +93,70 @@
   }
   buildVoweldocsNavAib();
 
+  /**
+   * RAG tab backgrounds: clone Turso ribbon structure (buildTursoBgMarquee) — row / dual chunk / translate -50%,
+   * even rows vs .rag-screenshot-marquee__row--alt reverse. PNG cells only; avoids AnimatedImageBackground marquee.
+   */
+  function buildRagScreenshotMarquee(host, imageSrc, seed) {
+    if (!host || host.querySelector(".rag-screenshot-marquee")) {
+      return;
+    }
+    var rnd = mulberry32(seed ^ 0x2d4e6f01);
+    var prLo = 68;
+    var prHi = 108;
+    var rowCount = 22;
+    var cellsPerChunk = 9;
+    var wrap = document.createElement("div");
+    wrap.className = "rag-screenshot-marquee";
+    var rotor = document.createElement("div");
+    rotor.className = "rag-screenshot-marquee__rotor";
+    var rowsRoot = document.createElement("div");
+    rowsRoot.className = "rag-screenshot-marquee__rows";
+    var r;
+    var c;
+    var half;
+    for (r = 0; r < rowCount; r++) {
+      var row = document.createElement("div");
+      row.className = "rag-screenshot-marquee__row" + (r % 2 ? " rag-screenshot-marquee__row--alt" : "");
+      var periodS = prLo + rnd() * (prHi - prLo);
+      row.style.setProperty("--rag-mrow-sec", periodS + "s");
+      var track = document.createElement("div");
+      track.className = "rag-screenshot-marquee__track";
+      for (half = 0; half < 2; half++) {
+        var chunk = document.createElement("div");
+        chunk.className = "rag-screenshot-marquee__chunk";
+        if (half === 1) {
+          chunk.setAttribute("aria-hidden", "true");
+        }
+        for (c = 0; c < cellsPerChunk; c++) {
+          var cell = document.createElement("div");
+          cell.className = "rag-screenshot-marquee__cell";
+          var img = document.createElement("img");
+          img.className = "rag-screenshot-marquee__img";
+          img.src = imageSrc;
+          img.alt = "";
+          img.setAttribute("draggable", "false");
+          img.decoding = "async";
+          img.setAttribute("aria-hidden", "true");
+          cell.appendChild(img);
+          chunk.appendChild(cell);
+        }
+        track.appendChild(chunk);
+      }
+      row.appendChild(track);
+      rowsRoot.appendChild(row);
+    }
+    rotor.appendChild(rowsRoot);
+    wrap.appendChild(rotor);
+    host.appendChild(wrap);
+  }
+
+  function buildRagTabAibs() {
+    buildRagScreenshotMarquee(document.getElementById("rag-tab-files-aib-host"), "assets/rag-files.png", 0x3c91a4e2);
+    buildRagScreenshotMarquee(document.getElementById("rag-tab-chat-aib-host"), "assets/chat.png", 0x4d02b5f1);
+  }
+  buildRagTabAibs();
+
   /** Fills #turso-bg-marquee-rows: original diagonal scrolling TURSO ribbon (first Turso product beat). */
   function buildTursoBgMarquee() {
     var host = document.getElementById("turso-bg-marquee-rows");
@@ -505,6 +569,8 @@
 
   gsap.set("#turso-bg-marquee", { opacity: 0 });
   gsap.set("#rag-debug-bg-marquee", { opacity: 0 });
+  gsap.set("#rag-tab-files-aib", { opacity: 0 });
+  gsap.set("#rag-tab-chat-aib", { opacity: 0 });
   gsap.set("#turso-bg-pattern", { opacity: 0 });
   gsap.set("#browser-bg-pattern", { opacity: 0 });
   gsap.set("#docs-type-icons-bg", { autoAlpha: 0 });
@@ -640,6 +706,47 @@
   if (iClickRagDebug >= 0 && iRagCtaLastIdx < 0) {
     iRagCtaLastIdx = Math.min(iClickRagDebug + 22, WORDS.length - 1);
   }
+
+  /* “The first tab … markdown … RAG.” / “The second tab … relevance.” — #rag-tab-*-aib (rag-screenshot-marquee). */
+  var iTheFirstTab = -1;
+  for (var _fta = 0; _fta < WORDS.length - 2; _fta++) {
+    if (
+      stripPunct(WORDS[_fta].text) === "The" &&
+      stripPunct(WORDS[_fta + 1].text) === "first" &&
+      stripPunct(WORDS[_fta + 2].text) === "tab" &&
+      WORDS[_fta].start > 45 &&
+      WORDS[_fta].start < 51
+    ) {
+      iTheFirstTab = _fta;
+      break;
+    }
+  }
+  var tRagTabFilesIn = iTheFirstTab >= 0 ? Math.max(0, WORDS[iTheFirstTab].start - 0.2) : 48.4;
+  var iTheSecondTab = -1;
+  for (var _sta = 0; _sta < WORDS.length - 2; _sta++) {
+    if (
+      stripPunct(WORDS[_sta].text) === "The" &&
+      stripPunct(WORDS[_sta + 1].text) === "second" &&
+      stripPunct(WORDS[_sta + 2].text) === "tab" &&
+      WORDS[_sta].start > 50 &&
+      WORDS[_sta].start < 55
+    ) {
+      iTheSecondTab = _sta;
+      break;
+    }
+  }
+  var tRelevanceLineEnd = 56.5;
+  if (iTheSecondTab >= 0) {
+    for (var _rel2 = iTheSecondTab; _rel2 < WORDS.length; _rel2++) {
+      if (/relevance\.?/i.test(WORDS[_rel2].text)) {
+        tRelevanceLineEnd = WORDS[_rel2].end;
+        break;
+      }
+    }
+  }
+  var tRagTabChatIn = iTheSecondTab >= 0 ? Math.max(0, WORDS[iTheSecondTab].start - 0.12) : 52.1;
+  var tRagTabFilesOut = tRagTabChatIn;
+  var tRagTabChatOut = tRelevanceLineEnd + 0.22;
 
   /* In-app Q&A: keep #turso-bg-pattern at 0 — full grid behind chat hurt legibility; stage-bg + wipe color only. */
 
@@ -936,6 +1043,31 @@
       },
       [],
       tRagButtonBgOut
+    );
+  }
+  if (iTheFirstTab >= 0) {
+    tl.set("#stage-bg", { backgroundColor: "#0a1522" }, Math.max(0, tRagTabFilesIn - 0.08));
+    tl.to(
+      "#rag-tab-files-aib",
+      { opacity: 1, duration: 0.38, ease: "sine.out" },
+      tRagTabFilesIn
+    );
+    tl.to(
+      "#rag-tab-files-aib",
+      { opacity: 0, duration: 0.4, ease: "power2.in" },
+      tRagTabFilesOut
+    );
+  }
+  if (iTheSecondTab >= 0) {
+    tl.to(
+      "#rag-tab-chat-aib",
+      { opacity: 1, duration: 0.38, ease: "sine.out" },
+      tRagTabChatIn
+    );
+    tl.to(
+      "#rag-tab-chat-aib",
+      { opacity: 0, duration: 0.42, ease: "power2.in" },
+      tRagTabChatOut
     );
   }
   if (iClickVoweldocsNav >= 0) {

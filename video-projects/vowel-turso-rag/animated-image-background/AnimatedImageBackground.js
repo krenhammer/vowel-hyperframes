@@ -26,6 +26,14 @@
     backgroundColor: "#0a1612",
     ringColor: "rgba(15, 208, 110, 0.42)",
     accentColor: "#0fd06e",
+    /** If false: no per-cell “button press” pulse; use slow alternating row scroll instead (no-button / screenshot mode). */
+    hasButton: true,
+    /**
+     * When hasButton is false: per-row scroll period (two duplicate chunks, translate -50%),
+     * in seconds, randomized per row between min and max.
+     */
+    rowMarqueeSecMin: 70,
+    rowMarqueeSecMax: 120,
     pressAnimation: "random",
     seed: 0x5a7e1c3f,
     periodRangeSec: { min: 5, max: 9.5 },
@@ -37,6 +45,13 @@
   };
 
   function mergeOpts(options) {
+    var hasButton = options.hasButton != null ? options.hasButton : DEF.hasButton;
+    var pressAnimation;
+    if (!hasButton) {
+      pressAnimation = "off";
+    } else {
+      pressAnimation = options.pressAnimation != null ? options.pressAnimation : DEF.pressAnimation;
+    }
     return {
       imageSrc: options.imageSrc,
       angleDeg: options.angleDeg != null ? options.angleDeg : DEF.angleDeg,
@@ -49,7 +64,10 @@
       backgroundColor: options.backgroundColor != null ? options.backgroundColor : DEF.backgroundColor,
       ringColor: options.ringColor != null ? options.ringColor : DEF.ringColor,
       accentColor: options.accentColor != null ? options.accentColor : DEF.accentColor,
-      pressAnimation: options.pressAnimation != null ? options.pressAnimation : DEF.pressAnimation,
+      hasButton: hasButton,
+      rowMarqueeSecMin: options.rowMarqueeSecMin != null ? options.rowMarqueeSecMin : DEF.rowMarqueeSecMin,
+      rowMarqueeSecMax: options.rowMarqueeSecMax != null ? options.rowMarqueeSecMax : DEF.rowMarqueeSecMax,
+      pressAnimation: pressAnimation,
       seed: options.seed != null ? options.seed : DEF.seed,
       periodRangeSec: options.periodRangeSec || DEF.periodRangeSec,
       maxNegativeDelaySec:
@@ -69,8 +87,15 @@
     this._options = mergeOpts(options);
     this.root = document.createElement("div");
     this.root.className = "aib" + (this._options.className ? " " + this._options.className : "");
+    if (!this._options.hasButton) {
+      this.root.classList.add("aib--no-button");
+    }
     this._applyCustomProperties();
-    this._buildGrid();
+    if (this._options.hasButton) {
+      this._buildGrid();
+    } else {
+      this._buildRowMarqueeGrid();
+    }
     var el = typeof host === "string" ? document.querySelector(host) : host;
     if (!el) {
       throw new Error("AnimatedImageBackground: host element not found");
@@ -166,6 +191,76 @@
       }
     }
     rotor.appendChild(grid);
+    this.root.appendChild(rotor);
+  };
+
+  /**
+   * No-button mode: no press pulse. Each horizontal band is a duplicated chunk; slow translate
+   * so adjacent rows move in opposite directions (see .aib__mrow--alt).
+   */
+  proto._buildRowMarqueeGrid = function () {
+    var o = this._options;
+    var rnd = mulberry32(o.seed ^ 0x2d4e6f01);
+    var prLo = o.rowMarqueeSecMin;
+    var prHi = o.rowMarqueeSecMax;
+    if (prHi < prLo) {
+      prHi = prLo;
+    }
+
+    var rotor = document.createElement("div");
+    rotor.className = "aib__rotor aib__rotor--marquee";
+    var wrap = document.createElement("div");
+    wrap.className = "aib__marquee";
+
+    function makeImageCell() {
+      var cell = document.createElement("div");
+      cell.className = "aib__cell aib__mcell";
+      var ring = document.createElement("div");
+      ring.className = "aib__ring";
+      var img = document.createElement("img");
+      img.className = "aib__img";
+      img.src = this._currentSrc;
+      img.alt = o.imageAlt;
+      img.setAttribute("draggable", "false");
+      img.decoding = "async";
+      if (!o.imageAlt) {
+        img.setAttribute("aria-hidden", "true");
+      }
+      ring.appendChild(img);
+      cell.appendChild(ring);
+      return cell;
+    }
+    var self = this;
+    function cellOne() {
+      return makeImageCell.call(self);
+    }
+
+    for (var r = 0; r < o.rows; r++) {
+      var mrow = document.createElement("div");
+      mrow.className = "aib__mrow" + (r % 2 ? " aib__mrow--alt" : "");
+      var periodS = prLo + rnd() * (prHi - prLo);
+      mrow.style.setProperty("--aib-mrow-sec", periodS + "s");
+
+      var mtrack = document.createElement("div");
+      mtrack.className = "aib__mtrack";
+
+      for (var half = 0; half < 2; half++) {
+        var mchunk = document.createElement("div");
+        mchunk.className = "aib__mchunk";
+        if (half === 1) {
+          mchunk.setAttribute("aria-hidden", "true");
+        }
+        for (var c = 0; c < o.columns; c++) {
+          mchunk.appendChild(cellOne());
+        }
+        mtrack.appendChild(mchunk);
+      }
+
+      mrow.appendChild(mtrack);
+      wrap.appendChild(mrow);
+    }
+
+    rotor.appendChild(wrap);
     this.root.appendChild(rotor);
   };
 

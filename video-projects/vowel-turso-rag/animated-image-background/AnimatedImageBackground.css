@@ -126,3 +126,115 @@
     transform: translateZ(0) scale(1);
   }
 }
+
+/* —— hasButton: false — no “button” rings; 2× image vs default 55% tile; row marquee —— */
+
+/* No-button mode: frame matches tile; image keeps intrinsic aspect (no stretch). */
+.aib--no-button .aib__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.95;
+}
+
+/*
+ * Marquee tiles: explicit width + aspect-ratio (never height:100% chains — they collapse in flex).
+ * --aib-marquee-tile-w: tile width (project can set smaller so many fit per row).
+ * --aib-marquee-aspect: width/height ratio of the screenshot PNG (default 1 = square).
+ */
+.aib__rotor--marquee .aib__mcell .aib__ring {
+  box-sizing: border-box;
+  width: var(--aib-marquee-tile-w, min(36vmin, var(--aib-cell-cap)));
+  max-width: var(--aib-cell-cap);
+  height: auto;
+  aspect-ratio: var(--aib-marquee-aspect, 1);
+  flex-shrink: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.aib--no-button .aib__ring {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.aib__rotor--marquee {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: min(2.5%, 20px) min(1.2%, 12px);
+}
+
+.aib__marquee {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  gap: var(--aib-gap-y);
+  box-sizing: border-box;
+}
+
+.aib__mrow {
+  --aib-mrow-sec: 90s;
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.aib__mtrack {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: max-content;
+  height: auto;
+  will-change: transform;
+  align-items: center;
+  animation: aib-mrow-scroll var(--aib-mrow-sec) linear infinite;
+}
+
+.aib__mrow--alt .aib__mtrack {
+  animation-direction: reverse;
+}
+
+.aib__mchunk {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--aib-gap-x);
+  box-sizing: border-box;
+  min-height: 0;
+  height: auto;
+}
+
+.aib__mcell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+@keyframes aib-mrow-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(calc(-50% + 0.5px), 0, 0);
+  }
+}

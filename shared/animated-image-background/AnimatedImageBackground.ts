@@ -74,8 +74,20 @@ export interface AnimatedImageBackgroundOptions {
   /** Optional tint for the image’s drop-shadow (CSS color). */
   accentColor?: string;
   /**
+   * `true` (default): circular “button” frames and optional `aib-btn-press` (see `pressAnimation`).
+   * `false`: no button/press; plain tiles, 2× image size, and slow alternating **row** marquee scroll.
+   */
+  hasButton?: boolean;
+  /**
+   * When `hasButton` is false: each row’s horizontal scroll period is picked in
+   * `[rowMarqueeSecMin, rowMarqueeSecMax]` seconds (per row, from `seed`).
+   */
+  rowMarqueeSecMin?: number;
+  rowMarqueeSecMax?: number;
+  /**
    * When not `off`, each ring runs the `aib-btn-press` loop.
    * `random` uses `seed` for repeatable “chaotic” timing; `stagger` uses index-based delay.
+   * Ignored when `hasButton` is false (treated as `off`).
    */
   pressAnimation?: AnimatedImagePressMode;
   /**
@@ -116,6 +128,9 @@ const DEFAULTS = {
   backgroundColor: "#0a1612",
   ringColor: "rgba(15, 208, 110, 0.42)",
   accentColor: "#0fd06e",
+  hasButton: true,
+  rowMarqueeSecMin: 70,
+  rowMarqueeSecMax: 120,
   pressAnimation: "random" as AnimatedImagePressMode,
   seed: 0x5a7e1c3f,
   periodRangeSec: { min: 5, max: 9.5 },
@@ -130,8 +145,10 @@ const DEFAULTS = {
  */
 type ResolvedOptions = Readonly<
   Required<Pick<AnimatedImageBackgroundOptions, "imageSrc">> &
-    typeof DEFAULTS & {
+    typeof DEFAULTS &
+    Required<Pick<AnimatedImageBackgroundOptions, "hasButton" | "rowMarqueeSecMin" | "rowMarqueeSecMax">> & {
       className: string;
+      pressAnimation: AnimatedImagePressMode;
     }
 >;
 
@@ -149,6 +166,10 @@ export class AnimatedImageBackground {
     }
 
     this.currentSrc = options.imageSrc;
+    const hasButton = options.hasButton ?? DEFAULTS.hasButton;
+    const pressAnimation: AnimatedImagePressMode = hasButton
+      ? options.pressAnimation ?? DEFAULTS.pressAnimation
+      : "off";
     this.options = {
       imageSrc: options.imageSrc,
       angleDeg: options.angleDeg ?? DEFAULTS.angleDeg,
@@ -161,7 +182,10 @@ export class AnimatedImageBackground {
       backgroundColor: options.backgroundColor ?? DEFAULTS.backgroundColor,
       ringColor: options.ringColor ?? DEFAULTS.ringColor,
       accentColor: options.accentColor ?? DEFAULTS.accentColor,
-      pressAnimation: options.pressAnimation ?? DEFAULTS.pressAnimation,
+      hasButton,
+      rowMarqueeSecMin: options.rowMarqueeSecMin ?? DEFAULTS.rowMarqueeSecMin,
+      rowMarqueeSecMax: options.rowMarqueeSecMax ?? DEFAULTS.rowMarqueeSecMax,
+      pressAnimation,
       seed: options.seed ?? DEFAULTS.seed,
       periodRangeSec: options.periodRangeSec ?? DEFAULTS.periodRangeSec,
       maxNegativeDelaySec: options.maxNegativeDelaySec ?? DEFAULTS.maxNegativeDelaySec,
@@ -173,8 +197,15 @@ export class AnimatedImageBackground {
 
     this.root = document.createElement("div");
     this.root.className = "aib" + (this.options.className ? " " + this.options.className : "");
+    if (!this.options.hasButton) {
+      this.root.classList.add("aib--no-button");
+    }
     this.applyCustomProperties();
-    this.buildGrid();
+    if (this.options.hasButton) {
+      this.buildGrid();
+    } else {
+      this.buildRowMarqueeGrid();
+    }
 
     const el = typeof host === "string" ? document.querySelector<HTMLElement>(host) : host;
     if (!el) {
@@ -275,6 +306,72 @@ export class AnimatedImageBackground {
     }
 
     rotor.appendChild(grid);
+    this.root.appendChild(rotor);
+  }
+
+  /**
+   * No-“button” mode: duplicated horizontal chunks per row, slow `translate3d` loop;
+   * odd and even rows use opposite `animation-direction` (`.aib__mrow--alt`).
+   */
+  private buildRowMarqueeGrid(): void {
+    const o = this.options;
+    const rnd = mulberry32(o.seed ^ 0x2d4e6f01);
+    let prLo = o.rowMarqueeSecMin;
+    let prHi = o.rowMarqueeSecMax;
+    if (prHi < prLo) {
+      prHi = prLo;
+    }
+
+    const rotor = document.createElement("div");
+    rotor.className = "aib__rotor aib__rotor--marquee";
+    const wrap = document.createElement("div");
+    wrap.className = "aib__marquee";
+
+    const makeImageCell = (): HTMLDivElement => {
+      const cell = document.createElement("div");
+      cell.className = "aib__cell aib__mcell";
+      const ring = document.createElement("div");
+      ring.className = "aib__ring";
+      const img = document.createElement("img");
+      img.className = "aib__img";
+      img.src = this.currentSrc;
+      img.alt = o.imageAlt;
+      img.setAttribute("draggable", "false");
+      img.decoding = "async";
+      if (!o.imageAlt) {
+        img.setAttribute("aria-hidden", "true");
+      }
+      ring.appendChild(img);
+      cell.appendChild(ring);
+      return cell;
+    };
+
+    for (let r = 0; r < o.rows; r++) {
+      const mrow = document.createElement("div");
+      mrow.className = "aib__mrow" + (r % 2 ? " aib__mrow--alt" : "");
+      const periodS = prLo + rnd() * (prHi - prLo);
+      mrow.style.setProperty("--aib-mrow-sec", `${periodS}s`);
+
+      const mtrack = document.createElement("div");
+      mtrack.className = "aib__mtrack";
+
+      for (let half = 0; half < 2; half++) {
+        const mchunk = document.createElement("div");
+        mchunk.className = "aib__mchunk";
+        if (half === 1) {
+          mchunk.setAttribute("aria-hidden", "true");
+        }
+        for (let c = 0; c < o.columns; c++) {
+          mchunk.appendChild(makeImageCell());
+        }
+        mtrack.appendChild(mchunk);
+      }
+
+      mrow.appendChild(mtrack);
+      wrap.appendChild(mrow);
+    }
+
+    rotor.appendChild(wrap);
     this.root.appendChild(rotor);
   }
 }
