@@ -195,6 +195,41 @@ body {
   height: 100%;
 }
 /*
+ * Vowel mic: vertical AIB column marquee, PNGs only (aib--no-button — no green rings/press), #080E1B, loose gaps.
+ */
+#vowel-mic-button-marquee {
+  background-color: #080e1b;
+}
+#vowel-mic-button-aib-host .aib--vowel-mic-marquee {
+  background-color: #080e1b !important;
+  --aib-bg: #080e1b;
+  --aib-gap-y: 1.15rem;
+  --aib-gap-x: 0.95rem;
+  --aib-marquee-tile-w: min(100%, min(40vmin, 400px));
+  --aib-marquee-aspect: 1;
+}
+#vowel-mic-button-aib-host .aib--vowel-mic-marquee .aib__rotor--marquee {
+  left: 0 !important;
+  top: 0 !important;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  padding: min(1.2%, 14px) !important;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+#vowel-mic-button-aib-host .aib--vowel-mic-marquee .aib__marquee--vertical {
+  gap: var(--aib-gap-x) !important;
+  column-gap: var(--aib-gap-x) !important;
+  row-gap: 0;
+}
+#vowel-mic-button-aib-host .aib--vowel-mic-marquee .aib__mchunk--vertical {
+  gap: var(--aib-gap-y) !important;
+}
+
+/*
  * RAG tab backgrounds: same row / track / 2× chunk as Turso, but PNG rotor is not rotated (horizontal drift).
  * AnimatedImageBackground marquee was unreliable here; this DOM matches the working Turso pattern.
  */

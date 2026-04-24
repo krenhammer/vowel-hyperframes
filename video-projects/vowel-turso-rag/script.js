@@ -164,6 +164,33 @@
   }
   buildRagTabAibs();
 
+  /**
+   * “Once your key … / Click on the mic …” — vertical column marquee: no rings/press, angle 0, PNGs only, #080E1B.
+   */
+  function buildVowelMicButtonMarqueeAib() {
+    var host = document.getElementById("vowel-mic-button-aib-host");
+    if (!host || !window.AnimatedImageBackground) {
+      return;
+    }
+    return new window.AnimatedImageBackground(host, {
+      imageSrc: "assets/vowel-mic-button.png",
+      hasButton: false,
+      rowMarqueeAxis: "y",
+      angleDeg: 0,
+      cellSize: "min(28rem, 100%)",
+      cellMaxCap: "400px",
+      minCellSize: "140px",
+      columns: 4,
+      rows: 12,
+      backgroundColor: "#080E1B",
+      rowMarqueeSecMin: 110,
+      rowMarqueeSecMax: 180,
+      seed: 0x7b3a9c1d,
+      className: "aib--vowel-mic-marquee",
+    });
+  }
+  buildVowelMicButtonMarqueeAib();
+
   /** Fills #turso-bg-marquee-rows: original diagonal scrolling TURSO ribbon (first Turso product beat). */
   function buildTursoBgMarquee() {
     var host = document.getElementById("turso-bg-marquee-rows");
@@ -626,6 +653,7 @@
   gsap.set("#rag-tab-files-aib", { opacity: 0 });
   gsap.set("#rag-tab-chat-aib", { opacity: 0 });
   gsap.set("#vowel-api-config-marquee", { opacity: 0 });
+  gsap.set("#vowel-mic-button-marquee", { opacity: 0 });
   gsap.set("#turso-bg-pattern", { opacity: 0 });
   gsap.set("#browser-bg-pattern", { opacity: 0 });
   gsap.set("#docs-type-bg-pattern", { opacity: 0 });
@@ -851,6 +879,30 @@
   }
   var tVowelApiConfigIn = iVowelApiConfigThis >= 0 ? Math.max(0, WORDS[iVowelApiConfigThis].start - 0.2) : 69.2;
   var tVowelApiConfigOut = iVowelApiInstance >= 0 ? WORDS[iVowelApiInstance].end + 0.35 : 78.5;
+
+  /* “Once your key is validated …” through “… dialoging with vowel docs.” — #vowel-mic-button-marquee (vertical mic CTA) */
+  var iOnceYourKey = -1;
+  for (var _oy = 0; _oy < WORDS.length - 1; _oy++) {
+    if (stripPunct(WORDS[_oy].text) === "Once" && stripPunct(WORDS[_oy + 1].text) === "your") {
+      iOnceYourKey = _oy;
+      break;
+    }
+  }
+  var iAfterMicClickDialogingDocs = -1;
+  for (var _ac = 0; _ac < WORDS.length - 3; _ac++) {
+    if (
+      stripPunct(WORDS[_ac].text) === "dialoging" &&
+      stripPunct(WORDS[_ac + 1].text) === "with" &&
+      /^vowel$/i.test(stripPunct(WORDS[_ac + 2].text)) &&
+      stripPunct(WORDS[_ac + 3].text) === "docs"
+    ) {
+      iAfterMicClickDialogingDocs = _ac + 3;
+      break;
+    }
+  }
+  var tVowelMicButtonMarqueeIn = iOnceYourKey >= 0 ? Math.max(0, WORDS[iOnceYourKey].start - 0.2) : 78.7;
+  var tVowelMicButtonMarqueeOut =
+    iAfterMicClickDialogingDocs >= 0 ? WORDS[iAfterMicClickDialogingDocs].end + 0.32 : 86.5;
 
   /* In-app Q&A: keep #turso-bg-pattern at 0 — full grid behind chat hurt legibility; stage-bg + wipe color only. */
 
@@ -1188,6 +1240,19 @@
       "#vowel-api-config-marquee",
       { opacity: 0, duration: 0.42, ease: "power2.in" },
       tVowelApiConfigOut
+    );
+  }
+  if (iOnceYourKey >= 0) {
+    tl.set("#stage-bg", { backgroundColor: "#080E1B" }, Math.max(0, tVowelMicButtonMarqueeIn - 0.06));
+    tl.to(
+      "#vowel-mic-button-marquee",
+      { opacity: 1, duration: 0.38, ease: "sine.out" },
+      tVowelMicButtonMarqueeIn
+    );
+    tl.to(
+      "#vowel-mic-button-marquee",
+      { opacity: 0, duration: 0.42, ease: "power2.in" },
+      tVowelMicButtonMarqueeOut
     );
   }
 

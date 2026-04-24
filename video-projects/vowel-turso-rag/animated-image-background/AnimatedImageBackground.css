@@ -238,3 +238,90 @@
     transform: translate3d(calc(-50% + 0.5px), 0, 0);
   }
 }
+
+/* —— hasButton: false + marqueeWithButtonPress — circular “CTA” cells in a scrolling band (overrides wide screenshot ring above) —— */
+.aib--marquee-buttons.aib--press .aib__rotor--marquee .aib__mcell .aib__ring {
+  width: var(--aib-cell-max);
+  max-width: var(--aib-cell-cap);
+  min-width: var(--aib-cell-min);
+  height: var(--aib-cell-max);
+  max-height: var(--aib-cell-cap);
+  min-height: var(--aib-cell-min);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2.5px solid var(--aib-ring);
+  background: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18) inset, 0 2px 10px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+/* Column strips scroll on Y (e.g. vowel mic button CTA) */
+.aib__rotor--marquee.aib__rotor--marquee-vertical {
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.aib__marquee--vertical {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  gap: var(--aib-gap-x);
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.aib__mcol {
+  --aib-mcol-sec: 158s;
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.aib__mtrack--vertical {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: max-content;
+  min-height: 0;
+  will-change: transform;
+  align-items: center;
+  animation: aib-mcol-scroll var(--aib-mcol-sec) linear infinite;
+}
+
+.aib__mcol--alt .aib__mtrack--vertical {
+  animation-direction: reverse;
+}
+
+.aib__mchunk--vertical {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--aib-gap-y);
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+}
+
+@keyframes aib-mcol-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, calc(-50% + 0.5px), 0);
+  }
+}

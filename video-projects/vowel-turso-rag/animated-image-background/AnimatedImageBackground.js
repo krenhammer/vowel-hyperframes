@@ -42,15 +42,20 @@
     staggerPeriodSec: 6.5,
     imageAlt: "",
     className: "",
+    rowMarqueeAxis: "x",
+    marqueeWithButtonPress: false,
   };
 
   function mergeOpts(options) {
     var hasButton = options.hasButton != null ? options.hasButton : DEF.hasButton;
+    var marqueeWithButtonPress = options.marqueeWithButtonPress === true;
     var pressAnimation;
-    if (!hasButton) {
-      pressAnimation = "off";
-    } else {
+    if (hasButton) {
       pressAnimation = options.pressAnimation != null ? options.pressAnimation : DEF.pressAnimation;
+    } else if (marqueeWithButtonPress) {
+      pressAnimation = options.pressAnimation != null ? options.pressAnimation : "random";
+    } else {
+      pressAnimation = "off";
     }
     return {
       imageSrc: options.imageSrc,
@@ -65,6 +70,8 @@
       ringColor: options.ringColor != null ? options.ringColor : DEF.ringColor,
       accentColor: options.accentColor != null ? options.accentColor : DEF.accentColor,
       hasButton: hasButton,
+      marqueeWithButtonPress: marqueeWithButtonPress,
+      rowMarqueeAxis: options.rowMarqueeAxis != null ? options.rowMarqueeAxis : "x",
       rowMarqueeSecMin: options.rowMarqueeSecMin != null ? options.rowMarqueeSecMin : DEF.rowMarqueeSecMin,
       rowMarqueeSecMax: options.rowMarqueeSecMax != null ? options.rowMarqueeSecMax : DEF.rowMarqueeSecMax,
       pressAnimation: pressAnimation,
@@ -88,7 +95,12 @@
     this.root = document.createElement("div");
     this.root.className = "aib" + (this._options.className ? " " + this._options.className : "");
     if (!this._options.hasButton) {
-      this.root.classList.add("aib--no-button");
+      if (!this._options.marqueeWithButtonPress) {
+        this.root.classList.add("aib--no-button");
+      } else {
+        this.root.classList.add("aib--press");
+        this.root.classList.add("aib--marquee-buttons");
+      }
     }
     this._applyCustomProperties();
     if (this._options.hasButton) {
@@ -196,30 +208,45 @@
 
   /**
    * No-button mode: no press pulse. Each horizontal band is a duplicated chunk; slow translate
-   * so adjacent rows move in opposite directions (see .aib__mrow--alt).
+   * so adjacent rows move in opposite directions (see .aib__mrow--alt). Axis "y": columns, vertical translate.
    */
   proto._buildRowMarqueeGrid = function () {
     var o = this._options;
+    if (o.rowMarqueeAxis === "y") {
+      this._buildColumnMarqueeGrid();
+      return;
+    }
     var rnd = mulberry32(o.seed ^ 0x2d4e6f01);
     var prLo = o.rowMarqueeSecMin;
     var prHi = o.rowMarqueeSecMax;
     if (prHi < prLo) {
       prHi = prLo;
     }
+    var rndPress =
+      o.marqueeWithButtonPress && o.pressAnimation === "random" ? mulberry32(o.seed) : null;
+    var pr = o.periodRangeSec;
+    var maxNeg = o.maxNegativeDelaySec;
 
     var rotor = document.createElement("div");
     rotor.className = "aib__rotor aib__rotor--marquee";
     var wrap = document.createElement("div");
     wrap.className = "aib__marquee";
 
+    var self = this;
     function makeImageCell() {
       var cell = document.createElement("div");
       cell.className = "aib__cell aib__mcell";
       var ring = document.createElement("div");
       ring.className = "aib__ring";
+      if (rndPress) {
+        var delayS = -rndPress() * maxNeg;
+        var periodS = pr.min + rndPress() * (pr.max - pr.min);
+        ring.style.setProperty("--aib-btn-delay", delayS + "s");
+        ring.style.setProperty("--aib-btn-period", periodS + "s");
+      }
       var img = document.createElement("img");
       img.className = "aib__img";
-      img.src = this._currentSrc;
+      img.src = self._currentSrc;
       img.alt = o.imageAlt;
       img.setAttribute("draggable", "false");
       img.decoding = "async";
@@ -230,9 +257,8 @@
       cell.appendChild(ring);
       return cell;
     }
-    var self = this;
     function cellOne() {
-      return makeImageCell.call(self);
+      return makeImageCell();
     }
 
     for (var r = 0; r < o.rows; r++) {
@@ -258,6 +284,87 @@
 
       mrow.appendChild(mtrack);
       wrap.appendChild(mrow);
+    }
+
+    rotor.appendChild(wrap);
+    this.root.appendChild(rotor);
+  };
+
+  /**
+   * Column strips scroll vertically; same dual-chunk + translate -50% as row marquee, for mic / icon CTAs.
+   */
+  proto._buildColumnMarqueeGrid = function () {
+    var o = this._options;
+    var rnd = mulberry32(o.seed ^ 0x3e4f5a6b);
+    var prLo = o.rowMarqueeSecMin;
+    var prHi = o.rowMarqueeSecMax;
+    if (prHi < prLo) {
+      prHi = prLo;
+    }
+    var rndPress =
+      o.marqueeWithButtonPress && o.pressAnimation === "random" ? mulberry32(o.seed) : null;
+    var pr = o.periodRangeSec;
+    var maxNeg = o.maxNegativeDelaySec;
+
+    var rotor = document.createElement("div");
+    rotor.className = "aib__rotor aib__rotor--marquee aib__rotor--marquee-vertical";
+    var wrap = document.createElement("div");
+    wrap.className = "aib__marquee aib__marquee--vertical";
+
+    var self = this;
+    function makeImageCell() {
+      var cell = document.createElement("div");
+      cell.className = "aib__cell aib__mcell";
+      var ring = document.createElement("div");
+      ring.className = "aib__ring";
+      if (rndPress) {
+        var delayS = -rndPress() * maxNeg;
+        var periodPress = pr.min + rndPress() * (pr.max - pr.min);
+        ring.style.setProperty("--aib-btn-delay", delayS + "s");
+        ring.style.setProperty("--aib-btn-period", periodPress + "s");
+      }
+      var img = document.createElement("img");
+      img.className = "aib__img";
+      img.src = self._currentSrc;
+      img.alt = o.imageAlt;
+      img.setAttribute("draggable", "false");
+      img.decoding = "async";
+      if (!o.imageAlt) {
+        img.setAttribute("aria-hidden", "true");
+      }
+      ring.appendChild(img);
+      cell.appendChild(ring);
+      return cell;
+    }
+    function cellOne() {
+      return makeImageCell();
+    }
+
+    var c;
+    var r;
+    var half;
+    for (c = 0; c < o.columns; c++) {
+      var mcol = document.createElement("div");
+      mcol.className = "aib__mcol" + (c % 2 ? " aib__mcol--alt" : "");
+      var colPeriod = prLo + rnd() * (prHi - prLo);
+      mcol.style.setProperty("--aib-mcol-sec", colPeriod + "s");
+
+      var mtrack = document.createElement("div");
+      mtrack.className = "aib__mtrack aib__mtrack--vertical";
+
+      for (half = 0; half < 2; half++) {
+        var mchunk = document.createElement("div");
+        mchunk.className = "aib__mchunk aib__mchunk--vertical";
+        if (half === 1) {
+          mchunk.setAttribute("aria-hidden", "true");
+        }
+        for (r = 0; r < o.rows; r++) {
+          mchunk.appendChild(cellOne());
+        }
+        mtrack.appendChild(mchunk);
+      }
+      mcol.appendChild(mtrack);
+      wrap.appendChild(mcol);
     }
 
     rotor.appendChild(wrap);
