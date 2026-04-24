@@ -44,28 +44,65 @@ body {
   pointer-events: none;
 }
 
-/* Floating UI screenshots — top half of 9:16; GSAP still owns pop animation */
-.float-shot {
+/*
+ * UI screenshots sit in the BACKGROUND (below ribbon + karaoke). GSAP animates .ui-bg-shot-wrap
+ * (opacity / motion); perspective skew lives on .ui-bg-shot-pivot so it is not wiped by GSAP x/y/scale.
+ */
+.ui-shot-backdrop {
   position: absolute;
-  z-index: 8;
-  top: 4%;
-  width: min(88%, 920px);
-  max-height: 42%;
-  height: auto;
-  object-fit: contain;
-  border-radius: 16px;
-  filter: drop-shadow(0 22px 48px rgba(0, 0, 0, 0.55));
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 8px clamp(72px, 9vh, 132px);
+  box-sizing: border-box;
+}
+.ui-shot-slab {
+  position: relative;
+  width: calc(100% - 16px);
+  max-width: 1064px;
+  min-height: min(52vh, 1000px);
+  perspective: min(2000px, 220vw);
+  perspective-origin: 58% 40%;
+  transform-style: preserve-3d;
+}
+.ui-bg-shot-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 1064px;
+  margin: 0 auto;
   opacity: 0;
   will-change: transform, opacity;
   transform: translateZ(0);
+  filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.5));
 }
-.float-shot--l {
-  left: 4%;
-  right: auto;
+.ui-bg-shot-pivot {
+  transform-style: preserve-3d;
+  transform-origin: 70% 48%;
+  border-radius: 14px;
+  overflow: hidden;
+  backface-visibility: hidden;
 }
-.float-shot--r {
-  right: 4%;
-  left: auto;
+/* RAG / docs / settings: left side of the capture reads nearer. */
+.ui-bg-shot-pivot--rag {
+  transform: rotateX(3.8deg) rotateY(-16deg) rotateZ(0.06deg);
+}
+/* Vowel / talk UI: same left-weighted board (mic / chrome on the left). */
+.ui-bg-shot-pivot--mic {
+  transform: rotateX(4deg) rotateY(-18deg) rotateZ(0.05deg);
+}
+.ui-bg-shot-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  vertical-align: bottom;
+  object-fit: contain;
+  max-height: min(52vh, 1000px);
 }
 
 #turso-ribbon {
@@ -183,8 +220,11 @@ body {
   align-items: flex-start;
   padding-top: 5%;
 }
+/* Fixed offset from top so the first line does not jump as words appear (flex center was re-centering growing content). */
 .beat-block.valign-mid {
-  align-items: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: clamp(560px, 38%, 760px);
 }
 .beat-block.valign-bottom {
   align-items: flex-end;
@@ -349,7 +389,7 @@ body {
   color: #fff;
   line-height: 0.85;
   letter-spacing: -12px;
-  opacity: 0;
+  opacity: 1;
   transform-origin: 50% 50%;
 }
 .opener-sub {

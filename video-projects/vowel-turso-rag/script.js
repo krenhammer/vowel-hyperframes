@@ -25,7 +25,13 @@
 
   var NARRATION_END = WORDS[WORDS.length - 1].end;
   var OUTRO_HOLD = 10;
-  var TOTAL = NARRATION_END + OUTRO_HOLD;
+  /** Filled in word loop: kinetic entrance end for “documentation … today.” (closing line + outro timing). */
+  var tAfterDocumentationToday = null;
+  var DOC_TODAY_PAUSE_SEC = 2;
+  /** Kinetic entrance end for last in-app word (e.g. credentials.) — handoff before “So that's RAG…”. */
+  var tAfterAiLastWordKinetic = null;
+  /** Pause (sec) after that entrance finishes, before fading the AI beat / revealing the next line. */
+  var AI_POST_KINETIC_PAUSE_SEC = 1;
   var wrnd = mulberry32(0x7f4a3c2d ^ (WORDS.length * 0x9e3779b9));
   var floatActive = 0;
   function floatEnter() {
@@ -335,7 +341,8 @@
   gsap.set("#outro-layer", { opacity: 0 });
   gsap.set("#shot-chat, #shot-config, #shot-apikey, #shot-talk", { opacity: 0, scale: 0.9 });
   gsap.set("#ow-in, #ow-the, #ow-browser", { opacity: 0 });
-  gsap.set("#title-rag", { opacity: 0, scale: 0.48 });
+  /* Headline visible from frame 0; subline “in / the / browser.” fades in word-by-word. */
+  gsap.set("#title-rag", { opacity: 1, scale: 1 });
   gsap.set("#karaoke-wrap", { x: 0, transformOrigin: "50% 50%" });
 
   var beatModels = makeBeatModels(buildBeats());
@@ -506,16 +513,7 @@
       Math.max(0, tFirstAiBeat - 0.22)
     );
   }
-  if (tLastAiEnd != null) {
-    tl.call(
-      function () {
-        var w = document.getElementById("karaoke-wrap");
-        if (w) w.classList.remove("karaoke-wrap--ai");
-      },
-      [],
-      tLastAiEnd + AI_OUT_HOLD_SEC + AI_OUT_FADE_SEC
-    );
-  }
+  /* karaoke-wrap--ai removal: scheduled after word loop once tAiClearStart is known (see below). */
 
   /* 2s silent breath after the last in-app line; bgm-post in index.html must start at the same time. */
   var postAiBgmAt = tLastAiEnd != null ? tLastAiEnd + 2 : 119.671;
@@ -523,6 +521,90 @@
 
   tl.set(".beat-block", { autoAlpha: 0, y: 48, scale: 0.93 }, 0);
   tl.set("#karaoke-stage .kw", { autoAlpha: 0 }, 0);
+
+  for (var i = 4; i < WORDS.length; i++) {
+    var w = WORDS[i];
+    var el = document.getElementById("kw-" + i);
+    if (!el) {
+      continue;
+    }
+    var gap = w.end - w.start;
+    var jitter = 0.82 + wrnd() * 0.38;
+    var enterDur = Math.max(0.13, Math.min(0.4, (gap + 0.14) * jitter));
+    if (
+      i > 0 &&
+      stripPunct(w.text) === "today" &&
+      stripPunct(WORDS[i - 1].text) === "documentation"
+    ) {
+      tAfterDocumentationToday = w.start + enterDur;
+    }
+    if (AI_WORD_LAST >= 0 && i === AI_WORD_LAST) {
+      tAfterAiLastWordKinetic = w.start + enterDur;
+    }
+
+    var inAi =
+      AI_WORD_FIRST >= 0 && AI_WORD_LAST >= 0 && i >= AI_WORD_FIRST && i <= AI_WORD_LAST;
+    var preset;
+    if (inAi) {
+      preset = KINETIC_AI;
+    } else {
+      var pIdx = pickPresetIndex(w, i);
+      preset = KINETIC_PRESETS[pIdx];
+    }
+    var fromState = Object.assign({ autoAlpha: 0, force3D: true, transformOrigin: preset.origin || "50% 80%" }, preset.from);
+    var toState = {
+      autoAlpha: 1,
+      x: 0,
+      y: 0,
+      scale: 1,
+      rotateZ: 0,
+      rotateX: 0,
+      skewX: 0,
+      skewY: 0,
+      duration: enterDur,
+      ease: preset.ease,
+      immediateRender: false,
+      overwrite: "auto",
+      transformOrigin: preset.origin || "50% 80%",
+    };
+
+    tl.fromTo(el, fromState, toState, w.start);
+
+    if (isEmWord(w) && !inAi) {
+      tl.fromTo(
+        el,
+        { textShadow: "0 0 0 rgba(76,201,240,0)" },
+        {
+          textShadow:
+            "0 0 22px rgba(76,201,240,0.65), 0 0 46px rgba(62,207,142,0.35), 0 0 2px rgba(255,255,255,0.4)",
+          duration: 0.12,
+          yoyo: true,
+          repeat: 1,
+          ease: "power2.out",
+        },
+        w.start + enterDur * 0.15
+      );
+    }
+  }
+
+  var tAiClearStart =
+    tAfterAiLastWordKinetic != null
+      ? tAfterAiLastWordKinetic + AI_POST_KINETIC_PAUSE_SEC
+      : tLastAiEnd != null
+        ? tLastAiEnd + AI_OUT_HOLD_SEC
+        : null;
+  if (tLastAiEnd != null && tAiClearStart != null) {
+    tl.call(
+      function () {
+        var w = document.getElementById("karaoke-wrap");
+        if (w) {
+          w.classList.remove("karaoke-wrap--ai");
+        }
+      },
+      [],
+      tAiClearStart + AI_OUT_FADE_SEC
+    );
+  }
 
   var nonAiBeats = 0;
   for (var bj = 0; bj < beatModels.length; bj++) {
@@ -533,7 +615,7 @@
     var tClearPrev = bj > 0 ? Math.max(firstT - 0.35, prevLastEnd + 0.04) : 0;
     var tClearThisPrev = tClearPrev;
     if (bj > 0 && isAiBeatModel(beatModels[bj - 1]) && tLastAiEnd != null) {
-      tClearThisPrev = tLastAiEnd + AI_OUT_HOLD_SEC;
+      tClearThisPrev = tAiClearStart != null ? tAiClearStart : tLastAiEnd + AI_OUT_HOLD_SEC;
     }
     var tBringIn = bj > 0 ? Math.max(firstT - 0.2, tClearThisPrev + 0.02) : firstT - 0.2;
     var bSel = "#beat-" + bj;
@@ -598,78 +680,28 @@
     }
   }
 
-  for (var i = 4; i < WORDS.length; i++) {
-    var w = WORDS[i];
-    var el = document.getElementById("kw-" + i);
-    if (!el) {
-      continue;
-    }
-    var gap = w.end - w.start;
-    var jitter = 0.82 + wrnd() * 0.38;
-    var enterDur = Math.max(0.13, Math.min(0.4, (gap + 0.14) * jitter));
-
-    var inAi =
-      AI_WORD_FIRST >= 0 && AI_WORD_LAST >= 0 && i >= AI_WORD_FIRST && i <= AI_WORD_LAST;
-    var preset;
-    if (inAi) {
-      preset = KINETIC_AI;
-    } else {
-      var pIdx = pickPresetIndex(w, i);
-      preset = KINETIC_PRESETS[pIdx];
-    }
-    var fromState = Object.assign({ autoAlpha: 0, force3D: true, transformOrigin: preset.origin || "50% 80%" }, preset.from);
-    var toState = {
-      autoAlpha: 1,
-      x: 0,
-      y: 0,
-      scale: 1,
-      rotateZ: 0,
-      rotateX: 0,
-      skewX: 0,
-      skewY: 0,
-      duration: enterDur,
-      ease: preset.ease,
-      immediateRender: false,
-      overwrite: "auto",
-      transformOrigin: preset.origin || "50% 80%",
-    };
-
-    tl.fromTo(el, fromState, toState, w.start);
-
-    if (isEmWord(w) && !inAi) {
-      tl.fromTo(
-        el,
-        { textShadow: "0 0 0 rgba(76,201,240,0)" },
-        {
-          textShadow:
-            "0 0 22px rgba(76,201,240,0.65), 0 0 46px rgba(62,207,142,0.35), 0 0 2px rgba(255,255,255,0.4)",
-          duration: 0.12,
-          yoyo: true,
-          repeat: 1,
-          ease: "power2.out",
-        },
-        w.start + enterDur * 0.15
-      );
-    }
-  }
+  var OUTRO_T0 =
+    tAfterDocumentationToday != null
+      ? tAfterDocumentationToday + DOC_TODAY_PAUSE_SEC
+      : NARRATION_END;
+  var TOTAL = OUTRO_T0 + OUTRO_HOLD;
 
   tl.fromTo(
-    "#title-rag",
-    { scale: 0.42, opacity: 0 },
-    { scale: 1, opacity: 1, duration: 0.36, ease: "expo.out" },
-    WORDS[0].start
+    "#ow-in",
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" },
+    WORDS[1].start
   );
-  tl.to(
-    "#title-rag",
-    { scale: 1.06, duration: 0.06, yoyo: true, repeat: 1, ease: "power2.inOut" },
-    WORDS[0].start + 0.08
+  tl.fromTo(
+    "#ow-the",
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" },
+    WORDS[2].start
   );
-
-  tl.from("#ow-in", { y: 72, opacity: 0, scale: 2.05, duration: 0.16, ease: "power4.out" }, WORDS[1].start);
-  tl.from("#ow-the", { y: 72, opacity: 0, scale: 2.05, duration: 0.16, ease: "power4.out" }, WORDS[2].start);
-  tl.from(
+  tl.fromTo(
     "#ow-browser",
-    { y: 72, opacity: 0, scale: 2.05, duration: 0.18, ease: "elastic.out(1, 0.32)" },
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" },
     WORDS[3].start
   );
 
@@ -751,24 +783,24 @@
   popShotForWordIndex("#shot-config", iCfg);
   popShotForWordIndex("#shot-apikey", iKey);
 
-  tl.fromTo("#outro-layer", { opacity: 0 }, { opacity: 1, duration: 0.55, ease: "power2.out" }, NARRATION_END);
+  tl.fromTo("#outro-layer", { opacity: 0 }, { opacity: 1, duration: 0.55, ease: "power2.out" }, OUTRO_T0);
   tl.fromTo(
     "#outro-layer .out-hero",
     { y: 40, opacity: 0 },
     { y: 0, opacity: 1, duration: 0.52, ease: "expo.out" },
-    NARRATION_END + 0.06
+    OUTRO_T0 + 0.06
   );
   tl.fromTo(
     "#outro-layer .out-url",
     { scale: 0.88, opacity: 0 },
     { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.22)" },
-    NARRATION_END + 0.2
+    OUTRO_T0 + 0.2
   );
   tl.fromTo(
     "#outro-layer .out-attr",
     { opacity: 0, y: 12 },
     { opacity: 1, y: 0, duration: 0.48, ease: "sine.out" },
-    NARRATION_END + 0.42
+    OUTRO_T0 + 0.42
   );
 
   /* BGM levels (incl. dialogue mute + outro) are in index.html — HyperFrames does not use GSAP volume in the mix. */
@@ -778,7 +810,7 @@
     tl.to(
       "#beat-" + lastBi,
       { autoAlpha: 0, y: -28, scale: 0.97, duration: 0.42, ease: "power2.in" },
-      Math.max(0, NARRATION_END - 0.42)
+      Math.max(0, OUTRO_T0 - 0.42)
     );
   }
 
