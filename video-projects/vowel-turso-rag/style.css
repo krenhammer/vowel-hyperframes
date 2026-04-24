@@ -18,10 +18,12 @@ body {
   --bg-deep: #06080f;
   --text: #e8eef8;
   --muted: #7a8aa8;
-  --accent: #3ecf8e;
-  --accent-2: #4cc9f0;
-  --turso-bg: #0c1814;
-  --turso-mint: #5dc896;
+  /* Turso brand green (Product / marketing mint) */
+  --accent: #0fd06e;
+  --accent-2: #3ed4a1;
+  --turso-bg: #0a1612;
+  --turso-mint: #0fd06e;
+  --turso-button-ring: rgba(15, 208, 110, 0.42);
   --wipe-a: #1a3328;
   --wipe-b: #0f211a;
   --scene-slate: #0a101c;
@@ -47,18 +49,17 @@ body {
   pointer-events: none;
 }
 
-/* Diagonal moving Turso watermark (opener handoff → end of first beat); sub-green, behind UI + lyrics */
-.turso-bg-pattern {
+/* Scrolling TURSO wordmark ribbon — “So recently… Turso in the browser” (opener handoff → ~8.45s) */
+.turso-bg-marquee {
   position: absolute;
   inset: 0;
   z-index: 1;
   overflow: hidden;
   pointer-events: none;
   opacity: 0;
-  /* Same deep green as Turso wipe; pattern sits on top */
   background: var(--turso-bg);
 }
-.turso-bg-pattern__rotor {
+.turso-bg-marquee__rotor {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -69,17 +70,16 @@ body {
   transform: rotate(-45deg);
   transform-origin: 50% 50%;
 }
-.turso-bg-pattern__rows {
+.turso-bg-marquee__rows {
   display: flex;
   flex-direction: column;
   gap: 0.42em;
   width: 100%;
   font-size: clamp(72px, 7vw, 120px);
-  /* Match original Turso ribbon wordmark sizing */
   line-height: 1;
   color: rgba(80, 180, 130, 0.14);
 }
-.turso-bg-pattern__row {
+.turso-bg-marquee__row {
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -87,31 +87,31 @@ body {
   flex: 0 0 auto;
   --turso-mrow-sec: 38s;
 }
-.turso-bg-pattern__track {
+.turso-bg-marquee__track {
   display: flex;
   width: max-content;
   will-change: transform;
   animation: turso-mrow-scroll var(--turso-mrow-sec) linear infinite;
 }
-.turso-bg-pattern__row--alt .turso-bg-pattern__track {
+.turso-bg-marquee__row--alt .turso-bg-marquee__track {
   animation-direction: reverse;
 }
-.turso-bg-pattern__row:nth-child(5n) {
+.turso-bg-marquee__row:nth-child(5n) {
   --turso-mrow-sec: 32s;
 }
-.turso-bg-pattern__row:nth-child(5n + 1) {
+.turso-bg-marquee__row:nth-child(5n + 1) {
   --turso-mrow-sec: 44s;
 }
-.turso-bg-pattern__row:nth-child(5n + 2) {
+.turso-bg-marquee__row:nth-child(5n + 2) {
   --turso-mrow-sec: 36s;
 }
-.turso-bg-pattern__row:nth-child(5n + 3) {
+.turso-bg-marquee__row:nth-child(5n + 3) {
   --turso-mrow-sec: 40s;
 }
-.turso-bg-pattern__row:nth-child(5n + 4) {
+.turso-bg-marquee__row:nth-child(5n + 4) {
   --turso-mrow-sec: 34s;
 }
-.turso-bg-pattern__chunk {
+.turso-bg-marquee__chunk {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -149,6 +149,68 @@ body {
   100% {
     transform: translate3d(-50%, 0, 0);
   }
+}
+
+.rag-debug-pattern-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 8, 15, 0.45) 0%,
+    rgba(6, 8, 15, 0.58) 45%,
+    rgba(6, 8, 15, 0.48) 100%
+  );
+}
+
+/* “vowel docs / nav bar” — AnimatedImageBackground (45° rotor) + dark scrim under captions */
+.turso-bg-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  background: transparent;
+}
+
+.voweldocs-cta-aib-host {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Darken busy button grid so #karaoke-wrap text stays legible (scrim sits above grid, below captions) */
+.voweldocs-pattern-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 8, 15, 0.52) 0%,
+    rgba(6, 8, 15, 0.62) 45%,
+    rgba(6, 8, 15, 0.55) 100%
+  );
+}
+
+/* No circular “ring” / ovals — component defaults use border-radius:50% for Turso; here we only tile the PNG */
+#turso-bg-pattern .aib__ring {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
+}
+#turso-bg-pattern .aib__img {
+  width: 88%;
+  height: 88%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.45));
 }
 
 /* Same loop as Turso, with subpixel nudge so chunk seams don’t leave a 1px background streak */
@@ -263,6 +325,114 @@ body {
   mask-position: center;
 }
 
+/*
+ * Turso circle marquee — structural twin of .browser-bg-pattern (rotor / rows / track / chunk / timing).
+ * Used only for “Click the RAG debug…”. Do not alter .browser-bg-* when changing this block.
+ */
+.turso-circle-bg-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  background: var(--turso-bg);
+}
+.turso-circle-bg-pattern__rotor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 280vmin;
+  height: 280vmin;
+  margin-left: -140vmin;
+  margin-top: -140vmin;
+  transform: rotate(-45deg);
+  transform-origin: 50% 50%;
+}
+.turso-circle-bg-pattern__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42em;
+  width: 100%;
+  font-size: clamp(68px, 6.8vw, 112px);
+  line-height: 1;
+  opacity: 0.48;
+}
+.turso-circle-bg-pattern__row {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 1;
+  flex: 0 0 auto;
+  --turso-circle-mrow-sec: 38s;
+}
+.turso-circle-bg-pattern__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: browser-mrow-scroll var(--turso-circle-mrow-sec) linear infinite;
+  backface-visibility: hidden;
+}
+.turso-circle-bg-pattern__row--alt .turso-circle-bg-pattern__track {
+  animation-direction: reverse;
+}
+.turso-circle-bg-pattern__row:nth-child(5n) {
+  --turso-circle-mrow-sec: 32s;
+}
+.turso-circle-bg-pattern__row:nth-child(5n + 1) {
+  --turso-circle-mrow-sec: 44s;
+}
+.turso-circle-bg-pattern__row:nth-child(5n + 2) {
+  --turso-circle-mrow-sec: 36s;
+}
+.turso-circle-bg-pattern__row:nth-child(5n + 3) {
+  --turso-circle-mrow-sec: 40s;
+}
+.turso-circle-bg-pattern__row:nth-child(5n + 4) {
+  --turso-circle-mrow-sec: 34s;
+}
+.turso-circle-bg-pattern__chunk {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.2em;
+  padding-right: 0.4em;
+  flex-shrink: 0;
+}
+.turso-circle-bg-pattern__chunk + .turso-circle-bg-pattern__chunk {
+  margin-left: -1px;
+}
+.turso-circle-bg-cell {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1em;
+  line-height: 1;
+}
+/* Same 4.2em footprint as .browser-bg-cell__logo; ring + inline Turso SVG instead of mask */
+.turso-circle-bg-cell__ring {
+  width: 4.2em;
+  height: 4.2em;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 0.08em solid var(--turso-button-ring);
+  background: rgba(8, 20, 16, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px rgba(15, 208, 110, 0.1);
+}
+.turso-circle-bg-cell__svg {
+  width: 55%;
+  height: 55%;
+  flex-shrink: 0;
+  color: rgba(95, 195, 145, 0.82);
+}
+
 #karaoke-wrap {
   position: absolute;
   inset: 0;
@@ -284,6 +454,10 @@ body {
   justify-content: flex-start;
   padding-top: 32px;
   padding-bottom: 40px;
+  /* RAG debug in-docs beat: Turso accent rail */
+  border-left: 3px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  padding-left: 28px;
+  box-sizing: border-box;
 }
 
 #karaoke-root {
@@ -312,6 +486,7 @@ body {
   flex: none;
   max-width: 1020px;
   width: 100%;
+  min-height: 100%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -334,6 +509,12 @@ body {
   overflow: visible;
   /* Non-AI: #karaoke-root has a real height, so 100% is unambiguous and beats truly span the 9:16 field */
   height: 100%;
+}
+/* Strengthen the height chain when not in the in-app (AI) layout — keeps absolute .beat-blocks
+   in the vertical middle of the frame, not a strip at the top. */
+#karaoke-wrap:not(.karaoke-wrap--ai) #karaoke-stage {
+  min-height: 100%;
+  align-self: stretch;
 }
 #karaoke-wrap.karaoke-wrap--ai #karaoke-stage {
   min-height: 1500px;
@@ -367,10 +548,12 @@ body {
   align-items: flex-start;
   padding-top: 5%;
 }
-/* True vertical centering in a full-height #karaoke-stage; .beat-inner stays left (align-left) */
+/* True vertical centering in a full-height #karaoke-stage. Column + justify center so the
+   main axis is vertical; .align-left (below) no longer re-applies row-only justify. */
 .beat-block.valign-mid {
-  align-items: center;
-  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -393,8 +576,13 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
-.beat-block.align-left {
+/* Row flex: start along the top edge for AI / non–valign-mid. For valign-mid, column + vertical
+   centering is set in .valign-mid; do not clobber with flex-start (that would be top in column). */
+.beat-block.align-left:not(.valign-mid) {
   justify-content: flex-start;
+}
+.beat-block.valign-mid.align-center {
+  align-items: center;
 }
 .beat-block.align-left .beat-inner {
   text-align: left;
@@ -410,7 +598,7 @@ body {
   margin-left: auto;
 }
 
-/* In-app dialogue: full-height column, all turns on one 9:16; no accent color */
+/* In-app RAG debug dialogue: full-height column; left accent rail is on #karaoke-wrap--ai */
 .beat-block.beat-ai {
   align-items: flex-start;
   justify-content: flex-start;
@@ -585,7 +773,7 @@ body {
   text-decoration: none;
   padding: 18px 36px;
   border-radius: 14px;
-  border: 2px solid rgba(62, 207, 142, 0.45);
+  border: 2px solid color-mix(in srgb, var(--accent) 50%, transparent);
   align-self: flex-start;
   text-align: left;
 }

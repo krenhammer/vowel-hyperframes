@@ -1,31 +1,49 @@
 /* global gsap */
 (function () {
   window.__timelines = window.__timelines || {};
+
+  /** Deterministic PRNG — HyperFrames forbids Math.random() on timeline. */
+  function mulberry32(seed) {
+    return function () {
+      var t = (seed += 0x6d2b79f5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
   var WORDS = window.TURSO_RAG_WORDS;
   var tl = gsap.timeline({ paused: true });
 
-  /** Fills #turso-bg-pattern-rows: diagonal 45° rows, alternating scroll direction (CSS marquee). */
-  function buildTursoBgPattern() {
-    var host = document.getElementById("turso-bg-pattern-rows");
-    var tpl = document.getElementById("turso-bg-cell-tpl");
-    if (!host || !tpl || host.childElementCount) return;
+  /**
+   * “Click the RAG debug…” — same build loop as buildBrowserBgPattern (row / chunk / dual track),
+   * but every cell is a Turso SVG inside a circle (no external SVG mask URLs).
+   */
+  function buildTursoCircleBgPattern() {
+    var host = document.getElementById("turso-circle-bg-pattern-rows");
+    var tpl = document.getElementById("turso-circle-bg-cell-tpl");
+    if (!host || !tpl || host.childElementCount) {
+      return;
+    }
     var rowCount = 24;
-    var cellsPerChunk = 7;
     for (var r = 0; r < rowCount; r++) {
+      var cellsPerChunk = 6 + (r % 3);
       var row = document.createElement("div");
-      row.className = "turso-bg-pattern__row" + (r % 2 ? " turso-bg-pattern__row--alt" : "");
+      row.className = "turso-circle-bg-pattern__row" + (r % 2 ? " turso-circle-bg-pattern__row--alt" : "");
       var track = document.createElement("div");
-      track.className = "turso-bg-pattern__track";
+      track.className = "turso-circle-bg-pattern__track";
       for (var half = 0; half < 2; half++) {
         var chunk = document.createElement("div");
-        chunk.className = "turso-bg-pattern__chunk";
+        chunk.className = "turso-circle-bg-pattern__chunk";
         if (half === 1) {
           chunk.setAttribute("aria-hidden", "true");
         }
         for (var c = 0; c < cellsPerChunk; c++) {
           var imp = document.importNode(tpl.content, true);
-          var cell = imp.querySelector(".turso-bg-cell");
-          if (cell) chunk.appendChild(cell);
+          var cell = imp.querySelector(".turso-circle-bg-cell");
+          if (cell) {
+            chunk.appendChild(cell);
+          }
         }
         track.appendChild(chunk);
       }
@@ -33,7 +51,68 @@
       host.appendChild(row);
     }
   }
-  buildTursoBgPattern();
+  buildTursoCircleBgPattern();
+
+  /** Voweldocs nav CTA: -45° grid, 2× cells, random per-button press; assets/voweldocs-button.png */
+  function buildVoweldocsNavAib() {
+    var host = document.getElementById("voweldocs-cta-aib-host");
+    if (!host || !window.AnimatedImageBackground) {
+      return;
+    }
+    return new window.AnimatedImageBackground(host, {
+      imageSrc: "assets/voweldocs-button.png",
+      angleDeg: -45,
+      cellSize: "min(20.8rem, 100%)",
+      cellMaxCap: "368px",
+      minCellSize: "160px",
+      backgroundColor: "#121b2e",
+      ringColor: "rgba(55, 189, 248, 0.4)",
+      accentColor: "#37bdf8",
+      pressAnimation: "random",
+      seed: 0x5a7e1c3f,
+      periodRangeSec: { min: 4.5, max: 10.5 },
+      maxNegativeDelaySec: 22,
+    });
+  }
+  buildVoweldocsNavAib();
+
+  /** Fills #turso-bg-marquee-rows: original diagonal scrolling TURSO ribbon (first Turso product beat). */
+  function buildTursoBgMarquee() {
+    var host = document.getElementById("turso-bg-marquee-rows");
+    var tpl = document.getElementById("turso-marquee-cell-tpl");
+    if (!host || !tpl || host.childElementCount) {
+      return;
+    }
+    var rowCount = 24;
+    var cellsPerChunk = 7;
+    var r;
+    var c;
+    var half;
+    for (r = 0; r < rowCount; r++) {
+      var row = document.createElement("div");
+      row.className = "turso-bg-marquee__row" + (r % 2 ? " turso-bg-marquee__row--alt" : "");
+      var track = document.createElement("div");
+      track.className = "turso-bg-marquee__track";
+      for (half = 0; half < 2; half++) {
+        var chunk = document.createElement("div");
+        chunk.className = "turso-bg-marquee__chunk";
+        if (half === 1) {
+          chunk.setAttribute("aria-hidden", "true");
+        }
+        for (c = 0; c < cellsPerChunk; c++) {
+          var imp = document.importNode(tpl.content, true);
+          var cell = imp.querySelector(".turso-bg-cell");
+          if (cell) {
+            chunk.appendChild(cell);
+          }
+        }
+        track.appendChild(chunk);
+      }
+      row.appendChild(track);
+      host.appendChild(row);
+    }
+  }
+  buildTursoBgMarquee();
 
   /** Diagonal rows of Firefox / Chrome / Edge / WebKit marks — same structure as the Turso marquee. */
   var BROWSER_BRANDS = [
@@ -86,16 +165,6 @@
     tl.set({}, {}, 0.1);
     window.__timelines["vowel-turso-rag-master"] = tl;
     return;
-  }
-
-  /** Deterministic PRNG — HyperFrames forbids Math.random() on timeline. */
-  function mulberry32(seed) {
-    return function () {
-      var t = (seed += 0x6d2b79f5);
-      t = Math.imul(t ^ (t >>> 15), t | 1);
-      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
   }
 
   var NARRATION_END = WORDS[WORDS.length - 1].end;
@@ -360,6 +429,8 @@
     tl.to("#cover-wipe-b", { x: 1080, duration: 0.2, ease: "power3.inOut" }, wipeT + 0.3);
   }
 
+  gsap.set("#turso-bg-marquee", { opacity: 0 });
+  gsap.set("#rag-debug-bg-marquee", { opacity: 0 });
   gsap.set("#turso-bg-pattern", { opacity: 0 });
   gsap.set("#browser-bg-pattern", { opacity: 0 });
   gsap.set("#outro-layer", { opacity: 0 });
@@ -466,6 +537,8 @@
   var postAiBgmAt = tLastAiEnd != null ? tLastAiEnd + 2 : 119.671;
   var tWipeOutOfAi = Math.max(0.4, postAiBgmAt - 0.52);
 
+  /* In-app Q&A: keep #turso-bg-pattern at 0 — full grid behind chat hurt legibility; stage-bg + wipe color only. */
+
   tl.set(".beat-block", { autoAlpha: 0, y: 48, scale: 0.93 }, 0);
   tl.set("#karaoke-stage .kw", { autoAlpha: 0 }, 0);
 
@@ -520,10 +593,10 @@
     if (isEmWord(w) && !inAi) {
       tl.fromTo(
         el,
-        { textShadow: "0 0 0 rgba(76,201,240,0)" },
+        { textShadow: "0 0 0 rgba(15,208,110,0)" },
         {
           textShadow:
-            "0 0 22px rgba(76,201,240,0.65), 0 0 46px rgba(62,207,142,0.35), 0 0 2px rgba(255,255,255,0.4)",
+            "0 0 22px rgba(15,208,110,0.55), 0 0 44px rgba(15,208,110,0.32), 0 0 2px rgba(255,255,255,0.35)",
           duration: 0.12,
           yoyo: true,
           repeat: 1,
@@ -670,18 +743,71 @@
   var tBrowserPatternIn = iIfWeMentionAnd >= 0 ? Math.max(0, WORDS[iIfWeMentionAnd].start - 0.04) : 15.25;
   var tBrowserPatternOut = iMentionInTheBrowser >= 0 ? WORDS[iMentionInTheBrowser].end + 0.32 : 17.7;
 
+  /* RAG debug: #rag-debug-bg-marquee (SVG circles). Voweldocs CTA: #turso-bg-pattern (PNG grid + scrim). */
+  var iClickRagDebug = -1;
+  for (var _cr = 0; _cr < WORDS.length - 2; _cr++) {
+    if (
+      stripPunct(WORDS[_cr].text) === "Click" &&
+      stripPunct(WORDS[_cr + 1].text) === "the" &&
+      /^RAG$/i.test(stripPunct(WORDS[_cr + 2].text)) &&
+      WORDS[_cr].start < 50
+    ) {
+      iClickRagDebug = _cr;
+      break;
+    }
+  }
+  var tRagButtonBgIn = iClickRagDebug >= 0 ? Math.max(0, WORDS[iClickRagDebug].start - 0.22) : 43.4;
+  var tRagButtonBgOut = 46.58;
+  if (iClickRagDebug >= 0) {
+    for (var _dk = iClickRagDebug; _dk < WORDS.length; _dk++) {
+      if (WORDS[_dk].text === "docs." && WORDS[_dk].end < 50 && WORDS[_dk].start > 44) {
+        tRagButtonBgOut = WORDS[_dk].end + 0.32;
+        break;
+      }
+    }
+  }
+
+  var iClickVoweldocsNav = -1;
+  for (var _vn = 0; _vn < WORDS.length - 2; _vn++) {
+    if (
+      stripPunct(WORDS[_vn].text) === "Click" &&
+      stripPunct(WORDS[_vn + 1].text) === "the" &&
+      /^vowel$/i.test(stripPunct(WORDS[_vn + 2].text)) &&
+      WORDS[_vn].start > 50
+    ) {
+      iClickVoweldocsNav = _vn;
+      break;
+    }
+  }
+  var tVoweldocsNavBgIn = 67.05;
+  var tVoweldocsNavBgOut = 69.35;
+  if (iClickVoweldocsNav >= 0) {
+    tVoweldocsNavBgIn = Math.max(0, WORDS[iClickVoweldocsNav].start - 0.22);
+    for (var _be = iClickVoweldocsNav; _be < WORDS.length; _be++) {
+      if (stripPunct(WORDS[_be].text) === "bar" && WORDS[_be].start < 80) {
+        tVoweldocsNavBgOut = WORDS[_be].end + 0.32;
+        break;
+      }
+    }
+  }
+
+  /* First Turso beat (“So recently… WebAssembly”): old scrolling TURSO ribbon, then hand off to wipe. */
   tl.to(
-    "#turso-bg-pattern",
+    "#turso-bg-marquee",
     { opacity: 1, duration: 0.38, ease: "sine.out" },
     WIPE_INTRO + 0.12
   );
-
-  tl.to(
-    "#turso-bg-pattern",
-    { opacity: 0, duration: 0.42, ease: "power2.in" },
-    8.45
-  );
+  tl.to("#turso-bg-marquee", { opacity: 0, duration: 0.42, ease: "power2.in" }, 8.45);
   runWipe(8.58, "#0a101c");
+
+  if (iClickRagDebug >= 0) {
+    tl.to("#rag-debug-bg-marquee", { opacity: 1, duration: 0.4, ease: "sine.out" }, tRagButtonBgIn);
+    tl.to("#rag-debug-bg-marquee", { opacity: 0, duration: 0.45, ease: "power2.in" }, tRagButtonBgOut);
+  }
+  if (iClickVoweldocsNav >= 0) {
+    tl.to("#turso-bg-pattern", { opacity: 1, duration: 0.4, ease: "sine.out" }, tVoweldocsNavBgIn);
+    tl.to("#turso-bg-pattern", { opacity: 0, duration: 0.45, ease: "power2.in" }, tVoweldocsNavBgOut);
+  }
 
   tl.to(
     "#browser-bg-pattern",

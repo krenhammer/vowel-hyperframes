@@ -511,3 +511,38 @@ tl.fromTo(
 
 tl.set({}, {}, totalSec);
 window.__timelines["turso-rag-master"] = tl;
+
+/**
+ * Scene 6 (nav / voweldocs button): mount AnimatedImageBackground after sub-composition HTML exists.
+ */
+function tryInitS6AnimatedBg() {
+  var host = document.getElementById("s6-animated-bg-host");
+  if (!host) {
+    return false;
+  }
+  if (host.getAttribute("data-aib") === "1") {
+    return true;
+  }
+  if (!window.AnimatedImageBackground) {
+    return false;
+  }
+  host.setAttribute("data-aib", "1");
+  new window.AnimatedImageBackground(host, {
+    imageSrc: "assets/voweldocs-button.png",
+    backgroundColor: "#121b2e",
+    ringColor: "rgba(62, 207, 142, 0.42)",
+    accentColor: "#3ecf8e",
+    pressAnimation: "random",
+    seed: 0x5a7e1c3f,
+  });
+  return true;
+}
+if (!tryInitS6AnimatedBg()) {
+  var _s6Tries = 0;
+  var _s6Id = setInterval(function () {
+    _s6Tries += 1;
+    if (tryInitS6AnimatedBg() || _s6Tries > 80) {
+      clearInterval(_s6Id);
+    }
+  }, 50);
+}
