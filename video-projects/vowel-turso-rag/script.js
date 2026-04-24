@@ -493,6 +493,9 @@
       tLastAiEnd = beatLastItem(beatModels[_abi]).w.end;
     }
   }
+  /** After the last in-app word: hold, then opacity-only AI beat exit; also when karaoke-wrap--ai is removed. */
+  var AI_OUT_HOLD_SEC = 1;
+  var AI_OUT_FADE_SEC = 1;
   if (tFirstAiBeat != null) {
     tl.call(
       function () {
@@ -510,9 +513,13 @@
         if (w) w.classList.remove("karaoke-wrap--ai");
       },
       [],
-      tLastAiEnd + 0.18
+      tLastAiEnd + AI_OUT_HOLD_SEC + AI_OUT_FADE_SEC
     );
   }
+
+  /* 2s silent breath after the last in-app line; bgm-post in index.html must start at the same time. */
+  var postAiBgmAt = tLastAiEnd != null ? tLastAiEnd + 2 : 119.671;
+  var tWipeOutOfAi = Math.max(0.4, postAiBgmAt - 0.52);
 
   tl.set(".beat-block", { autoAlpha: 0, y: 48, scale: 0.93 }, 0);
   tl.set("#karaoke-stage .kw", { autoAlpha: 0 }, 0);
@@ -524,14 +531,26 @@
     var prevLastEnd = bj > 0 ? beatLastItem(beatModels[bj - 1]).w.end : 0;
     /* Keep the full sentence until its last word has finished, then hand off to the next beat. */
     var tClearPrev = bj > 0 ? Math.max(firstT - 0.35, prevLastEnd + 0.04) : 0;
-    var tBringIn = bj > 0 ? Math.max(firstT - 0.2, tClearPrev + 0.02) : firstT - 0.2;
+    var tClearThisPrev = tClearPrev;
+    if (bj > 0 && isAiBeatModel(beatModels[bj - 1]) && tLastAiEnd != null) {
+      tClearThisPrev = tLastAiEnd + AI_OUT_HOLD_SEC;
+    }
+    var tBringIn = bj > 0 ? Math.max(firstT - 0.2, tClearThisPrev + 0.02) : firstT - 0.2;
     var bSel = "#beat-" + bj;
     if (bj > 0) {
-      tl.to(
-        "#beat-" + (bj - 1),
-        { autoAlpha: 0, y: -32, scale: 0.97, duration: 0.36, ease: "power2.in" },
-        tClearPrev
-      );
+      if (isAiBeatModel(beatModels[bj - 1]) && tLastAiEnd != null) {
+        tl.to(
+          "#beat-" + (bj - 1),
+          { autoAlpha: 0, duration: AI_OUT_FADE_SEC, ease: "power2.inOut" },
+          tClearThisPrev
+        );
+      } else {
+        tl.to(
+          "#beat-" + (bj - 1),
+          { autoAlpha: 0, y: -32, scale: 0.97, duration: 0.36, ease: "power2.in" },
+          tClearThisPrev
+        );
+      }
     }
     if (isAiBeatModel(b)) {
       tl.fromTo(
@@ -687,7 +706,7 @@
   runWipe(40.28, "#1a0f24");
   runWipe(63.95, "#0a101c");
   runWipe(90.92, "#0c1814");
-  runWipe(119.15, "#06080f");
+  runWipe(tWipeOutOfAi, "#06080f");
 
   var tChat = firstWordStart(function (x) {
     return x.text === "test";

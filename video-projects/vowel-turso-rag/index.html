@@ -11,11 +11,12 @@
       <audio id="voice" preload="auto" data-start="0" data-duration="139.786" data-track-index="0" src="assets/turso-rag.wav" data-volume="1"></audio>
       <!--
         BGM: sequential clips; render mix uses data-volume + data-media-start only.
-        Silent: from "Welcome" (88.242s) through AI demo + 1s pause after "credentials." (→ 118.671s), then bed back.
+        Silent: from "Welcome" (88.242s) through the end of the in-app block ("credentials." ~117.67s) + 2s breath, then bed back.
+        post start = 119.671 — keep in sync with script.js (tLastAiEnd + 2) if transcript timing changes.
       -->
-      <audio id="bgm-pre" preload="auto" data-start="0" data-duration="88.242" data-track-index="1" data-media-start="0" src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3" data-volume="0.22"></audio>
-      <audio id="bgm-dialogue" preload="auto" data-start="88.242" data-duration="30.429" data-track-index="1" data-media-start="88.242" src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3" data-volume="0"></audio>
-      <audio id="bgm-post" preload="auto" data-start="118.671" data-duration="21.115" data-track-index="1" data-media-start="118.671" src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3" data-volume="0.22"></audio>
+      <audio id="bgm-pre" preload="auto" data-start="0" data-duration="88.242" data-track-index="1" data-media-start="0" src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3" data-volume="0.15"></audio>
+      <audio id="bgm-dialogue" preload="auto" data-start="88.242" data-duration="31.429" data-track-index="1" data-media-start="88.242" src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3" data-volume="0"></audio>
+      <audio id="bgm-post" preload="auto" data-start="119.671" data-duration="20.115" data-track-index="1" data-media-start="119.671" src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3" data-volume="0.15"></audio>
       <!-- Last 4s: bed out of the mix (GSAP does not affect audio in render) -->
       
 
