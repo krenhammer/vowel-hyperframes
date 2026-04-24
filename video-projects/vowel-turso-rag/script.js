@@ -27,6 +27,21 @@
   var OUTRO_HOLD = 10;
   var TOTAL = NARRATION_END + OUTRO_HOLD;
   var wrnd = mulberry32(0x7f4a3c2d ^ (WORDS.length * 0x9e3779b9));
+  var floatActive = 0;
+  function floatEnter() {
+    floatActive += 1;
+    if (floatActive === 1) {
+      var r = document.getElementById("root");
+      if (r) r.classList.add("root--with-float");
+    }
+  }
+  function floatExit() {
+    floatActive = Math.max(0, floatActive - 1);
+    if (floatActive === 0) {
+      var r = document.getElementById("root");
+      if (r) r.classList.remove("root--with-float");
+    }
+  }
 
   function stripPunct(s) {
     return String(s).replace(/[.,?!:;'"'"]/g, "").trim();
@@ -34,7 +49,7 @@
 
   function isEmWord(w) {
     var t = stripPunct(w.text);
-    return /^(RAG|SQLite|WebAssembly|vector|Terso|Turso|vowel|Vowel|docs|WASM|API|LLM)$/i.test(t);
+    return /^(RAG|SQLite|WebAssembly|vector|Turso|Turso|vowel|Vowel|docs|WASM|API|LLM)$/i.test(t);
   }
 
   function firstWordStart(pred) {
@@ -46,36 +61,198 @@
     return null;
   }
 
-  /**
-   * One on-screen beat = one sentence, or a clause after a comma.
-   * Break only when a word ends with `,` `.` `?` or `!` — do not split on pauses or word count.
-   */
-  function isClauseOrSentenceBoundary(w) {
-    var t = w.text;
-    return /[.?!,]$/.test(t);
+  function firstWordIndex(pred) {
+    for (var j = 0; j < WORDS.length; j++) {
+      if (pred(WORDS[j])) {
+        return j;
+      }
+    }
+    return -1;
   }
 
-  function buildBeats() {
-    var beats = [];
+  function isSentenceEnd(w) {
+    return /[.?!]$/.test(w.text);
+  }
+
+  var AI_WORD_FIRST = -1;
+  var AI_WORD_LAST = -1;
+  for (var _wi = 0; _wi < WORDS.length; _wi++) {
+    if (WORDS[_wi].text === "Welcome" && AI_WORD_FIRST < 0) {
+      AI_WORD_FIRST = _wi;
+    }
+    if (/^credentials/i.test(WORDS[_wi].text)) {
+      AI_WORD_LAST = _wi;
+    }
+  }
+
+  function buildSentenceBeats() {
+    var out = [];
     var chunk = [];
     for (var i = 4; i < WORDS.length; i++) {
       var w = WORDS[i];
       chunk.push({ index: i, w: w });
-      if (isClauseOrSentenceBoundary(w)) {
-        beats.push(chunk);
+      if (isSentenceEnd(w)) {
+        out.push(chunk);
         chunk = [];
       }
     }
     if (chunk.length) {
-      beats.push(chunk);
+      out.push(chunk);
     }
-    return beats;
+    return out;
+  }
+
+  /**
+   * One on-screen beat = one full sentence (ends with . ? or !). Every word in that sentence lives in the
+   * same beat so the whole sentence stays on screen together until the next sentence.
+   * AI dialogue: consecutive sentences in [Welcome … credentials] merge into one beat (see below).
+   */
+  function buildBeats() {
+    var raw = buildSentenceBeats();
+    if (!raw.length) {
+      return [];
+    }
+    if (AI_WORD_FIRST < 0 || AI_WORD_LAST < 0) {
+      return raw;
+    }
+    var aiStartSi = findChunkIndexForWord(raw, AI_WORD_FIRST);
+    var aiEndSi = findChunkIndexForWord(raw, AI_WORD_LAST);
+    if (aiStartSi < 0 || aiEndSi < 0 || aiStartSi > aiEndSi) {
+      return raw;
+    }
+    var aiPairs = expandAiRangeChunks(raw, aiStartSi, aiEndSi);
+    var merged = raw.slice(0, aiStartSi);
+    for (var p = 0; p < aiPairs.length; p++) {
+      merged.push({ kind: "ai-pair", pair: aiPairs[p] });
+    }
+    for (var r = aiEndSi + 1; r < raw.length; r++) {
+      merged.push(raw[r]);
+    }
+    return merged;
+  }
+
+  /** In-app dialogue: transcript sentence chunk spoken by the human (not “How can I help?”). */
+  function isUserDialogueChunk(ch) {
+    if (!ch || !ch.length) {
+      return false;
+    }
+    var t0 = stripPunct(ch[0].w.text);
+    var t1 = ch.length > 1 ? stripPunct(ch[1].w.text) : "";
+    if (/^ok$/i.test(t0)) {
+      return true;
+    }
+    if (/^how$/i.test(t0) && /^do$/i.test(t1)) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Replace the contiguous AI demo sentence chunks with [intro-only | user+AI pairs].
+   * Each pair is one beat so Q and A stay on screen together.
+   */
+  function expandAiRangeChunks(raw, aiStartSi, aiEndSi) {
+    var sub = raw.slice(aiStartSi, aiEndSi + 1);
+    var pairs = [];
+    var i = 0;
+    var aiIntro = [];
+    while (i < sub.length && !isUserDialogueChunk(sub[i])) {
+      aiIntro.push(sub[i]);
+      i++;
+    }
+    if (aiIntro.length) {
+      pairs.push({ user: null, ai: aiIntro });
+    }
+    while (i < sub.length) {
+      if (isUserDialogueChunk(sub[i])) {
+        var userCh = sub[i];
+        i++;
+        var aiAns = [];
+        while (i < sub.length && !isUserDialogueChunk(sub[i])) {
+          aiAns.push(sub[i]);
+          i++;
+        }
+        pairs.push({ user: userCh, ai: aiAns });
+      } else {
+        if (pairs.length) {
+          var last = pairs[pairs.length - 1];
+          last.ai = last.ai || [];
+          last.ai.push(sub[i]);
+        } else {
+          pairs.push({ user: null, ai: [sub[i]] });
+        }
+        i++;
+      }
+    }
+    return pairs;
+  }
+
+  function findChunkIndexForWord(raw, wordIndex) {
+    for (var si = 0; si < raw.length; si++) {
+      var ch = raw[si];
+      var lo = ch[0].index;
+      var hi = ch[ch.length - 1].index;
+      if (wordIndex >= lo && wordIndex <= hi) {
+        return si;
+      }
+    }
+    return -1;
+  }
+
+  function makeBeatModels(rawBeats) {
+    var out = [];
+    for (var i = 0; i < rawBeats.length; i++) {
+      var e = rawBeats[i];
+      if (e && e.kind === "ai-pair") {
+        out.push({ type: "ai", pair: e.pair });
+      } else {
+        out.push({ type: "norm", chunk: e });
+      }
+    }
+    return out;
+  }
+
+  function wordCountInPair(pair) {
+    var n = 0;
+    var a;
+    for (a = 0; a < pair.ai.length; a++) {
+      n += pair.ai[a].length;
+    }
+    if (pair.user) {
+      n += pair.user.length;
+    }
+    return n;
+  }
+
+  function beatFirstItem(bm) {
+    if (bm.type === "norm") {
+      return bm.chunk[0];
+    }
+    if (bm.pair.user) {
+      return bm.pair.user[0];
+    }
+    return bm.pair.ai[0][0];
+  }
+
+  function beatLastItem(bm) {
+    if (bm.type === "norm") {
+      var c = bm.chunk;
+      return c[c.length - 1];
+    }
+    var lastAiCh = bm.pair.ai[bm.pair.ai.length - 1];
+    return lastAiCh[lastAiCh.length - 1];
+  }
+
+  function isAiBeatModel(bm) {
+    return bm.type === "ai";
   }
 
   /**
    * Kinetic preset: `from` is the off-state; all words land at x/y 0, scale 1, no rotation (readability on vertical).
    * Only translate + scale (no spin / rotateZ / rotateX).
    */
+  var KINETIC_AI = { from: { y: 18, scale: 0.99 }, ease: "power2.out", origin: "50% 100%" };
+  var BEAT_BGS = ["#0a101c", "#0c1814", "#1a0f24", "#3a1434", "#0f1a2e", "#132018", "#0d1420"];
   var KINETIC_PRESETS = [
     { from: { x: -120, y: 22, scale: 0.4 }, ease: "expo.out", origin: "0% 85%" },
     { from: { x: 120, y: -18, scale: 0.42 }, ease: "expo.out", origin: "100% 85%" },
@@ -121,10 +298,11 @@
         return ((a << 5) - a + c.charCodeAt(0)) | 0;
       }, 9) >>> 0;
     var srnd = mulberry32(seed ^ 0xc0ffee);
-    var ax = (srnd() - 0.5) * 80;
-    var ay = 30 + srnd() * 60;
-    var sc = 0.75 + srnd() * 0.16;
+    var ax = (srnd() - 0.5) * 50;
+    var ay = 20 + srnd() * 35;
+    var sc = 0.9 + srnd() * 0.1;
 
+    tl.call(floatEnter, [], t);
     tl.fromTo(
       sel,
       { opacity: 0, x: ax, y: ay, scale: sc },
@@ -138,40 +316,119 @@
       },
       t
     );
-    tl.to(sel, { opacity: 0, y: -40, scale: 0.92, duration: 0.5, ease: "power2.in" }, hideAt);
+    tl.to(sel, { opacity: 0, y: -24, scale: 0.95, duration: 0.5, ease: "power2.in" }, hideAt);
+    tl.call(floatExit, [], hideAt);
   }
 
   gsap.set("#turso-ribbon", { opacity: 0, y: -36 });
   gsap.set("#outro-layer", { opacity: 0 });
-  gsap.set(
-    "#shot-voweldocs, #shot-ragdebug, #shot-chat, #shot-config, #shot-apikey, #shot-talk",
-    { opacity: 0, scale: 0.9 }
-  );
+  gsap.set("#shot-chat, #shot-config, #shot-apikey, #shot-talk", { opacity: 0, scale: 0.9 });
   gsap.set("#ow-in, #ow-the, #ow-browser", { opacity: 0 });
   gsap.set("#title-rag", { opacity: 0, scale: 0.48 });
   gsap.set("#karaoke-wrap", { x: 0, transformOrigin: "50% 50%" });
 
-  var beats = buildBeats();
-  var stage = document.getElementById("karaoke-stage");
-  for (var bi = 0; bi < beats.length; bi++) {
-    var block = document.createElement("div");
-    block.id = "beat-" + bi;
-    block.className = "beat-block";
-    if (beats[bi].length > 10) {
-      block.className += " beat-tight";
+  var beatModels = makeBeatModels(buildBeats());
+
+  /** Screenshot visible for the full caption beat so layout (root--with-float) does not shift mid-sentence. */
+  var IMAGE_LEAD_SEC = 0.55;
+  var IMAGE_LAG_SEC = 0.52;
+
+  function findBeatModelIndexForWordIndex(wordIdx) {
+    for (var bi = 0; bi < beatModels.length; bi++) {
+      var bm = beatModels[bi];
+      if (bm.type === "norm") {
+        var ch = bm.chunk;
+        if (wordIdx >= ch[0].index && wordIdx <= ch[ch.length - 1].index) {
+          return bi;
+        }
+      } else {
+        if (bm.pair.user) {
+          var u = bm.pair.user;
+          if (wordIdx >= u[0].index && wordIdx <= u[u.length - 1].index) {
+            return bi;
+          }
+        }
+        for (var ac = 0; ac < bm.pair.ai.length; ac++) {
+          var c = bm.pair.ai[ac];
+          if (wordIdx >= c[0].index && wordIdx <= c[c.length - 1].index) {
+            return bi;
+          }
+        }
+      }
     }
-    block.style.zIndex = String(20 + bi);
-    var inner = document.createElement("div");
-    inner.className = "beat-inner";
-    block.appendChild(inner);
-    for (var ci = 0; ci < beats[bi].length; ci++) {
-      var item = beats[bi][ci];
+    return -1;
+  }
+
+  function popShotForWordIndex(sel, wordIdx) {
+    if (wordIdx < 0) {
+      return;
+    }
+    var bi = findBeatModelIndexForWordIndex(wordIdx);
+    if (bi < 0) {
+      return;
+    }
+    var bm = beatModels[bi];
+    var tFirst = beatFirstItem(bm).w.start;
+    var tLast = beatLastItem(bm).w.end;
+    var tShow = Math.max(0, tFirst - IMAGE_LEAD_SEC);
+    var tHide = Math.max(tLast + IMAGE_LAG_SEC, tShow + 1.15);
+    popShot(sel, tShow, tHide);
+  }
+
+  var stage = document.getElementById("karaoke-stage");
+
+  function appendKwSpans(container, chunk) {
+    for (var ci = 0; ci < chunk.length; ci++) {
+      var item = chunk[ci];
       var w0 = item.w;
       var sp = document.createElement("span");
       sp.className = "kw" + (isEmWord(w0) ? " em" : "");
       sp.id = "kw-" + item.index;
       sp.textContent = w0.text + " ";
-      inner.appendChild(sp);
+      container.appendChild(sp);
+    }
+  }
+
+  for (var bi = 0; bi < beatModels.length; bi++) {
+    var bm = beatModels[bi];
+    var block = document.createElement("div");
+    block.id = "beat-" + bi;
+    block.className = "beat-block";
+    if (isAiBeatModel(bm)) {
+      block.className += " beat-ai align-left valign-mid";
+      if (wordCountInPair(bm.pair) > 10) {
+        block.className += " beat-tight";
+      }
+    } else {
+      if (bm.chunk.length > 9) {
+        block.className += " beat-tight";
+      }
+      /* Left-justified; valign-mid keeps long lines inside the safe area (no bottom edge clip). */
+      block.className += " align-left valign-mid";
+    }
+    block.style.zIndex = String(20 + bi);
+    var inner = document.createElement("div");
+    inner.className = "beat-inner";
+    block.appendChild(inner);
+
+    if (isAiBeatModel(bm)) {
+      if (bm.pair.user) {
+        var userRow = document.createElement("div");
+        userRow.className = "ai-dialog-user";
+        appendKwSpans(userRow, bm.pair.user);
+        inner.appendChild(userRow);
+        var gapEl = document.createElement("div");
+        gapEl.className = "ai-dialog-speaker-gap";
+        inner.appendChild(gapEl);
+      }
+      var aiRow = document.createElement("div");
+      aiRow.className = "ai-dialog-ai";
+      for (var ac = 0; ac < bm.pair.ai.length; ac++) {
+        appendKwSpans(aiRow, bm.pair.ai[ac]);
+      }
+      inner.appendChild(aiRow);
+    } else {
+      appendKwSpans(inner, bm.chunk);
     }
     stage.appendChild(block);
   }
@@ -179,35 +436,87 @@
   tl.set(".beat-block", { autoAlpha: 0, y: 48, scale: 0.93 }, 0);
   tl.set("#karaoke-stage .kw", { autoAlpha: 0 }, 0);
 
-  for (var bj = 0; bj < beats.length; bj++) {
-    var b = beats[bj];
-    var firstT = b[0].w.start;
-    var tClearPrev = Math.max(0, firstT - 0.38);
-    var tBringIn = firstT - 0.2;
+  var nonAiBeats = 0;
+  for (var bj = 0; bj < beatModels.length; bj++) {
+    var b = beatModels[bj];
+    var firstT = beatFirstItem(b).w.start;
+    var prevLastEnd = bj > 0 ? beatLastItem(beatModels[bj - 1]).w.end : 0;
+    /* Keep the full sentence until its last word has finished, then hand off to the next beat. */
+    var tClearPrev = bj > 0 ? Math.max(firstT - 0.35, prevLastEnd + 0.04) : 0;
+    var tBringIn = bj > 0 ? Math.max(firstT - 0.2, tClearPrev + 0.02) : firstT - 0.2;
+    var bSel = "#beat-" + bj;
     if (bj > 0) {
       tl.to(
         "#beat-" + (bj - 1),
-        { autoAlpha: 0, y: -32, scale: 0.97, duration: 0.34, ease: "power2.in" },
+        { autoAlpha: 0, y: -32, scale: 0.97, duration: 0.36, ease: "power2.in" },
         tClearPrev
       );
     }
-    tl.fromTo(
-      "#beat-" + bj,
-      { autoAlpha: 0, y: 36, scale: 0.94 },
-      { autoAlpha: 1, y: 0, scale: 1, duration: 0.42, ease: "power3.out" },
-      tBringIn
-    );
+    if (isAiBeatModel(b)) {
+      tl.fromTo(
+        bSel,
+        { autoAlpha: 0, y: 28, scale: 0.98 },
+        { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, ease: "power2.out" },
+        tBringIn
+      );
+    } else {
+      var everyThird = (nonAiBeats + 1) % 3 === 0;
+      var mode = (nonAiBeats * 2 + 1) % 4;
+      nonAiBeats += 1;
+      if (everyThird) {
+        tl.set("#stage-bg", { backgroundColor: BEAT_BGS[nonAiBeats % BEAT_BGS.length] }, Math.max(0, firstT - 0.12));
+      }
+      if (mode === 0) {
+        tl.fromTo(
+          bSel,
+          { autoAlpha: 0, y: 64, scale: 0.92 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, ease: "expo.out" },
+          tBringIn
+        );
+      } else if (mode === 1) {
+        tl.fromTo(
+          bSel,
+          { autoAlpha: 0, x: -100, scale: 0.96 },
+          { autoAlpha: 1, x: 0, scale: 1, duration: 0.48, ease: "power3.out" },
+          tBringIn
+        );
+      } else if (mode === 2) {
+        tl.fromTo(
+          bSel,
+          { autoAlpha: 0, x: 100, scale: 0.96 },
+          { autoAlpha: 1, x: 0, scale: 1, duration: 0.48, ease: "power3.out" },
+          tBringIn
+        );
+      } else {
+        tl.fromTo(
+          bSel,
+          { autoAlpha: 0, y: 36, scale: 0.88 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.52, ease: "back.out(1.2)" },
+          tBringIn
+        );
+      }
+    }
   }
 
   for (var i = 4; i < WORDS.length; i++) {
     var w = WORDS[i];
     var el = document.getElementById("kw-" + i);
+    if (!el) {
+      continue;
+    }
     var gap = w.end - w.start;
     var jitter = 0.82 + wrnd() * 0.38;
     var enterDur = Math.max(0.13, Math.min(0.4, (gap + 0.14) * jitter));
 
-    var pIdx = pickPresetIndex(w, i);
-    var preset = KINETIC_PRESETS[pIdx];
+    var inAi =
+      AI_WORD_FIRST >= 0 && AI_WORD_LAST >= 0 && i >= AI_WORD_FIRST && i <= AI_WORD_LAST;
+    var preset;
+    if (inAi) {
+      preset = KINETIC_AI;
+    } else {
+      var pIdx = pickPresetIndex(w, i);
+      preset = KINETIC_PRESETS[pIdx];
+    }
     var fromState = Object.assign({ autoAlpha: 0, force3D: true, transformOrigin: preset.origin || "50% 80%" }, preset.from);
     var toState = {
       autoAlpha: 1,
@@ -227,7 +536,7 @@
 
     tl.fromTo(el, fromState, toState, w.start);
 
-    if (isEmWord(w)) {
+    if (isEmWord(w) && !inAi) {
       tl.fromTo(
         el,
         { textShadow: "0 0 0 rgba(76,201,240,0)" },
@@ -264,17 +573,23 @@
     WORDS[3].start
   );
 
-  tl.to("#opener", { opacity: 0, duration: 0.42, ease: "power2.in" }, 1.4);
-  tl.to("#title-rag", { scale: 2.35, y: -90, opacity: 0, duration: 0.5, ease: "power3.in" }, 1.44);
+  /* Opener = “Rag / in / the / browser” — do not start color wipe until headline + sublines have room to read. */
+  var OPENER_FADE = WORDS[3].end + 0.5;
+  var WIPE_INTRO = OPENER_FADE + 0.2;
+  var TURSO_IN = WIPE_INTRO + 0.4;
+  var TURSO_INNER = TURSO_IN + 0.06;
 
-  runWipe(1.56, "#0c1814");
+  tl.to("#opener", { opacity: 0, duration: 0.4, ease: "power2.in" }, OPENER_FADE);
+  tl.to("#title-rag", { scale: 2.35, y: -90, opacity: 0, duration: 0.5, ease: "power3.in" }, OPENER_FADE + 0.04);
 
-  tl.to("#turso-ribbon", { opacity: 1, y: 0, duration: 0.48, ease: "expo.out" }, 2.02);
+  runWipe(WIPE_INTRO, "#0c1814");
+
+  tl.to("#turso-ribbon", { opacity: 1, y: 0, duration: 0.48, ease: "expo.out" }, TURSO_IN);
   tl.fromTo(
     "#turso-ribbon .ribbon-inner",
     { scale: 0.62, opacity: 0 },
     { scale: 1, opacity: 1, duration: 0.5, ease: "expo.out" },
-    2.08
+    TURSO_INNER
   );
 
   var tursoPulseT = WORDS[7] && WORDS[7].start ? WORDS[7].start : 3.605;
@@ -293,12 +608,6 @@
   runWipe(90.92, "#0c1814");
   runWipe(119.15, "#06080f");
 
-  var tDocs = firstWordStart(function (x) {
-    return /^vowel$/i.test(x.text);
-  });
-  var tRagUi = firstWordStart(function (x) {
-    return x.text === "Click" && x.start >= 43;
-  });
   var tChat = firstWordStart(function (x) {
     return x.text === "test";
   });
@@ -308,28 +617,39 @@
   var tKey = firstWordStart(function (x) {
     return x.text === "API" && x.start >= 70;
   });
-  var tTalk = firstWordStart(function (x) {
-    return x.text === "Welcome";
-  });
+  var tAiBegin =
+    AI_WORD_FIRST >= 0 && WORDS[AI_WORD_FIRST] ? WORDS[AI_WORD_FIRST].start : null;
+  if (tAiBegin != null) {
+    tl.call(
+      function () {
+        floatActive = 0;
+        var r = document.getElementById("root");
+        if (r) {
+          r.classList.remove("root--with-float");
+        }
+      },
+      [],
+      tAiBegin
+    );
+    tl.set(
+      "#shot-chat, #shot-config, #shot-apikey, #shot-talk",
+      { autoAlpha: 0, opacity: 0, scale: 0.9, x: 0, y: 0 },
+      tAiBegin
+    );
+  }
 
-  if (tDocs != null) {
-    popShot("#shot-voweldocs", tDocs, tDocs + 4.1);
-  }
-  if (tRagUi != null) {
-    popShot("#shot-ragdebug", tRagUi, tRagUi + 4.35);
-  }
-  if (tChat != null) {
-    popShot("#shot-chat", tChat, tChat + 4.5);
-  }
-  if (tCfg != null) {
-    popShot("#shot-config", tCfg, tCfg + 4.0);
-  }
-  if (tKey != null) {
-    popShot("#shot-apikey", tKey, tKey + 4.25);
-  }
-  if (tTalk != null) {
-    popShot("#shot-talk", tTalk, tTalk + 5.2);
-  }
+  var iChat = firstWordIndex(function (x) {
+    return x.text === "test";
+  });
+  var iCfg = firstWordIndex(function (x) {
+    return x.text === "open" && x.start >= 69;
+  });
+  var iKey = firstWordIndex(function (x) {
+    return x.text === "API" && x.start >= 70;
+  });
+  popShotForWordIndex("#shot-chat", iChat);
+  popShotForWordIndex("#shot-config", iCfg);
+  popShotForWordIndex("#shot-apikey", iKey);
 
   tl.fromTo("#outro-layer", { opacity: 0 }, { opacity: 1, duration: 0.55, ease: "power2.out" }, NARRATION_END);
   tl.fromTo(
@@ -353,8 +673,8 @@
 
   /* BGM levels (incl. dialogue mute + outro) are in index.html — HyperFrames does not use GSAP volume in the mix. */
 
-  if (beats.length) {
-    var lastBi = beats.length - 1;
+  if (beatModels.length) {
+    var lastBi = beatModels.length - 1;
     tl.to(
       "#beat-" + lastBi,
       { autoAlpha: 0, y: -28, scale: 0.97, duration: 0.42, ease: "power2.in" },

@@ -60,18 +60,28 @@ body {
   background: var(--wipe-b);
 }
 
-/* Floating UI screenshots — no 3D; gentle bob + shadow */
-/* Do not CSS-animate transform here — GSAP owns opacity/y/scale on these imgs */
+/* Floating UI screenshots — top half of 9:16; GSAP still owns pop animation */
 .float-shot {
   position: absolute;
   z-index: 8;
-  width: 460px;
+  top: 4%;
+  width: min(88%, 920px);
+  max-height: 42%;
   height: auto;
-  border-radius: 14px;
-  filter: drop-shadow(0 28px 56px rgba(0, 0, 0, 0.55));
+  object-fit: contain;
+  border-radius: 16px;
+  filter: drop-shadow(0 22px 48px rgba(0, 0, 0, 0.55));
   opacity: 0;
   will-change: transform, opacity;
   transform: translateZ(0);
+}
+.float-shot--l {
+  left: 4%;
+  right: auto;
+}
+.float-shot--r {
+  right: 4%;
+  left: auto;
 }
 
 #turso-ribbon {
@@ -115,70 +125,161 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 200px 40px 220px;
+  /* Generous bottom inset so multi-line kinetic type never crosses the frame edge */
+  padding: 100px 36px min(240px, 14%);
   pointer-events: none;
+  box-sizing: border-box;
+  overflow: visible;
 }
+/* When a UI grab is on screen, lock captions to the lower half */
+.root--with-float #karaoke-wrap {
+  align-items: flex-end;
+  padding-top: 48%;
+  padding-bottom: min(220px, 13%);
+}
+
 #karaoke-root {
   width: 100%;
-  max-width: 1000px;
-  text-align: center;
+  max-width: 1020px;
+  text-align: left;
   font-family: "Outfit", sans-serif;
   font-weight: 700;
-  font-size: 56px;
-  line-height: 1.32;
+  font-size: 64px;
+  line-height: 1.3;
   color: var(--text);
   perspective: 1100px;
   transform-style: preserve-3d;
 }
 
-/* One transcript “beat” at a time — prevents the teleprompter wall-of-text */
+/* One transcript “beat” at a time */
 #karaoke-stage {
   position: relative;
   width: 100%;
-  min-height: 300px;
-  max-height: 1000px;
-  overflow: hidden;
+  min-height: 400px;
+  overflow: visible;
 }
 
 .beat-block {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  min-height: min-content;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row;
   width: 100%;
-  padding: 0 12px;
+  padding: 0 24px;
   box-sizing: border-box;
   text-align: center;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transform-origin: 50% 50%;
+  overflow: visible;
+}
+.beat-block.valign-top {
+  align-items: flex-start;
+  padding-top: 5%;
+}
+.beat-block.valign-mid {
+  align-items: center;
+}
+.beat-block.valign-bottom {
+  align-items: flex-end;
+  padding-bottom: min(14%, 220px);
 }
 
 .beat-inner {
   width: 100%;
-  max-width: 940px;
+  max-width: 1000px;
+  text-align: left;
+  box-sizing: border-box;
+}
+.beat-block.align-center {
+  justify-content: center;
+}
+.beat-block.align-center .beat-inner {
   text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.beat-block.align-left {
+  justify-content: flex-start;
+}
+.beat-block.align-left .beat-inner {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+}
+.beat-block.align-right {
+  justify-content: flex-end;
+}
+.beat-block.align-right .beat-inner {
+  text-align: right;
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* In-app dialogue: left column; user line roman, assistant line italic; all white */
+.beat-block.beat-ai {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 5%;
+}
+.beat-block.beat-ai .beat-inner {
+  text-align: left;
+  max-width: 100%;
+  font-style: normal;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ai-dialog-user {
+  font-style: normal;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ai-dialog-speaker-gap {
+  height: 1.15em;
+  min-height: 1.15em;
+}
+
+.ai-dialog-ai {
+  font-style: italic;
+  font-weight: 600;
+  color: #fff;
 }
 
 .beat-block.beat-tight .kw {
-  font-size: 46px;
-  line-height: 1.3;
+  font-size: 58px;
+  line-height: 1.08;
+}
+.beat-block.beat-ai.beat-tight .kw,
+.beat-block.beat-ai .kw {
+  font-size: 58px;
+  line-height: 1.1;
+}
+
+.beat-block.beat-ai .kw.em {
+  color: #fff;
 }
 
 /* inline-block: transforms apply; GSAP owns motion */
 #karaoke-stage .kw {
   display: inline-block;
-  margin-right: 0.12em;
-  margin-bottom: 0.06em;
+  margin-right: 0.1em;
+  margin-bottom: 0.04em;
   opacity: 0;
   transform-origin: 50% 80%;
   transform-style: preserve-3d;
   will-change: transform, opacity;
   vertical-align: baseline;
-  font-size: 64px;
-  line-height: 1.26;
+  font-size: 92px;
+  line-height: 1.06;
 }
 #karaoke-stage .kw.em {
   color: var(--accent-2);
@@ -232,14 +333,15 @@ body {
   z-index: 25;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-end;
   gap: 28px;
-  padding: 80px 72px;
-  text-align: center;
+  padding: 72px 56px min(200px, 12%);
+  text-align: left;
   background: radial-gradient(ellipse 80% 70% at 50% 40%, #0f1728 0%, #06080f 62%);
   opacity: 0;
   pointer-events: none;
+  box-sizing: border-box;
 }
 #outro-layer .out-hero {
   font-family: "Outfit", sans-serif;
@@ -248,6 +350,7 @@ body {
   color: var(--text);
   line-height: 1.2;
   max-width: 920px;
+  text-align: left;
 }
 #outro-layer .out-url {
   font-family: "JetBrains Mono", ui-monospace, monospace;
@@ -258,6 +361,8 @@ body {
   padding: 18px 36px;
   border-radius: 14px;
   border: 2px solid rgba(62, 207, 142, 0.45);
+  align-self: flex-start;
+  text-align: left;
 }
 #outro-layer .out-attr {
   font-family: "DM Sans", system-ui, sans-serif;
@@ -267,6 +372,7 @@ body {
   line-height: 1.45;
   max-width: 880px;
   margin-top: 1.2em;
+  text-align: left;
 }
 
 /* Film grain veil */
