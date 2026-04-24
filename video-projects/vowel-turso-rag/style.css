@@ -92,7 +92,7 @@ body {
   overflow: hidden;
   line-height: 1;
   flex: 0 0 auto;
-  --turso-mrow-sec: 38s;
+  --turso-mrow-sec: 66s;
 }
 .turso-bg-marquee__track {
   display: flex;
@@ -104,19 +104,19 @@ body {
   animation-direction: reverse;
 }
 .turso-bg-marquee__row:nth-child(5n) {
-  --turso-mrow-sec: 32s;
+  --turso-mrow-sec: 56s;
 }
 .turso-bg-marquee__row:nth-child(5n + 1) {
-  --turso-mrow-sec: 44s;
+  --turso-mrow-sec: 77s;
 }
 .turso-bg-marquee__row:nth-child(5n + 2) {
-  --turso-mrow-sec: 36s;
+  --turso-mrow-sec: 63s;
 }
 .turso-bg-marquee__row:nth-child(5n + 3) {
-  --turso-mrow-sec: 40s;
+  --turso-mrow-sec: 70s;
 }
 .turso-bg-marquee__row:nth-child(5n + 4) {
-  --turso-mrow-sec: 34s;
+  --turso-mrow-sec: 60s;
 }
 .turso-bg-marquee__chunk {
   display: flex;
@@ -224,7 +224,7 @@ body {
   overflow: hidden;
   flex: 0 0 auto;
   line-height: 0;
-  --rag-mrow-sec: 88s;
+  --rag-mrow-sec: 154s;
 }
 .rag-screenshot-marquee__track {
   display: flex;
@@ -259,6 +259,13 @@ body {
   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.42));
   user-select: none;
   -webkit-user-drag: none;
+}
+/* Vowel API key configuration: same tile treatment as file/chat marquees (diagonal field = .rag-screenshot-marquee__rotor only). */
+.rag-screenshot-marquee--config-api {
+  background: #071018;
+}
+.rag-screenshot-marquee--config-api .rag-screenshot-marquee__rotor {
+  background: #071018;
 }
 @keyframes rag-screenshot-mrow-scroll {
   0% {
@@ -399,7 +406,7 @@ body {
   overflow: hidden;
   line-height: 1;
   flex: 0 0 auto;
-  --browser-mrow-sec: 38s;
+  --browser-mrow-sec: 66s;
 }
 .browser-bg-pattern__track {
   display: flex;
@@ -412,19 +419,19 @@ body {
   animation-direction: reverse;
 }
 .browser-bg-pattern__row:nth-child(5n) {
-  --browser-mrow-sec: 32s;
+  --browser-mrow-sec: 56s;
 }
 .browser-bg-pattern__row:nth-child(5n + 1) {
-  --browser-mrow-sec: 44s;
+  --browser-mrow-sec: 77s;
 }
 .browser-bg-pattern__row:nth-child(5n + 2) {
-  --browser-mrow-sec: 36s;
+  --browser-mrow-sec: 63s;
 }
 .browser-bg-pattern__row:nth-child(5n + 3) {
-  --browser-mrow-sec: 40s;
+  --browser-mrow-sec: 70s;
 }
 .browser-bg-pattern__row:nth-child(5n + 4) {
-  --browser-mrow-sec: 34s;
+  --browser-mrow-sec: 60s;
 }
 .browser-bg-pattern__chunk {
   display: flex;
@@ -506,7 +513,7 @@ body {
   overflow: hidden;
   line-height: 1;
   flex: 0 0 auto;
-  --turso-circle-mrow-sec: 38s;
+  --turso-circle-mrow-sec: 66s;
 }
 .turso-circle-bg-pattern__track {
   display: flex;
@@ -519,19 +526,19 @@ body {
   animation-direction: reverse;
 }
 .turso-circle-bg-pattern__row:nth-child(5n) {
-  --turso-circle-mrow-sec: 32s;
+  --turso-circle-mrow-sec: 56s;
 }
 .turso-circle-bg-pattern__row:nth-child(5n + 1) {
-  --turso-circle-mrow-sec: 44s;
+  --turso-circle-mrow-sec: 77s;
 }
 .turso-circle-bg-pattern__row:nth-child(5n + 2) {
-  --turso-circle-mrow-sec: 36s;
+  --turso-circle-mrow-sec: 63s;
 }
 .turso-circle-bg-pattern__row:nth-child(5n + 3) {
-  --turso-circle-mrow-sec: 40s;
+  --turso-circle-mrow-sec: 70s;
 }
 .turso-circle-bg-pattern__row:nth-child(5n + 4) {
-  --turso-circle-mrow-sec: 34s;
+  --turso-circle-mrow-sec: 60s;
 }
 .turso-circle-bg-pattern__chunk {
   display: flex;

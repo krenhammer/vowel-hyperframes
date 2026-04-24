@@ -182,7 +182,7 @@
 }
 
 .aib__mrow {
-  --aib-mrow-sec: 90s;
+  --aib-mrow-sec: 158s;
   position: relative;
   flex: 1 1 0;
   min-height: 0;

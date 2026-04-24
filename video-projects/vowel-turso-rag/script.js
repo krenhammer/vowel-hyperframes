@@ -87,7 +87,7 @@
       accentColor: "#37bdf8",
       pressAnimation: "random",
       seed: 0x5a7e1c3f,
-      periodRangeSec: { min: 4.5, max: 10.5 },
+      periodRangeSec: { min: 7.4, max: 17.5 },
       maxNegativeDelaySec: 22,
     });
   }
@@ -97,17 +97,18 @@
    * RAG tab backgrounds: clone Turso ribbon structure (buildTursoBgMarquee) — row / dual chunk / translate -50%,
    * even rows vs .rag-screenshot-marquee__row--alt reverse. PNG cells only; avoids AnimatedImageBackground marquee.
    */
-  function buildRagScreenshotMarquee(host, imageSrc, seed) {
+  function buildRagScreenshotMarquee(host, imageSrc, seed, options) {
+    options = options || {};
     if (!host || host.querySelector(".rag-screenshot-marquee")) {
       return;
     }
     var rnd = mulberry32(seed ^ 0x2d4e6f01);
-    var prLo = 68;
-    var prHi = 108;
+    var prLo = 118;
+    var prHi = 189;
     var rowCount = 22;
     var cellsPerChunk = 9;
     var wrap = document.createElement("div");
-    wrap.className = "rag-screenshot-marquee";
+    wrap.className = "rag-screenshot-marquee" + (options.wrapClass ? " " + options.wrapClass : "");
     var rotor = document.createElement("div");
     rotor.className = "rag-screenshot-marquee__rotor";
     var rowsRoot = document.createElement("div");
@@ -154,6 +155,12 @@
   function buildRagTabAibs() {
     buildRagScreenshotMarquee(document.getElementById("rag-tab-files-aib-host"), "assets/rag-files.png", 0x3c91a4e2);
     buildRagScreenshotMarquee(document.getElementById("rag-tab-chat-aib-host"), "assets/chat.png", 0x4d02b5f1);
+    buildRagScreenshotMarquee(
+      document.getElementById("vowel-api-config-aib-host"),
+      "assets/config.png",
+      0x8f2c91ae,
+      { wrapClass: "rag-screenshot-marquee--config-api" }
+    );
   }
   buildRagTabAibs();
 
@@ -571,6 +578,7 @@
   gsap.set("#rag-debug-bg-marquee", { opacity: 0 });
   gsap.set("#rag-tab-files-aib", { opacity: 0 });
   gsap.set("#rag-tab-chat-aib", { opacity: 0 });
+  gsap.set("#vowel-api-config-marquee", { opacity: 0 });
   gsap.set("#turso-bg-pattern", { opacity: 0 });
   gsap.set("#browser-bg-pattern", { opacity: 0 });
   gsap.set("#docs-type-icons-bg", { autoAlpha: 0 });
@@ -746,7 +754,45 @@
   }
   var tRagTabChatIn = iTheSecondTab >= 0 ? Math.max(0, WORDS[iTheSecondTab].start - 0.12) : 52.1;
   var tRagTabFilesOut = tRagTabChatIn;
+  /* Fade chat screenshot marquee after “…graded document excerpts.” — covers “Try it out by typing…” through that line. */
   var tRagTabChatOut = tRelevanceLineEnd + 0.22;
+  if (iTheSecondTab >= 0) {
+    for (var _exOut = 0; _exOut < WORDS.length; _exOut++) {
+      if (
+        /^excerpts$/i.test(stripPunct(WORDS[_exOut].text)) &&
+        WORDS[_exOut].start > WORDS[iTheSecondTab].start
+      ) {
+        tRagTabChatOut = WORDS[_exOut].end + 0.32;
+        break;
+      }
+    }
+  }
+
+  /* “This will open the vowel API key configuration” / “There are tabs for…” / “Enter valid…” — #vowel-api-config-marquee */
+  var iVowelApiConfigThis = -1;
+  for (var _vapi = 0; _vapi < WORDS.length - 5; _vapi++) {
+    if (
+      stripPunct(WORDS[_vapi].text) === "This" &&
+      stripPunct(WORDS[_vapi + 1].text) === "will" &&
+      stripPunct(WORDS[_vapi + 2].text) === "open" &&
+      /^vowel$/i.test(stripPunct(WORDS[_vapi + 4].text)) &&
+      /^API$/i.test(stripPunct(WORDS[_vapi + 5].text))
+    ) {
+      iVowelApiConfigThis = _vapi;
+      break;
+    }
+  }
+  var iVowelApiInstance = -1;
+  if (iVowelApiConfigThis >= 0) {
+    for (var _vins = iVowelApiConfigThis; _vins < WORDS.length; _vins++) {
+      if (/^instance\.?$/i.test(stripPunct(WORDS[_vins].text))) {
+        iVowelApiInstance = _vins;
+        break;
+      }
+    }
+  }
+  var tVowelApiConfigIn = iVowelApiConfigThis >= 0 ? Math.max(0, WORDS[iVowelApiConfigThis].start - 0.2) : 69.2;
+  var tVowelApiConfigOut = iVowelApiInstance >= 0 ? WORDS[iVowelApiInstance].end + 0.35 : 78.5;
 
   /* In-app Q&A: keep #turso-bg-pattern at 0 — full grid behind chat hurt legibility; stage-bg + wipe color only. */
 
@@ -1073,6 +1119,19 @@
   if (iClickVoweldocsNav >= 0) {
     tl.to("#turso-bg-pattern", { opacity: 1, duration: 0.4, ease: "sine.out" }, tVoweldocsNavBgIn);
     tl.to("#turso-bg-pattern", { opacity: 0, duration: 0.45, ease: "power2.in" }, tVoweldocsNavBgOut);
+  }
+  if (iVowelApiConfigThis >= 0) {
+    tl.set("#stage-bg", { backgroundColor: "#071018" }, Math.max(0, tVowelApiConfigIn - 0.06));
+    tl.to(
+      "#vowel-api-config-marquee",
+      { opacity: 1, duration: 0.38, ease: "sine.out" },
+      tVowelApiConfigIn
+    );
+    tl.to(
+      "#vowel-api-config-marquee",
+      { opacity: 0, duration: 0.42, ease: "power2.in" },
+      tVowelApiConfigOut
+    );
   }
 
   tl.to(

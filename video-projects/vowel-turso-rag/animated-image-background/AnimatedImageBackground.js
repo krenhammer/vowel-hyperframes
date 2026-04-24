@@ -32,8 +32,8 @@
      * When hasButton is false: per-row scroll period (two duplicate chunks, translate -50%),
      * in seconds, randomized per row between min and max.
      */
-    rowMarqueeSecMin: 70,
-    rowMarqueeSecMax: 120,
+    rowMarqueeSecMin: 120,
+    rowMarqueeSecMax: 210,
     pressAnimation: "random",
     seed: 0x5a7e1c3f,
     periodRangeSec: { min: 5, max: 9.5 },
