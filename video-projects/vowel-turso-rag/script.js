@@ -1050,12 +1050,8 @@
         tBringIn
       );
     } else {
-      var everyThird = (nonAiBeats + 1) % 3 === 0;
       var mode = (nonAiBeats * 2 + 1) % 4;
       nonAiBeats += 1;
-      if (everyThird) {
-        tl.set("#stage-bg", { backgroundColor: BEAT_BGS[nonAiBeats % BEAT_BGS.length] }, Math.max(0, firstT - 0.12));
-      }
       if (mode === 0) {
         tl.fromTo(
           bSel,
@@ -1285,6 +1281,70 @@
   runWipe(63.95, "#0a101c");
   runWipe(90.92, "#0c1814");
   runWipe(tWipeOutOfAi, "#06080f");
+
+  /**
+   * After each sentence (norm beat end), shift #stage-bg to a dark tone so white captions stay readable.
+   * Skips: first & last norm beat, AI block, any beat whose times overlap a marquee / patterned-bg window.
+   */
+  (function scheduleSentenceStageBgs() {
+    var opFade = WORDS[3].end + 0.5;
+    var wipeIntro = opFade + 0.2;
+    var marqueeIntervals = [
+      [wipeIntro + 0.12, 8.45],
+      [tDocIconsIn, tDocIconsOut],
+      [tBrowserPatternIn, tBrowserPatternOut],
+      [tRagTabChatIn, tRagTabChatOut],
+    ];
+    if (iClickRagDebug >= 0) {
+      marqueeIntervals.push([tRagButtonBgIn, tRagButtonBgOut]);
+    }
+    if (iTheFirstTab >= 0) {
+      marqueeIntervals.push([tRagTabFilesIn, tRagTabFilesOut]);
+    }
+    if (iClickVoweldocsNav >= 0) {
+      marqueeIntervals.push([tVoweldocsNavBgIn, tVoweldocsNavBgOut]);
+    }
+    if (iVowelApiConfigThis >= 0) {
+      marqueeIntervals.push([tVowelApiConfigIn, tVowelApiConfigOut]);
+    }
+    if (iOnceYourKey >= 0) {
+      marqueeIntervals.push([tVowelMicButtonMarqueeIn, tVowelMicButtonMarqueeOut]);
+    }
+    function overlapsMarquee(t0, t1) {
+      for (var m = 0; m < marqueeIntervals.length; m++) {
+        var a = marqueeIntervals[m][0];
+        var b = marqueeIntervals[m][1];
+        if (t0 < b && t1 > a) {
+          return true;
+        }
+      }
+      return false;
+    }
+    var normBeatIndices = [];
+    for (var ib = 0; ib < beatModels.length; ib++) {
+      if (!isAiBeatModel(beatModels[ib])) {
+        normBeatIndices.push(ib);
+      }
+    }
+    if (normBeatIndices.length < 3) {
+      return;
+    }
+    var colorIx = 0;
+    for (var nb = 0; nb < normBeatIndices.length; nb++) {
+      if (nb === 0 || nb === normBeatIndices.length - 1) {
+        continue;
+      }
+      var bix = normBeatIndices[nb];
+      var bm = beatModels[bix];
+      var tStart = beatFirstItem(bm).w.start;
+      var tEnd = beatLastItem(bm).w.end;
+      if (overlapsMarquee(tStart, tEnd)) {
+        continue;
+      }
+      tl.set("#stage-bg", { backgroundColor: BEAT_BGS[colorIx % BEAT_BGS.length] }, tEnd + 0.08);
+      colorIx += 1;
+    }
+  })();
 
   tl.fromTo("#outro-layer", { opacity: 0 }, { opacity: 1, duration: 0.55, ease: "power2.out" }, OUTRO_T0);
   tl.fromTo(
