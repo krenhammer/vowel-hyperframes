@@ -5,7 +5,6 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="animated-image-background/AnimatedImageBackground.css">
-    <link rel="stylesheet" href="bounce-float-assets/BounceFloatAssets.css">
   </head>
   <body>
     <div id="root" class="root" data-composition-id="vowel-turso-rag-master" data-width="1080" data-height="1920" data-start="0" data-duration="141.786">
@@ -80,16 +79,18 @@
         </div>
       </div>
 
-      <!-- “You can load up hundreds of documents …” — BounceFloat file-type icons (word / pdf / txt / md), center-out. -->
+      <!-- “You can load up hundreds of documents …” — same marquee structure as #browser-bg-pattern; rotor -90°; cycles doc/pdf/txt/md SVGs. -->
       <div
-        id="docs-type-icons-bg"
-        class="clip docs-type-icons-bg"
+        id="docs-type-bg-pattern"
+        class="clip docs-type-bg-pattern"
         data-start="0"
         data-duration="141.786"
         data-track-index="11"
         aria-hidden="true"
       >
-        <div id="docs-type-icons-host" class="docs-type-icons-host"></div>
+        <div class="docs-type-bg-pattern__rotor">
+          <div class="docs-type-bg-pattern__rows" id="docs-type-bg-pattern-rows"></div>
+        </div>
       </div>
 
       <!-- “The first tab … / The second tab …” — rag-screenshot-marquee (same row pattern as Turso ribbon) -->
@@ -177,6 +178,12 @@
         </div>
       </template>
 
+      <template id="docs-type-bg-cell-tpl">
+        <div class="docs-type-bg-cell">
+          <div class="docs-type-bg-cell__logo" aria-hidden="true"></div>
+        </div>
+      </template>
+
       <!-- RAG debug: cloned per cell by buildTursoCircleBgPattern() — parallel to browser-bg-cell-tpl. -->
       <template id="turso-circle-bg-cell-tpl">
         <div class="turso-circle-bg-cell">
@@ -193,7 +200,6 @@
     </div>
 
     <script src="animated-image-background/AnimatedImageBackground.js"></script>
-    <script src="bounce-float-assets/BounceFloatAssets.js"></script>
     <script src="transcript-words.js"></script>
     <script src="script.js"></script>
     <script>
