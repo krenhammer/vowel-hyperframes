@@ -44,22 +44,6 @@ body {
   pointer-events: none;
 }
 
-#cover-wipe-a,
-#cover-wipe-b {
-  position: absolute;
-  inset: 0;
-  transform: translateX(-1080px);
-  pointer-events: none;
-  z-index: 120;
-}
-#cover-wipe-a {
-  background: var(--wipe-a);
-}
-#cover-wipe-b {
-  z-index: 119;
-  background: var(--wipe-b);
-}
-
 /* Floating UI screenshots — top half of 9:16; GSAP still owns pop animation */
 .float-shot {
   position: absolute;
@@ -171,7 +155,7 @@ body {
   overflow: visible;
 }
 #karaoke-wrap.karaoke-wrap--ai #karaoke-stage {
-  min-height: 1750px;
+  min-height: 1500px;
 }
 
 .beat-block {
@@ -245,17 +229,32 @@ body {
   padding: 0 3% 0 3.5%;
 }
 .beat-block.beat-ai .beat-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   text-align: left;
   max-width: 100%;
   font-style: normal;
   font-weight: 400;
   color: #f2f2f2;
+  /* Match dialogue .kw; otherwise em gaps/padding use #karaoke-root (64px) and look huge */
+  font-size: 50px;
+}
+.beat-block.beat-ai.beat-tight .beat-inner {
+  font-size: 50px;
 }
 
+/* Narrator / user questions — right side (chat bubble alignment) */
 .ai-dialog-user {
   font-style: normal;
   font-weight: 400;
   color: #f2f2f2;
+  align-self: flex-end;
+  text-align: right;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: 0;
+  padding: 0.2em 0 0.15em 1.1em;
 }
 
 .ai-dialog-speaker-gap {
@@ -268,27 +267,22 @@ body {
   min-height: 0.35em;
 }
 
+/* Model replies — left side */
 .ai-dialog-ai {
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
   color: #f2f2f2;
+  align-self: flex-start;
+  text-align: left;
+  max-width: 92%;
+  margin-right: auto;
+  margin-left: 0;
+  padding: 0.2em 1.1em 0.15em 0;
 }
 
 .beat-block.beat-tight .kw {
   font-size: 58px;
   line-height: 1.08;
-}
-/* ~11–12pt equivalent at 1080w — entire Welcome…credentials block must read on one page */
-.beat-block.beat-ai .kw,
-.beat-block.beat-ai.beat-tight .kw {
-  font-size: 21px;
-  line-height: 1.3;
-  margin-bottom: 0.01em;
-  font-weight: 400;
-}
-.beat-block.beat-ai.beat-tight .kw {
-  font-size: 19px;
-  line-height: 1.28;
 }
 
 /* inline-block: transforms apply; GSAP owns motion */
@@ -303,6 +297,21 @@ body {
   vertical-align: baseline;
   font-size: 92px;
   line-height: 1.06;
+}
+/*
+ * In-app chat transcript: #karaoke-stage .kw (above) is more specific than .beat-block.beat-ai .kw
+ * (id beats three classes), so the AI block was inheriting 92px. These selectors tie-break so the
+ * whole Welcome…credentials turn fits in one 9:16 frame, including with root--with-float.
+ */
+#karaoke-stage .beat-block.beat-ai .kw {
+  font-size: 50px;
+  line-height: 1.28;
+  margin-bottom: 0.02em;
+  font-weight: 400;
+}
+#karaoke-stage .beat-block.beat-ai.beat-tight .kw {
+  font-size: 50px;
+  line-height: 1.24;
 }
 #karaoke-stage .kw.em {
   color: var(--accent-2);
