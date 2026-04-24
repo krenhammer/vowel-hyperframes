@@ -248,10 +248,10 @@ body {
 .rag-screenshot-marquee__cell {
   flex: 0 0 auto;
 }
-/* PNGs 1439×805 — landscape tiles, readable UI text */
+/* PNGs 1439×805 — landscape tiles (again 2×: was 92vmin / 1200px) */
 .rag-screenshot-marquee__img {
   display: block;
-  width: min(46vmin, 600px);
+  width: min(184vmin, 2400px);
   height: auto;
   aspect-ratio: 1439 / 805;
   object-fit: contain;
