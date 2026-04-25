@@ -8,7 +8,7 @@ with appropriate config params
 Global Animations
 - Zoom in to NW, NE, SE, SW regions
 
-## Mock Webapp Pages
+## Mock "Abstract" Webapp Pages 
 
 General Inspiration (abstract text represented by rectangles):
 -video-projects/vowel-tickets/assets/abstract-webapp2.png
@@ -28,7 +28,7 @@ Animations
     - Yellow - AI Thinking
     - Purple - AI Talking
 
-## Github Repo
+### Github Repo
 All text can be abstract except Repo and source titles
 
 Inspiration 
@@ -88,7 +88,7 @@ Animations
 - RAG results return when user speaks
 - Open / Close Modal
 
-#### API Config Modal
+### API Config Modal
 This blocking modal centers on voweldocs when blue voweldocs button in clicked in navbar
 default hidden
 
