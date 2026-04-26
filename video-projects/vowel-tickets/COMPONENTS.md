@@ -22,7 +22,8 @@ Inspration
 
 Animations
 - suppoirt emails fil inbox 
-- red $ counter pink rounded box overlays upper left  adding rand $50 -75 per email  
+- large red $ counter in pink rounded box overlays upper middle left of scrrenadding rand $50-75 support cost per email  
+- reverse animation (clear emails back out .. and reduce $ counter to zero)
 
 ### Github Repo
 All text can be abstract except Repo and source titles
