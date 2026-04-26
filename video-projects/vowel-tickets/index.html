@@ -116,7 +116,7 @@
       id="root"
       data-composition-id="vowel-tickets-main"
       data-start="0"
-      data-duration="48.4"
+      data-duration="51.2"
       data-width="1920"
       data-height="1080"
     >
@@ -126,7 +126,7 @@
         data-composition-id="comp-inbox"
         data-composition-src="compositions/comp-inbox.html"
         data-start="0"
-        data-duration="8"
+        data-duration="10.55"
         data-track-index="1"
         data-width="1920"
         data-height="1080"
@@ -136,7 +136,7 @@
         class="scene-wrap"
         data-composition-id="comp-github"
         data-composition-src="compositions/comp-github.html"
-        data-start="7.65"
+        data-start="10.55"
         data-duration="8"
         data-track-index="2"
         data-width="1920"
@@ -147,7 +147,7 @@
         class="scene-wrap"
         data-composition-id="comp-codespace"
         data-composition-src="compositions/comp-codespace.html"
-        data-start="15.3"
+        data-start="18.1"
         data-duration="9"
         data-track-index="3"
         data-width="1920"
@@ -158,7 +158,7 @@
         class="scene-wrap"
         data-composition-id="comp-voweldocs"
         data-composition-src="compositions/comp-voweldocs.html"
-        data-start="23.95"
+        data-start="26.75"
         data-duration="23.25"
         data-track-index="4"
         data-width="1920"
@@ -169,7 +169,7 @@
         class="scene-wrap"
         data-composition-id="comp-rag-modal"
         data-composition-src="compositions/comp-rag-modal.html"
-        data-start="32.6"
+        data-start="35.4"
         data-duration="8"
         data-track-index="5"
         data-width="1920"
@@ -180,7 +180,7 @@
         class="scene-wrap"
         data-composition-id="comp-api-modal"
         data-composition-src="compositions/comp-api-modal.html"
-        data-start="40.25"
+        data-start="43.05"
         data-duration="7"
         data-track-index="6"
         data-width="1920"
@@ -245,42 +245,42 @@
         tl.set("#vd-caption", { xPercent: -50, autoAlpha: 0, y: -20, force3D: true }, 0);
         tl.set("#scene-inbox", { autoAlpha: 1 }, 0);
 
-        tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65);
+        tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 10.55);
         tl.fromTo(
           "#scene-github",
           { autoAlpha: 0, scale: 0.94 },
           { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power3.inOut" },
-          7.65
+          10.55
         );
 
-        tl.to("#scene-github", { autoAlpha: 0, xPercent: -14, duration: 0.35, ease: "power2.inOut" }, 15.3);
+        tl.to("#scene-github", { autoAlpha: 0, xPercent: -14, duration: 0.35, ease: "power2.inOut" }, 18.1);
         tl.fromTo(
           "#scene-codespace",
           { autoAlpha: 0, xPercent: 14 },
           { autoAlpha: 1, xPercent: 0, duration: 0.35, ease: "power2.inOut" },
-          15.3
+          18.1
         );
 
-        tl.to("#scene-codespace", { autoAlpha: 0, filter: "blur(12px)", duration: 0.45, ease: "sine.inOut" }, 23.95);
+        tl.to("#scene-codespace", { autoAlpha: 0, filter: "blur(12px)", duration: 0.45, ease: "sine.inOut" }, 26.75);
         tl.fromTo(
           "#scene-voweldocs",
           { autoAlpha: 0, filter: "blur(12px)" },
           { autoAlpha: 1, filter: "blur(0px)", duration: 0.45, ease: "sine.inOut" },
-          23.95
+          26.75
         );
 
-        tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 32.6);
+        tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 35.4);
 
-        tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 40.25);
+        tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 43.05);
         tl.fromTo(
           "#scene-api",
           { autoAlpha: 0, y: 28 },
           { autoAlpha: 1, y: 0, duration: 0.38, ease: "power3.out" },
-          40.25
+          43.05
         );
 
         /* #vd-fab: same DOM node as comp-voweldocs; here we only drive API / key / “active” beat (overwrite child timeline). */
-        var T_API = 40.25;
+        var T_API = 43.05;
         var T_KEY = 1.58;
         var ow = { overwrite: "auto" };
         tl.to("#vd-fab", { autoAlpha: 0, scale: 0.88, duration: 0.2, ease: "power2.in", ...ow }, T_API);
@@ -436,10 +436,10 @@
         );
 
         /* After caption beat — hide voweldocs (FAB goes with it). */
-        var T_VOWEL_FADE = 47.75;
+        var T_VOWEL_FADE = 50.55;
         tl.to("#scene-voweldocs", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, T_VOWEL_FADE);
 
-        tl.set({}, {}, 48.4);
+        tl.set({}, {}, 51.2);
 
         window.__timelines["vowel-tickets-main"] = tl;
       })();
