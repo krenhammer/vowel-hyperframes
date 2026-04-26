@@ -6,91 +6,97 @@
   data-height="1080"
   style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
 >
-  <!-- Overlay: modal anchored over lower-left blue RAG FAB (voweldocs chrome inset 320px + 28px) -->
   <div class="modal-backdrop clip" id="rag-back"></div>
   <div class="modal-anchor clip" id="rag-modal-wrap">
     <div class="modal clip" id="rag-modal">
       <div class="modal-h">
         <span class="mh-title">Turso Browser RAG</span>
-        <div class="abs-bar mh-x"></div>
+        <div class="abs-pill mh-x"></div>
       </div>
       <div class="rag-tabrow clip" id="rag-tabrow" aria-hidden="true">
         <div class="rag-tab is-active" id="rag-tab-a">Documents</div>
         <div class="rag-tab" id="rag-tab-b">Chat</div>
       </div>
-      <div class="rag-panes">
-        <div class="rag-pane docs clip" id="rag-pane-docs">
+      <div class="rag-panel-root is-docs" id="rag-panel-root">
+        <div class="rag-panel rag-panel-docs" id="rag-panel-docs">
           <div class="doc-tree" id="rag-doc-tree">
-            <div class="tree-line clip" id="rag-tr-0">
+            <div class="tree-line" id="rag-tr-0">
               <span class="tree-glyph" aria-hidden="true">├</span>
-              <div class="abs-bar tw w95"></div>
+              <div class="abs-pill tw w95"></div>
             </div>
-            <div class="tree-line inner clip" id="rag-tr-1">
+            <div class="tree-line inner" id="rag-tr-1">
               <span class="tree-glyph" aria-hidden="true">├</span>
-              <div class="abs-bar tw w88"></div>
+              <div class="abs-pill tw w88"></div>
             </div>
-            <div class="tree-line inner clip" id="rag-tr-2">
+            <div class="tree-line inner" id="rag-tr-2">
               <span class="tree-glyph" aria-hidden="true">├</span>
-              <div class="abs-bar tw w80"></div>
+              <div class="abs-pill tw w80"></div>
             </div>
-            <div class="tree-line inner2 clip" id="rag-tr-3">
+            <div class="tree-line inner2" id="rag-tr-3">
               <span class="tree-glyph" aria-hidden="true">└</span>
-              <div class="abs-bar tw w70"></div>
+              <div class="abs-pill tw w70"></div>
             </div>
-            <div class="tree-line clip" id="rag-tr-4">
+            <div class="tree-line" id="rag-tr-4">
               <span class="tree-glyph" aria-hidden="true">└</span>
-              <div class="abs-bar tw w60"></div>
+              <div class="abs-pill tw w60"></div>
             </div>
           </div>
         </div>
-        <div class="rag-divider" aria-hidden="true"></div>
-        <div class="rag-pane chat-side clip" id="rag-pane-chat">
-          <div class="chat" id="rag-chat">
-            <div class="bubble user clip" id="rag-u1">
-              <div class="b-stack">
-                <div class="abs-bar bb"></div>
-                <div class="abs-bar bb w70"></div>
+        <div class="rag-panel rag-panel-chat clip" id="rag-panel-chat-wrap">
+          <div class="rag-chat-scroll" id="rag-scroll">
+            <div class="msg-user clip" id="rag-h-user">
+              <div class="user-blue">
+                <div class="u-ph"></div>
               </div>
             </div>
-            <div class="bubble ai clip" id="rag-a1">
-              <div class="b-stack">
-                <div class="abs-bar bb w90"></div>
-                <div class="abs-bar bb w80"></div>
-                <div class="abs-bar bb w55"></div>
+            <div class="msg-ai clip" id="rag-h-ai1">
+              <div class="ai-gray">
+                <div class="a-line"></div>
+                <div class="a-line w70"></div>
+                <div class="a-line w55"></div>
+              </div>
+              <div class="grade-tile" id="rag-g1">
+                <div class="g-ph"></div>
+              </div>
+            </div>
+            <div class="msg-ai clip" id="rag-h-ai2">
+              <div class="ai-gray">
+                <div class="a-line w88"></div>
+                <div class="a-line w62"></div>
+              </div>
+              <div class="grade-tile" id="rag-g2">
+                <div class="g-ph g-med"></div>
+              </div>
+            </div>
+            <div class="msg-block-2" id="rag-chat-2">
+              <div class="msg-user clip" id="rag-h-user-2">
+                <div class="user-blue sm">
+                  <div class="u-ph short"></div>
+                </div>
+              </div>
+              <div class="msg-ai clip" id="rag-h-ai3">
+                <div class="ai-gray">
+                  <div class="a-line w80"></div>
+                </div>
+                <div class="grade-tile" id="rag-g3">
+                  <div class="g-ph"></div>
+                </div>
+              </div>
+              <div class="msg-ai clip" id="rag-h-ai4">
+                <div class="ai-gray sm">
+                  <div class="a-line w90"></div>
+                </div>
+                <div class="grade-tile" id="rag-g4">
+                  <div class="g-ph g-low"></div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="grades clip" id="rag-grades">
-            <div class="grade-row">
-              <div class="abs-bar gl"></div>
-              <span class="g-bar"><span class="g-fill"></span></span>
-              <div class="abs-bar gn"></div>
+          <div class="chat-composer clip" id="rag-composer">
+            <div class="composer-blue">
+              <div class="in-ph"></div>
             </div>
-            <div class="grade-row">
-              <div class="abs-bar gl short"></div>
-              <span class="g-bar"><span class="g-fill mid"></span></span>
-              <div class="abs-bar gn"></div>
-            </div>
-            <div class="grade-row">
-              <div class="abs-bar gl med"></div>
-              <span class="g-bar"><span class="g-fill low"></span></span>
-              <div class="abs-bar gn"></div>
-            </div>
-          </div>
-          <div class="chat-2 clip" id="rag-chat-2">
-            <div class="bubble user clip" id="rag-u2"><div class="abs-bar bb w40"></div></div>
-            <div class="grades mini clip" id="rag-grades-2">
-              <div class="grade-row">
-                <div class="abs-bar gl tiny"></div>
-                <span class="g-bar"><span class="g-fill"></span></span>
-                <div class="abs-bar gn dash" id="g2n0"></div>
-              </div>
-              <div class="grade-row">
-                <div class="abs-bar gl tiny"></div>
-                <span class="g-bar"><span class="g-fill mid"></span></span>
-                <div class="abs-bar gn dash" id="g2n1"></div>
-              </div>
-            </div>
+            <button class="send-btn" type="button" id="rag-send">Send</button>
           </div>
         </div>
       </div>
@@ -102,7 +108,7 @@
       font-family: "DM Sans", system-ui, sans-serif;
       color: #e6edf3;
     }
-    [data-composition-id="comp-rag-modal"] .abs-bar {
+    [data-composition-id="comp-rag-modal"] .abs-pill {
       display: block;
       height: 11px;
       border-radius: 5px;
@@ -116,12 +122,11 @@
       opacity: 0;
       pointer-events: none;
     }
-    /* Align with voweldocs .chrome: left 320px; FAB at left+28, bottom+28 */
     [data-composition-id="comp-rag-modal"] .modal-anchor {
       position: absolute;
       z-index: 60;
       left: 320px;
-      bottom: 28px;
+      bottom: 104px;
       padding-left: 28px;
       display: flex;
       align-items: flex-end;
@@ -130,15 +135,15 @@
     }
     [data-composition-id="comp-rag-modal"] .modal {
       position: relative;
-      width: 720px;
-      max-height: min(78vh, 600px);
+      width: 600px;
+      max-height: min(62vh, 560px);
       transform: scale(0.94);
       transform-origin: left bottom;
       background: #0f172a;
       border: 1px solid #334155;
       border-radius: 14px;
       box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
-      padding: 0 0 16px;
+      padding: 0;
       opacity: 0;
       pointer-events: none;
       display: flex;
@@ -150,7 +155,6 @@
       justify-content: space-between;
       padding: 14px 18px;
       background: #2563eb;
-      border-bottom: none;
       border-radius: 14px 14px 0 0;
       flex-shrink: 0;
     }
@@ -158,7 +162,6 @@
       font-size: 16px;
       font-weight: 700;
       color: #ffffff;
-      letter-spacing: 0.02em;
     }
     [data-composition-id="comp-rag-modal"] .mh-x {
       width: 22px;
@@ -168,7 +171,6 @@
     }
     [data-composition-id="comp-rag-modal"] .rag-tabrow {
       display: flex;
-      align-items: stretch;
       border-bottom: 1px solid #334155;
       background: #0c1322;
       flex-shrink: 0;
@@ -178,8 +180,6 @@
       text-align: center;
       font-size: 15px;
       font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: none;
       padding: 12px 14px;
       color: #94a3b8;
       border-bottom: 3px solid transparent;
@@ -189,37 +189,39 @@
       background: rgba(15, 23, 42, 0.85);
       border-bottom-color: #60a5fa;
     }
-    [data-composition-id="comp-rag-modal"] .rag-panes {
-      display: flex;
-      flex-direction: row;
-      align-items: stretch;
-      min-height: 280px;
+    [data-composition-id="comp-rag-modal"] .rag-panel-root {
       flex: 1;
-    }
-    [data-composition-id="comp-rag-modal"] .rag-pane.docs {
-      flex: 0 0 44%;
-      min-width: 0;
+      min-height: 0;
       display: flex;
       flex-direction: column;
     }
-    [data-composition-id="comp-rag-modal"] .rag-divider {
-      width: 1px;
-      background: #334155;
-      flex-shrink: 0;
-    }
-    [data-composition-id="comp-rag-modal"] .rag-pane.chat-side {
+    [data-composition-id="comp-rag-modal"] .rag-panel {
+      display: none;
       flex: 1;
-      min-width: 0;
-      display: flex;
+      min-height: 260px;
       flex-direction: column;
       overflow: hidden;
     }
+    [data-composition-id="comp-rag-modal"] .rag-panel-root.is-docs .rag-panel-docs {
+      display: flex;
+    }
+    [data-composition-id="comp-rag-modal"] .rag-panel-root.is-docs .rag-panel-chat {
+      display: none;
+    }
+    [data-composition-id="comp-rag-modal"] .rag-panel-root.is-chat .rag-panel-docs {
+      display: none;
+    }
+    [data-composition-id="comp-rag-modal"] .rag-panel-root.is-chat .rag-panel-chat {
+      display: flex;
+    }
     [data-composition-id="comp-rag-modal"] .doc-tree {
-      padding: 16px 14px 18px 12px;
+      padding: 16px 16px 20px 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
       font-size: 13px;
+      flex: 1;
+      overflow: auto;
     }
     [data-composition-id="comp-rag-modal"] .tree-line {
       display: flex;
@@ -233,143 +235,153 @@
       padding-left: 28px;
     }
     [data-composition-id="comp-rag-modal"] .tree-glyph {
-      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-family: ui-monospace, monospace;
       font-size: 13px;
       color: #64748b;
       flex-shrink: 0;
-      line-height: 1;
     }
     [data-composition-id="comp-rag-modal"] .doc-tree .tw {
       flex: 1;
     }
-    [data-composition-id="comp-rag-modal"] .doc-tree .w95 {
-      width: 95%;
+    [data-composition-id="comp-rag-modal"] .w95 { width: 95%; }
+    [data-composition-id="comp-rag-modal"] .w88 { width: 88%; }
+    [data-composition-id="comp-rag-modal"] .w80 { width: 80%; }
+    [data-composition-id="comp-rag-modal"] .w70 { width: 70%; }
+    [data-composition-id="comp-rag-modal"] .w60 { width: 60%; }
+    [data-composition-id="comp-rag-modal"] .rag-chat-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px 12px 8px 12px;
     }
-    [data-composition-id="comp-rag-modal"] .doc-tree .w88 {
-      width: 88%;
+    [data-composition-id="comp-rag-modal"] .msg-user {
+      align-self: flex-end;
+      width: 100%;
+      max-width: 66.6667%;
     }
-    [data-composition-id="comp-rag-modal"] .doc-tree .w80 {
-      width: 80%;
+    [data-composition-id="comp-rag-modal"] .user-blue {
+      margin-left: auto;
+      max-width: 100%;
+      min-height: 44px;
+      background: #2563eb;
+      border-radius: 12px;
+      padding: 12px 16px 14px;
     }
-    [data-composition-id="comp-rag-modal"] .doc-tree .w70 {
+    [data-composition-id="comp-rag-modal"] .user-blue.sm {
+      max-width: 72%;
+      min-height: 36px;
+    }
+    [data-composition-id="comp-rag-modal"] .u-ph {
+      height: 10px;
+      width: 78%;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.45);
+    }
+    [data-composition-id="comp-rag-modal"] .u-ph.short {
+      width: 48%;
+    }
+    [data-composition-id="comp-rag-modal"] .msg-ai {
+      align-self: flex-start;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 10px;
+      max-width: 66.6667%;
+      width: 100%;
+    }
+    [data-composition-id="comp-rag-modal"] .ai-gray {
+      flex: 1;
+      min-width: 0;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    [data-composition-id="comp-rag-modal"] .ai-gray.sm {
+      padding: 10px 12px 12px;
+    }
+    [data-composition-id="comp-rag-modal"] .a-line {
+      height: 9px;
+      border-radius: 4px;
+      width: 100%;
+      background: #64748b;
+    }
+    [data-composition-id="comp-rag-modal"] .a-line.w90 { width: 90%; }
+    [data-composition-id="comp-rag-modal"] .a-line.w88 { width: 88%; }
+    [data-composition-id="comp-rag-modal"] .a-line.w80 { width: 80%; }
+    [data-composition-id="comp-rag-modal"] .a-line.w70 { width: 70%; }
+    [data-composition-id="comp-rag-modal"] .a-line.w62 { width: 62%; }
+    [data-composition-id="comp-rag-modal"] .a-line.w55 { width: 55%; }
+    [data-composition-id="comp-rag-modal"] .grade-tile {
+      flex: 0 0 64px;
+      width: 64px;
+      background: #334155;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 4px;
+    }
+    [data-composition-id="comp-rag-modal"] .g-ph {
+      height: 8px;
       width: 70%;
+      border-radius: 3px;
+      background: #94a3b8;
     }
-    [data-composition-id="comp-rag-modal"] .doc-tree .w60 {
-      width: 60%;
+    [data-composition-id="comp-rag-modal"] .g-ph.g-med {
+      width: 55%;
     }
-    [data-composition-id="comp-rag-modal"] .chat {
-      padding: 12px 14px 4px 12px;
+    [data-composition-id="comp-rag-modal"] .g-ph.g-low {
+      width: 40%;
+    }
+    [data-composition-id="comp-rag-modal"] .msg-block-2 {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
-    [data-composition-id="comp-rag-modal"] .chat-2 {
-      padding: 0 12px 10px 12px;
+    [data-composition-id="comp-rag-modal"] .chat-composer {
+      flex-shrink: 0;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      align-items: stretch;
+      gap: 10px;
+      padding: 10px 12px 12px 12px;
+      border-top: 1px solid #334155;
+      background: #0c1322;
     }
-    [data-composition-id="comp-rag-modal"] .b-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 100%;
-    }
-    [data-composition-id="comp-rag-modal"] .bb {
-      width: 100%;
-    }
-    [data-composition-id="comp-rag-modal"] .bb.w70 {
-      width: 70%;
-    }
-    [data-composition-id="comp-rag-modal"] .bb.w90 {
-      width: 92%;
-    }
-    [data-composition-id="comp-rag-modal"] .bb.w80 {
-      width: 80%;
-    }
-    [data-composition-id="comp-rag-modal"] .bb.w55 {
-      width: 55%;
-    }
-    [data-composition-id="comp-rag-modal"] .bb.w40 {
-      width: 42%;
-    }
-    [data-composition-id="comp-rag-modal"] .bubble {
-      max-width: 94%;
-      padding: 12px 14px;
-      border-radius: 12px;
-    }
-    [data-composition-id="comp-rag-modal"] .bubble.user {
-      align-self: flex-end;
+    [data-composition-id="comp-rag-modal"] .composer-blue {
+      flex: 1;
+      min-width: 0;
+      min-height: 44px;
+      border-radius: 10px;
       background: #2563eb;
-    }
-    [data-composition-id="comp-rag-modal"] .bubble.user .abs-bar {
-      background: rgba(255, 255, 255, 0.45);
-    }
-    [data-composition-id="comp-rag-modal"] .bubble.ai {
-      align-self: flex-start;
-      background: #1e293b;
-      border: 1px solid #334155;
-    }
-    [data-composition-id="comp-rag-modal"] .bubble.ai .abs-bar {
-      background: #64748b;
-    }
-    [data-composition-id="comp-rag-modal"] .grades {
-      padding: 4px 12px 10px 12px;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    [data-composition-id="comp-rag-modal"] .grades.mini {
-      padding: 0;
-    }
-    [data-composition-id="comp-rag-modal"] .grade-row {
-      display: grid;
-      grid-template-columns: 88px 1fr 32px;
       align-items: center;
-      gap: 8px;
+      padding: 0 16px;
     }
-    [data-composition-id="comp-rag-modal"] .gl {
-      width: 100%;
+    [data-composition-id="comp-rag-modal"] .in-ph {
+      height: 9px;
+      width: 42%;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.4);
     }
-    [data-composition-id="comp-rag-modal"] .gl.short {
-      width: 70%;
-    }
-    [data-composition-id="comp-rag-modal"] .gl.med {
-      width: 85%;
-    }
-    [data-composition-id="comp-rag-modal"] .gl.tiny {
-      width: 90%;
-    }
-    [data-composition-id="comp-rag-modal"] .gn {
-      width: 24px;
-      margin-left: auto;
-      height: 10px;
-    }
-    [data-composition-id="comp-rag-modal"] .gn.dash {
-      width: 20px;
-      background: #475569;
-    }
-    [data-composition-id="comp-rag-modal"] .g-bar {
-      height: 8px;
-      border-radius: 999px;
-      background: #1e293b;
-      overflow: hidden;
-      display: block;
-    }
-    [data-composition-id="comp-rag-modal"] .g-fill {
-      display: block;
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #22c55e, #4ade80);
-      transform-origin: left center;
-      transform: scaleX(0.02);
-      width: 100%;
-    }
-    [data-composition-id="comp-rag-modal"] .g-fill.mid {
-      background: linear-gradient(90deg, #eab308, #facc15);
-    }
-    [data-composition-id="comp-rag-modal"] .g-fill.low {
-      background: linear-gradient(90deg, #f97316, #fb923c);
+    [data-composition-id="comp-rag-modal"] .send-btn {
+      flex-shrink: 0;
+      padding: 0 16px;
+      min-height: 44px;
+      border: none;
+      border-radius: 10px;
+      background: #1d4ed8;
+      color: #f8fafc;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -379,42 +391,52 @@
       var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
       var root = '[data-composition-id="comp-rag-modal"]';
 
+      function setRagView(mode) {
+        var pr = document.querySelector(root + " #rag-panel-root");
+        var ta = document.querySelector(root + " #rag-tab-a");
+        var tb = document.querySelector(root + " #rag-tab-b");
+        if (!pr) return;
+        if (mode === "docs") {
+          pr.classList.remove("is-chat");
+          pr.classList.add("is-docs");
+          if (ta) ta.classList.add("is-active");
+          if (tb) tb.classList.remove("is-active");
+        } else {
+          pr.classList.remove("is-docs");
+          pr.classList.add("is-chat");
+          if (ta) ta.classList.remove("is-active");
+          if (tb) tb.classList.add("is-active");
+        }
+      }
+
+      tl.add(function () {
+        setRagView("docs");
+      }, 0);
+      tl.set(root + " #rag-chat-2", { autoAlpha: 0, height: 0, margin: 0, overflow: "hidden" }, 0);
       tl.to(root + " #rag-back", { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 0.1);
       tl.to(root + " #rag-modal", { autoAlpha: 1, scale: 1, duration: 0.45, ease: "back.out(1.2)" }, 0.2);
-      tl.from(
-        root + " #rag-doc-tree .tree-line",
-        { autoAlpha: 0, x: -8, duration: 0.28, stagger: 0.08 },
-        0.45
-      );
-      tl.from(root + " #rag-u1", { autoAlpha: 0, x: 24, duration: 0.35 }, 0.6);
-      tl.from(root + " #rag-a1", { autoAlpha: 0, x: -20, duration: 0.35 }, 0.8);
-      tl.from(root + " #rag-grades .grade-row", { autoAlpha: 0, y: 10, duration: 0.32, stagger: 0.1 }, 1.1);
-      tl.to(
-        root + " #rag-grades .g-fill",
-        { scaleX: 1, duration: 0.65, ease: "power2.out", stagger: 0.12, transformOrigin: "left center" },
-        1.3
-      );
+      /* Documents tree: no animation (static) */
+      tl.add(function () {
+        setRagView("chat");
+      }, 0.78);
+      tl.from(root + " #rag-composer", { autoAlpha: 0, y: 6, duration: 0.25 }, 0.82);
+      tl.from(root + " #rag-h-user", { autoAlpha: 0, y: 8, duration: 0.3 }, 0.85);
+      tl.from(root + " #rag-h-ai1", { autoAlpha: 0, y: 6, duration: 0.28 }, 1.0);
+      tl.from(root + " #rag-h-ai2", { autoAlpha: 0, y: 6, duration: 0.28 }, 1.15);
 
       tl.to(root + " #rag-modal", { autoAlpha: 0, scale: 0.96, duration: 0.35, ease: "power3.in" }, 2.6);
       tl.to(root + " #rag-back", { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 2.7);
 
+      tl.add(function () {
+        setRagView("chat");
+      }, 3.28);
+      tl.set(root + " #rag-chat-2", { clearProps: "height,margin" }, 3.3);
+      tl.set(root + " #rag-chat-2", { autoAlpha: 1, overflow: "visible" }, 3.3);
       tl.to(root + " #rag-back", { autoAlpha: 1, duration: 0.3, ease: "power2.out" }, 3.3);
       tl.to(root + " #rag-modal", { autoAlpha: 1, scale: 1, duration: 0.42, ease: "back.out(1.15)" }, 3.35);
-      tl.add(function () {
-        var a = document.querySelector(root + " #rag-tab-a");
-        var b = document.querySelector(root + " #rag-tab-b");
-        if (a) a.classList.remove("is-active");
-        if (b) b.classList.add("is-active");
-      }, 3.35);
-      tl.from(root + " #rag-u2", { autoAlpha: 0, x: 22, duration: 0.32 }, 3.7);
-      tl.from(root + " #rag-grades-2 .grade-row", { autoAlpha: 0, y: 8, duration: 0.28, stagger: 0.08 }, 3.9);
-      tl.to(
-        root + " #rag-grades-2 .g-fill",
-        { scaleX: 1, duration: 0.55, ease: "power2.out", stagger: 0.1, transformOrigin: "left center" },
-        4.1
-      );
-      tl.to(root + " #g2n0", { scaleX: 1.15, backgroundColor: "#cbd5e1", duration: 0.25 }, 4.4);
-      tl.to(root + " #g2n1", { scaleX: 1.15, backgroundColor: "#cbd5e1", duration: 0.25 }, 4.47);
+      tl.from(root + " #rag-h-user-2", { autoAlpha: 0, y: 6, duration: 0.28 }, 3.6);
+      tl.from(root + " #rag-h-ai3", { autoAlpha: 0, y: 6, duration: 0.26 }, 3.78);
+      tl.from(root + " #rag-h-ai4", { autoAlpha: 0, y: 6, duration: 0.26 }, 3.95);
 
       tl.to(root + " #rag-modal", { autoAlpha: 0, y: 24, duration: 0.38, ease: "power3.in" }, 5.3);
       tl.to(root + " #rag-back", { autoAlpha: 0, duration: 0.28, ease: "power2.in" }, 5.37);
