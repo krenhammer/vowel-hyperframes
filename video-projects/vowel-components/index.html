@@ -55,6 +55,10 @@
         z-index: 6;
         opacity: 0;
       }
+      #scene-turso-svg {
+        z-index: 7;
+        opacity: 0;
+      }
       /* Post–API key caption: always neutral gray chrome (no hue). State is data-only + FAB. See COMPONENTS.md. */
       #vd-caption {
         position: fixed;
@@ -116,7 +120,7 @@
       id="root"
       data-composition-id="vowel-components-main"
       data-start="0"
-      data-duration="48.4"
+      data-duration="56.4"
       data-width="1920"
       data-height="1080"
     >
@@ -186,6 +190,17 @@
         data-width="1920"
         data-height="1080"
       ></div>
+      <div
+        id="scene-turso-svg"
+        class="scene-wrap"
+        data-composition-id="comp-turso-svg-bg"
+        data-composition-src="compositions/comp-turso-svg-bg.html"
+        data-start="47.75"
+        data-duration="8.65"
+        data-track-index="7"
+        data-width="1920"
+        data-height="1080"
+      ></div>
       <!--
         Caption: after config modal is dismissed (not while scene-api is up). 20vw tray, abs-bars. data-vd-state + data-vd-speaker; FAB (vdCaptionSet).
         Hoisted in #root (fixed) so it stacks over scene-rag and scene-api.
@@ -244,6 +259,7 @@
 
         tl.set("#vd-caption", { xPercent: -50, autoAlpha: 0, y: -20, force3D: true }, 0);
         tl.set("#scene-inbox", { autoAlpha: 1 }, 0);
+        tl.set("#scene-turso-svg", { autoAlpha: 0 }, 0);
 
         tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65);
         tl.fromTo(
@@ -435,11 +451,17 @@
           T8 + 0.64
         );
 
-        /* After caption beat — hide voweldocs (FAB goes with it). */
+        /* After caption beat — crossfade voweldocs → Turso SVG marquee (comp-turso-svg-bg). */
         var T_VOWEL_FADE = 47.75;
         tl.to("#scene-voweldocs", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, T_VOWEL_FADE);
+        tl.fromTo(
+          "#scene-turso-svg",
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.55, ease: "power2.out" },
+          T_VOWEL_FADE
+        );
 
-        tl.set({}, {}, 48.4);
+        tl.set({}, {}, 56.4);
 
         window.__timelines["vowel-components-main"] = tl;
       })();

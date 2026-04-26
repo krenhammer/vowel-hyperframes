@@ -1,0 +1,111 @@
+/**
+ * Diagonal scrolling TURSO wordmark + logo cells (from vowel-turso-rag).
+ * Scope: .turso-bg-marquee* — include once per page / composition.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap");
+
+.turso-bg-marquee {
+  --turso-bg: #0a1612;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--turso-bg);
+  box-sizing: border-box;
+}
+
+.turso-bg-marquee--visible {
+  opacity: 1;
+}
+
+.turso-bg-marquee__rotor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 280vmin;
+  height: 280vmin;
+  margin-left: -140vmin;
+  margin-top: -140vmin;
+  transform: rotate(-45deg);
+  transform-origin: 50% 50%;
+}
+.turso-bg-marquee__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42em;
+  width: 100%;
+  font-size: clamp(72px, 7vw, 120px);
+  line-height: 1;
+  color: rgba(80, 180, 130, 0.14);
+}
+.turso-bg-marquee__row {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 1;
+  flex: 0 0 auto;
+  --turso-mrow-sec: 66s;
+}
+.turso-bg-marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: turso-mrow-scroll var(--turso-mrow-sec) linear infinite;
+}
+.turso-bg-marquee__row--alt .turso-bg-marquee__track {
+  animation-direction: reverse;
+}
+.turso-bg-marquee__row:nth-child(5n) {
+  --turso-mrow-sec: 56s;
+}
+.turso-bg-marquee__row:nth-child(5n + 1) {
+  --turso-mrow-sec: 77s;
+}
+.turso-bg-marquee__row:nth-child(5n + 2) {
+  --turso-mrow-sec: 63s;
+}
+.turso-bg-marquee__row:nth-child(5n + 3) {
+  --turso-mrow-sec: 70s;
+}
+.turso-bg-marquee__row:nth-child(5n + 4) {
+  --turso-mrow-sec: 60s;
+}
+.turso-bg-marquee__chunk {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.38em;
+  padding-right: 0.5em;
+  flex-shrink: 0;
+}
+.turso-bg-cell {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.12em;
+  color: inherit;
+  flex-shrink: 0;
+  font-size: 1em;
+  line-height: 1;
+}
+.turso-bg-cell__svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex-shrink: 0;
+}
+.turso-bg-cell__word {
+  font-family: "Outfit", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: inherit;
+}
+@keyframes turso-mrow-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
