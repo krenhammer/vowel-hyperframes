@@ -32,3 +32,6 @@ raw-media/
 **/renders/frames/
 **/renders/frames-*/
 
+# Kokoro TTS output (tts-utilities/kokoro_script.py)
+tts-utilities/output/
+
