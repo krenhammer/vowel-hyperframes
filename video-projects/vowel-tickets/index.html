@@ -116,7 +116,7 @@
       id="root"
       data-composition-id="vowel-tickets-main"
       data-start="0"
-      data-duration="51.2"
+      data-duration="54.57"
       data-width="1920"
       data-height="1080"
     >
@@ -159,7 +159,7 @@
         data-composition-id="comp-voweldocs"
         data-composition-src="compositions/comp-voweldocs.html"
         data-start="26.75"
-        data-duration="23.25"
+        data-duration="26.62"
         data-track-index="4"
         data-width="1920"
         data-height="1080"
@@ -169,7 +169,7 @@
         class="scene-wrap"
         data-composition-id="comp-rag-modal"
         data-composition-src="compositions/comp-rag-modal.html"
-        data-start="35.4"
+        data-start="38.77"
         data-duration="8"
         data-track-index="5"
         data-width="1920"
@@ -180,7 +180,7 @@
         class="scene-wrap"
         data-composition-id="comp-api-modal"
         data-composition-src="compositions/comp-api-modal.html"
-        data-start="43.05"
+        data-start="46.42"
         data-duration="7"
         data-track-index="6"
         data-width="1920"
@@ -269,18 +269,18 @@
           26.75
         );
 
-        tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 35.4);
+        tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 38.77);
 
-        tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 43.05);
+        tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 46.42);
         tl.fromTo(
           "#scene-api",
           { autoAlpha: 0, y: 28 },
           { autoAlpha: 1, y: 0, duration: 0.38, ease: "power3.out" },
-          43.05
+          46.42
         );
 
         /* #vd-fab: same DOM node as comp-voweldocs; here we only drive API / key / “active” beat (overwrite child timeline). */
-        var T_API = 43.05;
+        var T_API = 46.42;
         var T_KEY = 1.58;
         var ow = { overwrite: "auto" };
         tl.to("#vd-fab", { autoAlpha: 0, scale: 0.88, duration: 0.2, ease: "power2.in", ...ow }, T_API);
@@ -436,10 +436,10 @@
         );
 
         /* After caption beat — hide voweldocs (FAB goes with it). */
-        var T_VOWEL_FADE = 50.55;
+        var T_VOWEL_FADE = 53.92;
         tl.to("#scene-voweldocs", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, T_VOWEL_FADE);
 
-        tl.set({}, {}, 51.2);
+        tl.set({}, {}, 54.57);
 
         window.__timelines["vowel-tickets-main"] = tl;
       })();
