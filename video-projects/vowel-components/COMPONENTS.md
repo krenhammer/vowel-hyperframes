@@ -12,14 +12,14 @@ Global Animations
 ## Mock "Abstract" Webapp Pages 
 
 General Inspiration (abstract text represented by rectangles):
--video-projects/vowel-tickets/assets/abstract-webapp2.png
--video-projects/vowel-tickets/assets/abstract2.png
+-video-projects/vowel-components/assets/abstract-webapp2.png
+-video-projects/vowel-components/assets/abstract2.png
 
 ### Email Inbox 
 All text can be abstract except email titles
 
 Inspration
--video-projects/vowel-tickets/assets/inbox.png
+-video-projects/vowel-components/assets/inbox.png
 
 Animations
 - suppoirt emails fil inbox 
@@ -30,7 +30,7 @@ Animations
 All text can be abstract except Repo and source titles
 
 Inspiration 
-- video-projects/vowel-tickets/assets/github.png
+- video-projects/vowel-components/assets/github.png
 
 Animations
 - Open source file in github - Title s/b readable
@@ -40,7 +40,7 @@ Animations
 All text can be abstract
 
 Inspiration 
-video-projects/vowel-tickets/assets/codespace.png
+video-projects/vowel-components/assets/codespace.png
 
 Animations 
 - Change files in file tree
@@ -52,7 +52,7 @@ Animations
 ### voweldocs
 
 Inspiration 
-video-projects/vowel-tickets/assets/vowel-docs.png
+video-projects/vowel-components/assets/vowel-docs.png
 
 All fields can be abstract except 
 
@@ -60,7 +60,7 @@ Page Title
 Section Titles
 
 Animations:
-- **Caption / transcript (top center; in vowel-tickets):** root `#vd-caption` in `index.html` (fixed, **~1/5 viewport width**). **Do not show while the API config modal (`#scene-api`) is visible** — the main timeline dismisses the modal **before** the voice FAB turns green and before any further FAB / caption color beats; captions start shortly after green. “Text” is **abstract horizontal bars** only (`.abs-bar`, **white** fill for contrast) — no title row, no readable strings. Call `window.vdCaptionSet({ speaker, lines }, state)`: `lines` = width keys `100` \| `92` \| `88` \| `80` \| `72` \| `60`; `speaker` = optional token for `data-vd-speaker` (logic / FAB, not rendered). Caption chrome stays **neutral gray**; `state` drives **`#vd-fab`** only. Main timeline steps caption + `#vd-fab` after the config modal is gone.
+- **Caption / transcript (top center; in vowel-components):** root `#vd-caption` in `index.html` (fixed, **~1/5 viewport width**). **Do not show while the API config modal (`#scene-api`) is visible** — the main timeline dismisses the modal **before** the voice FAB turns green and before any further FAB / caption color beats; captions start shortly after green. “Text” is **abstract horizontal bars** only (`.abs-bar`, **white** fill for contrast) — no title row, no readable strings. Call `window.vdCaptionSet({ speaker, lines }, state)`: `lines` = width keys `100` \| `92` \| `88` \| `80` \| `72` \| `60`; `speaker` = optional token for `data-vd-speaker` (logic / FAB, not rendered). Caption chrome stays **neutral gray**; `state` drives **`#vd-fab`** only. Main timeline steps caption + `#vd-fab` after the config modal is gone.
 - Blue voweldocs button in nav bar with click animation
 - Need be able to change Main Section (readable text)
 - Need to be able to mock scroll to appropriate Sub Section (readable text)
@@ -82,8 +82,8 @@ RAG debug FAB: circular, lower-left, inset from bottom edge (not flush).
 All text can be abstract
 
 Inspiration 
-video-projects/vowel-tickets/assets/rag-debug-chat.png
-video-projects/vowel-tickets/assets/rag-debug-docs.png
+video-projects/vowel-components/assets/rag-debug-chat.png
+video-projects/vowel-components/assets/rag-debug-docs.png
 
 Animations
 - Enter chat and  graded results return from rag 
@@ -95,7 +95,7 @@ This blocking modal centers on voweldocs when blue voweldocs button in clicked i
 default hidden
 
 Inspiration 
-video-projects/vowel-tickets/assets/api-config.png
+video-projects/vowel-components/assets/api-config.png
 
 Animations
 - Save and enable button click

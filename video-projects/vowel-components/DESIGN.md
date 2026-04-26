@@ -1,4 +1,4 @@
-# vowel-tickets — UI mock style
+# vowel-components — UI mock style
 
 ## Style prompt
 

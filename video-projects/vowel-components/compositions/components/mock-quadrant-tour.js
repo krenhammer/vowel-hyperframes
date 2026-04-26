@@ -1,5 +1,5 @@
 /**
- * Mock quadrant zoom (vowel-tickets): 2× scale with xPercent / yPercent panning.
+ * Mock quadrant zoom (vowel-components): 2× scale with xPercent / yPercent panning.
  *
  * **Holding a zoom while other anims run** — the zoom target only changes when you call
  * `hfMockQuadrant.addSegment` / `setState`. Gaps in time on your timeline = hold. Example:
