@@ -1,0 +1,178 @@
+<div
+  data-composition-id="comp-wordstack-intro"
+  data-start="0"
+  data-duration="2.46"
+  data-width="1920"
+  data-height="1080"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent"
+>
+  <!--
+    Word-stack opener (from vowel-turso-rag #opener pattern).
+    Override before this file’s inline script runs:
+      window.VOWEL_WORDSTACK_INTRO = {
+        words: [{ text, start, end }, ...],  // word-level transcript (Whisper-style)
+        headlineWordCount: 1,              // first N words visible immediately (hero)
+        subPosition: "below" | "above"     // secondary line vs hero
+      };
+  -->
+  <div
+    id="wordstack-intro-root"
+    class="wordstack-intro clip"
+    data-start="0"
+    data-duration="2.46"
+    data-track-index="0"
+  >
+    <div class="wordstack-intro__inner">
+      <div class="wordstack-intro__hero" id="wordstack-hero" aria-hidden="true"></div>
+      <div class="wordstack-intro__sub wordstack-intro__sub--below" id="wordstack-sub"></div>
+    </div>
+  </div>
+
+  <style>
+    [data-composition-id="comp-wordstack-intro"] .wordstack-intro {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      box-sizing: border-box;
+      background: #000;
+    }
+    [data-composition-id="comp-wordstack-intro"] .wordstack-intro__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(18px, 2.8vh, 36px);
+      text-align: center;
+      padding: 0 clamp(40px, 6vw, 100px);
+    }
+    [data-composition-id="comp-wordstack-intro"] .wordstack-intro__inner--sub-above {
+      flex-direction: column-reverse;
+    }
+    [data-composition-id="comp-wordstack-intro"] .wordstack-intro__hero {
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: clamp(96px, 12vw, 200px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      opacity: 1;
+      transform-origin: 50% 50%;
+    }
+    [data-composition-id="comp-wordstack-intro"] .wordstack-intro__sub {
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: clamp(28px, 3.2vw, 56px);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.14em;
+    }
+    [data-composition-id="comp-wordstack-intro"] .wordstack-intro__sub span {
+      display: inline-block;
+      opacity: 0;
+    }
+  </style>
+
+  <script>
+    (function () {
+      /* global gsap */
+      window.__timelines = window.__timelines || {};
+
+      /**
+       * Demo transcript slice: “RAG” / “in” / “the” / “browser.” — same timings as vowel-turso-rag/transcript-words.js.
+       * Replace via window.VOWEL_WORDSTACK_INTRO.words in a host page.
+       */
+      var DEMO_WORDS = [
+        { text: "RAG", start: 0.362, end: 0.622 },
+        { text: "in", start: 0.722, end: 0.782 },
+        { text: "the", start: 0.822, end: 0.903 },
+        { text: "browser.", start: 0.923, end: 1.303 },
+      ];
+
+      var cfg = window.VOWEL_WORDSTACK_INTRO || {};
+      var WORDS = cfg.words && cfg.words.length ? cfg.words : DEMO_WORDS;
+      var headlineWordCount =
+        typeof cfg.headlineWordCount === "number" ? cfg.headlineWordCount : 1;
+      headlineWordCount = Math.max(1, Math.min(headlineWordCount, WORDS.length));
+      var subPosition = cfg.subPosition === "above" ? "above" : "below";
+
+      var heroEl = document.getElementById("wordstack-hero");
+      var subEl = document.getElementById("wordstack-sub");
+      var innerEl = document.querySelector('[data-composition-id="comp-wordstack-intro"] .wordstack-intro__inner');
+
+      var heroParts = [];
+      var hi;
+      for (hi = 0; hi < headlineWordCount; hi++) {
+        heroParts.push(WORDS[hi].text);
+      }
+      if (heroEl) {
+        heroEl.textContent = heroParts.join(" ");
+      }
+
+      if (innerEl) {
+        innerEl.classList.toggle("wordstack-intro__inner--sub-above", subPosition === "above");
+      }
+
+      if (subEl) {
+        subEl.innerHTML = "";
+        for (var si = headlineWordCount; si < WORDS.length; si++) {
+          var sp = document.createElement("span");
+          sp.id = "wordstack-sub-" + si;
+          sp.textContent = WORDS[si].text + (si < WORDS.length - 1 ? "\u00a0" : "");
+          subEl.appendChild(sp);
+        }
+      }
+
+      var tl = gsap.timeline({ paused: true });
+      var rootSel = '[data-composition-id="comp-wordstack-intro"]';
+
+      if (!WORDS.length) {
+        tl.set({}, {}, 0.1);
+        window.__timelines["comp-wordstack-intro"] = tl;
+        return;
+      }
+
+      var lastEnd = WORDS[WORDS.length - 1].end;
+      var OPENER_READ = lastEnd + 0.48;
+      var FADE = OPENER_READ + 0.12;
+
+      gsap.set(rootSel + " .wordstack-intro__sub span", { opacity: 0 });
+
+      for (var wi = headlineWordCount; wi < WORDS.length; wi++) {
+        var w = WORDS[wi];
+        var el = document.getElementById("wordstack-sub-" + wi);
+        if (!el) {
+          continue;
+        }
+        tl.fromTo(
+          el,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.15, ease: "power2.out" },
+          w.start
+        );
+      }
+
+      tl.to(
+        rootSel + " .wordstack-intro__inner",
+        {
+          scale: 1.08,
+          y: subPosition === "above" ? 8 : -8,
+          duration: 0.45,
+          ease: "power3.in",
+        },
+        FADE
+      );
+      tl.to(
+        rootSel + " .wordstack-intro",
+        { autoAlpha: 0, duration: 0.42, ease: "power2.in" },
+        FADE + 0.05
+      );
+
+      var TOTAL = FADE + 0.55;
+      tl.set({}, {}, TOTAL);
+      window.__timelines["comp-wordstack-intro"] = tl;
+    })();
+  </script>
+</div>

@@ -39,6 +39,11 @@
         height: 1080px;
         pointer-events: none;
       }
+      /* Full-frame word-stack opener (comp-wordstack-intro); fades to reveal inbox underneath. */
+      #scene-wordstack-intro {
+        z-index: 150;
+        pointer-events: none;
+      }
       #scene-inbox {
         z-index: 1;
       }
@@ -159,7 +164,7 @@
       id="root"
       data-composition-id="vowel-components-main"
       data-start="0"
-      data-duration="65.05"
+      data-duration="68.51"
       data-width="1920"
       data-height="1080"
     >
@@ -168,19 +173,30 @@
         id="vd-inapp-dialogue-chrome"
         class="clip vd-inapp-dialogue-chrome"
         data-start="0"
-        data-duration="65.05"
+        data-duration="68.51"
         data-track-index="8"
         aria-hidden="true"
       >
         <div class="vd-inapp-dialogue-chrome__watermark" aria-hidden="true">There</div>
       </div>
       <div
+        id="scene-wordstack-intro"
+        class="scene-wrap"
+        data-composition-id="comp-wordstack-intro"
+        data-composition-src="compositions/comp-wordstack-intro.html"
+        data-start="0"
+        data-duration="2.46"
+        data-track-index="0"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
         id="scene-inbox"
         class="scene-wrap"
         data-composition-id="comp-inbox"
         data-composition-src="compositions/comp-inbox.html"
         data-start="0"
-        data-duration="8"
+        data-duration="11.46"
         data-track-index="1"
         data-width="1920"
         data-height="1080"
@@ -190,7 +206,7 @@
         class="scene-wrap"
         data-composition-id="comp-github"
         data-composition-src="compositions/comp-github.html"
-        data-start="7.65"
+        data-start="11.11"
         data-duration="8"
         data-track-index="2"
         data-width="1920"
@@ -201,7 +217,7 @@
         class="scene-wrap"
         data-composition-id="comp-codespace"
         data-composition-src="compositions/comp-codespace.html"
-        data-start="15.3"
+        data-start="18.76"
         data-duration="9"
         data-track-index="3"
         data-width="1920"
@@ -212,7 +228,7 @@
         class="scene-wrap"
         data-composition-id="comp-voweldocs"
         data-composition-src="compositions/comp-voweldocs.html"
-        data-start="23.95"
+        data-start="27.41"
         data-duration="23.25"
         data-track-index="4"
         data-width="1920"
@@ -223,7 +239,7 @@
         class="scene-wrap"
         data-composition-id="comp-rag-modal"
         data-composition-src="compositions/comp-rag-modal.html"
-        data-start="32.6"
+        data-start="36.06"
         data-duration="8"
         data-track-index="5"
         data-width="1920"
@@ -234,7 +250,7 @@
         class="scene-wrap"
         data-composition-id="comp-api-modal"
         data-composition-src="compositions/comp-api-modal.html"
-        data-start="40.25"
+        data-start="43.71"
         data-duration="7"
         data-track-index="6"
         data-width="1920"
@@ -245,7 +261,7 @@
         class="scene-wrap"
         data-composition-id="comp-turso-svg-bg"
         data-composition-src="compositions/comp-turso-svg-bg.html"
-        data-start="47.75"
+        data-start="51.21"
         data-duration="8.65"
         data-track-index="7"
         data-width="1920"
@@ -256,7 +272,7 @@
         class="scene-wrap"
         data-composition-id="comp-voweldocs-cta-bg"
         data-composition-src="compositions/comp-voweldocs-cta-bg.html"
-        data-start="56.4"
+        data-start="59.86"
         data-duration="8.65"
         data-track-index="12"
         data-width="1920"
@@ -317,6 +333,11 @@
         window.vdCaptionSet = vdCaptionSet;
 
         window.__timelines = window.__timelines || {};
+        /** Word-stack intro — keep in sync with `#scene-wordstack-intro` + `WORDSTACK_INTRO_PAD` in comp-inbox. */
+        var WORDSTACK_INTRO = 2.46;
+        /** “Support Inbox” hold before list motion — keep in sync with `INBOX_TITLE_PAUSE` in comp-inbox. */
+        var INBOX_PRE_ANIM_PAUSE = 1;
+        var INBOX_LEAD = WORDSTACK_INTRO + INBOX_PRE_ANIM_PAUSE;
         var tl = gsap.timeline({ paused: true });
 
         tl.set("#vd-caption", { xPercent: -50, autoAlpha: 0, y: -20, force3D: true }, 0);
@@ -325,42 +346,42 @@
         tl.set("#scene-turso-svg", { autoAlpha: 0 }, 0);
         tl.set("#scene-voweldocs-cta-bg", { autoAlpha: 0 }, 0);
 
-        tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65);
+        tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65 + INBOX_LEAD);
         tl.fromTo(
           "#scene-github",
           { autoAlpha: 0, scale: 0.94 },
           { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power3.inOut" },
-          7.65
+          7.65 + INBOX_LEAD
         );
 
-        tl.to("#scene-github", { autoAlpha: 0, xPercent: -14, duration: 0.35, ease: "power2.inOut" }, 15.3);
+        tl.to("#scene-github", { autoAlpha: 0, xPercent: -14, duration: 0.35, ease: "power2.inOut" }, 15.3 + INBOX_LEAD);
         tl.fromTo(
           "#scene-codespace",
           { autoAlpha: 0, xPercent: 14 },
           { autoAlpha: 1, xPercent: 0, duration: 0.35, ease: "power2.inOut" },
-          15.3
+          15.3 + INBOX_LEAD
         );
 
-        tl.to("#scene-codespace", { autoAlpha: 0, filter: "blur(12px)", duration: 0.45, ease: "sine.inOut" }, 23.95);
+        tl.to("#scene-codespace", { autoAlpha: 0, filter: "blur(12px)", duration: 0.45, ease: "sine.inOut" }, 23.95 + INBOX_LEAD);
         tl.fromTo(
           "#scene-voweldocs",
           { autoAlpha: 0, filter: "blur(12px)" },
           { autoAlpha: 1, filter: "blur(0px)", duration: 0.45, ease: "sine.inOut" },
-          23.95
+          23.95 + INBOX_LEAD
         );
-        tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 32.6);
+        tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 32.6 + INBOX_LEAD);
 
-        tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 40.25);
+        tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 40.25 + INBOX_LEAD);
         tl.fromTo(
           "#scene-api",
           { autoAlpha: 0, y: 28 },
           { autoAlpha: 1, y: 0, duration: 0.38, ease: "power3.out" },
-          40.25
+          40.25 + INBOX_LEAD
         );
-        tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 1, duration: 0.35, ease: "sine.out" }, 40.25);
+        tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 1, duration: 0.35, ease: "sine.out" }, 40.25 + INBOX_LEAD);
 
         /* #vd-fab: same DOM node as comp-voweldocs; here we only drive API / key / “active” beat (overwrite child timeline). */
-        var T_API = 40.25;
+        var T_API = 40.25 + INBOX_LEAD;
         var T_KEY = 1.58;
         var ow = { overwrite: "auto" };
         tl.to("#vd-fab", { autoAlpha: 0, scale: 0.88, duration: 0.2, ease: "power2.in", ...ow }, T_API);
@@ -517,7 +538,7 @@
         );
 
         /* After caption beat — crossfade voweldocs → Turso SVG marquee (comp-turso-svg-bg). */
-        var T_VOWEL_FADE = 47.75;
+        var T_VOWEL_FADE = 47.75 + INBOX_LEAD;
         tl.to("#scene-voweldocs", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, T_VOWEL_FADE);
         tl.fromTo(
           "#scene-turso-svg",
@@ -527,7 +548,7 @@
         );
 
         /* Full-frame CTA grid — separate scene after Turso SVG (comp-voweldocs-cta-bg). */
-        var T_TURSO_END = 47.75 + 8.65;
+        var T_TURSO_END = 47.75 + 8.65 + INBOX_LEAD;
         tl.to("#scene-turso-svg", { autoAlpha: 0, duration: 0.5, ease: "power2.in", overwrite: "auto" }, T_TURSO_END);
         tl.fromTo(
           "#scene-voweldocs-cta-bg",
@@ -536,7 +557,7 @@
           T_TURSO_END
         );
 
-        tl.set({}, {}, 65.05);
+        tl.set({}, {}, 65.05 + INBOX_LEAD);
 
         window.__timelines["vowel-components-main"] = tl;
       })();
