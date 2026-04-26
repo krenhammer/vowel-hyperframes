@@ -6,7 +6,8 @@ with appropriate config params
 
 
 Global Animations
-- Zoom in to NW, NE, SE, SW regions
+- Quarter-screen zoom: `compositions/components/mock-quadrant-tour.js` defines **`window.hfMockQuadrant`**: `getState`, `addSegment` (tween from one named corner to the next: `full` | `nw` | `ne` | `se` | `sw`), `setState` (instant), `addTour` (one-shot loop), `fabTrackSelectors` for global FABs. Put zoom-related attributes on the **transform target** (e.g. `.vd-zoom-canvas` or `.viewport`): `data-mock-qz-scale` (e.g. `2`), `data-mock-qz-hold` (tour: pause after NW), `data-mock-qz-pan` (tour: pan leg duration). **Holding a zoom** while other GSAP anims run: use `addSegment` / return times — advance a `t` variable only when you add the *next* zoom leg; in between, schedule `tl.to(...)` at the same or overlapping times so the mock stays in `ne` (etc.) for that window.
+- (Legacy) `window.hfAddMockQuadrantTour` = `hfMockQuadrant.addTour` — same one-shot path as before.
 
 ## Mock "Abstract" Webapp Pages 
 

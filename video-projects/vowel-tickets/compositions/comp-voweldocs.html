@@ -7,6 +7,13 @@
   style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
 >
   <div class="chrome">
+    <div
+      class="vd-zoom-canvas"
+      data-mock-qz="1"
+      data-mock-qz-hold="1"
+      data-mock-qz-pan="0.7"
+      data-mock-qz-scale="2"
+    >
     <header class="topbar">
       <div class="vd-brand-row clip" id="vd-brand-row">
         <span class="vd-ocr" aria-hidden="true">vowel</span>
@@ -27,12 +34,7 @@
         <div class="abs-bar nav-seg tiny"></div>
       </div>
     </header>
-    <div
-      class="viewport"
-      data-mock-qz="1"
-      data-mock-qz-hold="1"
-      data-mock-qz-scale="2"
-    >
+    <div class="viewport">
       <aside class="sidebar">
         <div class="abs-bar sb-logo-bar"></div>
         <div class="sb-group">
@@ -97,6 +99,7 @@
     <div class="fab-wrap">
       <div class="fab fab-voice clip" id="vd-fab"></div>
     </div>
+    </div>
   </div>
   <style>
     @font-face {
@@ -133,6 +136,15 @@
       right: 320px;
       display: flex;
       flex-direction: column;
+    }
+    /* Topbar + viewport + FABs — one transform (quarter zooms); voice/RAG FABs get inverse scale in mock-quadrant-tour. */
+    [data-composition-id="comp-voweldocs"] .vd-zoom-canvas {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
     [data-composition-id="comp-voweldocs"] .abs-bar {
       display: block;
@@ -457,8 +469,23 @@
       var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out", overwrite: "auto" } });
       var root = '[data-composition-id="comp-voweldocs"]';
       var vp = root + " .viewport";
-      /* +3.37s to beats after the old 2.48s “fake zoom” end (tour is longer: true ¼-screen quadrants). */
-      var T = 3.37;
+      var zc = root + " .vd-zoom-canvas";
+      /* Single source for zoom tour + data-mock-qz-* on .vd-zoom-canvas; T tracks tour length for post-tour beats. */
+      var vdZoom = {
+        tourAt: 1.35,
+        scale: 2,
+        holdAfterNW: 1,
+        zoomInDuration: 0.75,
+        panDuration: 0.7,
+        resetDuration: 0.65,
+        fabTrackSelectors: [root + " #vd-rag-fab", root + " #vd-fab"],
+      };
+      var refTourEnd =
+        typeof window.hfMockQuadrant === "object" && typeof window.hfMockQuadrant.estimateTourEndTime === "function"
+          ? window.hfMockQuadrant.estimateTourEndTime(vdZoom.tourAt, vdZoom, zc)
+          : vdZoom.tourAt + vdZoom.zoomInDuration + vdZoom.holdAfterNW + vdZoom.panDuration * 3 + vdZoom.resetDuration;
+      var T0 = 3.37; /* historical offset for beats authored as (time + 3.37) vs ref tour end 5.85s */
+      var T = T0;
 
       tl.from(root + " .topbar", { y: -14, autoAlpha: 0, duration: 0.4 }, 0.1);
       tl.from(root + " #vd-brand-row", { autoAlpha: 0, x: -8, duration: 0.35 }, 0.12);
@@ -473,7 +500,8 @@
       tl.to(root + " #vd-nav-btn", { scale: 1, duration: 0.32, ease: "power2.out" }, 1.2);
 
       if (typeof window.hfAddMockQuadrantTour === "function") {
-        window.hfAddMockQuadrantTour(tl, vp, 1.35, { scale: 2, holdAfterNW: 1, zoomInDuration: 0.75, panDuration: 0.7 });
+        var tourEnd = window.hfAddMockQuadrantTour(tl, zc, vdZoom.tourAt, vdZoom);
+        T = T0 + (tourEnd - refTourEnd);
       }
 
       tl.to(root + " #lead-a", { autoAlpha: 0, y: -6, duration: 0.2, ease: "power2.in" }, 2.92 + T);
@@ -535,6 +563,10 @@
       /* API key / FAB beats are driven from vowel-tickets-main (global time) so #vd-fab stays one element. */
 
       tl.set({}, {}, 23.25 + T);
+      var compRoot = document.querySelector(root);
+      if (compRoot) {
+        compRoot.setAttribute("data-duration", String(23.25 + T));
+      }
       window.__timelines["comp-voweldocs"] = tl;
     })();
   </script>

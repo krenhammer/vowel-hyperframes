@@ -1,18 +1,13 @@
 <div
   data-composition-id="comp-inbox"
   data-start="0"
-  data-duration="10.55"
+  data-duration="8"
   data-width="1920"
   data-height="1080"
   style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
 >
   <div class="chrome">
-    <div
-      class="viewport"
-      data-mock-qz="1"
-      data-mock-qz-hold="1"
-      data-mock-qz-scale="2"
-    >
+    <div class="viewport">
       <aside class="sidebar">
         <div class="sb-row"></div>
         <div class="sb-row"></div>
@@ -24,7 +19,7 @@
           class="inbox-cost-clip clip"
           id="inbox-cost-clip"
           data-start="0"
-          data-duration="10.55"
+          data-duration="8"
           data-track-index="0"
         >
           <div class="inbox-cost-box" id="inbox-cost-box" aria-hidden="true">
@@ -350,13 +345,11 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script src="compositions/components/mock-quadrant-tour.js"></script>
   <script>
     (function () {
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
       var root = '[data-composition-id="comp-inbox"]';
-      var vp = root + " .viewport";
       var n = 16;
       /* Deterministic “$50–75 per email” (no unseeded Math.random — render contract). */
       var costs = [];
@@ -383,11 +376,6 @@
         0.12
       );
 
-      tl.from(vp, { autoAlpha: 0, y: 20, duration: 0.5 }, 0.08);
-      if (typeof window.hfAddMockQuadrantTour === "function") {
-        window.hfAddMockQuadrantTour(tl, vp, 0.65, { scale: 2, holdAfterNW: 1, zoomInDuration: 0.75, panDuration: 0.7 });
-      }
-
       var rowStagger = 0.085;
       var tRows = 0.22;
       tl.from(
@@ -411,11 +399,6 @@
         })(running);
       }
 
-      tl.to(
-        root + " .viewport",
-        { scale: 1.03, duration: 0.55, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "50% 40%" },
-        5.1
-      );
       /* Brief emphasis as support load peaks */
       tl.fromTo(
         root + " .inbox-cost-box",
@@ -447,18 +430,14 @@
         })(rem, rIdx, revT + 0.08 + k * revSt);
       }
 
-      var tZero = revT + 0.08 + (n - 1) * revSt;
-      var rowFadeOut = 0.32;
-      /* 2s stillness after $0 and last row out; then chip out. */
-      var tPauseEnd = tZero + rowFadeOut + 2.0;
-
+      /* Exit cost chip as scene handoff nears (parent fades #scene-inbox in index.html). */
       tl.to(
         root + " #inbox-cost-clip",
         { autoAlpha: 0, scale: 0.92, y: -8, duration: 0.4, ease: "power2.in" },
-        tPauseEnd
+        7.45
       );
 
-      tl.set({}, {}, 10.55);
+      tl.set({}, {}, 8);
       window.__timelines["comp-inbox"] = tl;
     })();
   </script>
