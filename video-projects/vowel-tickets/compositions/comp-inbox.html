@@ -14,7 +14,7 @@
         <div class="sb-row active"></div>
       </aside>
       <main class="main">
-        <!-- Large red $ in pink chip — upper‑right of main list. Confetti at $0 (see timeline). -->
+        <!-- Large red $ in pink chip — upper‑right of main list. -->
         <div
           class="inbox-cost-clip clip"
           id="inbox-cost-clip"
@@ -27,7 +27,6 @@
             <span class="inbox-cost-val" id="inbox-cost-val">0</span>
             <div class="inbox-cost-label">support</div>
           </div>
-          <div class="inbox-confetti" id="inbox-confetti" aria-hidden="true"></div>
         </div>
         <header class="toolbar">
           <div class="abs-bar tb-a"></div>
@@ -174,25 +173,6 @@
       left: auto;
       transform-origin: 50% 50%;
       pointer-events: none;
-    }
-    [data-composition-id="comp-inbox"] .inbox-confetti {
-      position: absolute;
-      right: 8%;
-      top: 38%;
-      width: 1px;
-      height: 1px;
-      pointer-events: none;
-      z-index: 4;
-      overflow: visible;
-    }
-    [data-composition-id="comp-inbox"] .inbox-cf-piece {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 9px;
-      height: 5px;
-      border-radius: 1px;
-      will-change: transform, opacity;
     }
     [data-composition-id="comp-inbox"] .inbox-cost-box {
       display: flex;
@@ -381,7 +361,6 @@
         total += costs[tj];
       }
       var valEl = document.getElementById("inbox-cost-val");
-      var confettiHost = document.getElementById("inbox-confetti");
       function setCostDisplay(amount) {
         if (valEl) {
           valEl.textContent = String(Math.max(0, Math.round(amount)));
@@ -391,27 +370,6 @@
         "0 14px 40px rgba(190, 24, 93, 0.26), 0 3px 0 rgba(255, 255, 255, 0.65) inset";
       var costShadow1 =
         "0 0 0 3px #fda4af, 0 18px 48px rgba(190, 24, 93, 0.32), 0 3px 0 rgba(255, 255, 255, 0.65) inset";
-      /* $0: two confetti salvos (arrays only — deterministic, no Math.random), then 2s quiet before handoff. */
-      var W1X = [58, -46, 64, -38, 50, 56, -52, 40, -34, 44, 36, -42];
-      var W1Y = [-36, 46, 30, -48, 40, -32, 36, 50, -42, 38, 44, -36];
-      var W1R = [140, 220, 170, 260, 190, 210, 150, 240, 200, 230, 180, 250];
-      var W2X = [48, -44, 38, 52, -40, 36, 46, -38, 42, 40];
-      var W2Y = [-40, 40, 48, -36, 44, 42, -40, 38, 44, -38];
-      var W2R = [200, 170, 230, 190, 220, 180, 250, 160, 210, 200];
-      function buildInboxConfetti() {
-        if (!confettiHost) {
-          return;
-        }
-        var cols = ["#f472b6", "#22c55e", "#fbbf24", "#a855f7", "#38bdf8", "#f43f5e"];
-        for (var c = 0; c < 22; c++) {
-          var d = document.createElement("div");
-          d.className = "inbox-cf-piece";
-          d.style.background = cols[c % 6];
-          confettiHost.appendChild(d);
-        }
-      }
-      buildInboxConfetti();
-
       tl.from(
         root + " #inbox-cost-clip",
         { autoAlpha: 0, scale: 0.88, y: 12, duration: 0.4, ease: "back.out(1.2)" },
@@ -443,9 +401,6 @@
         })(running);
       }
 
-      /* Scroll to end of list (value clamps to max scrollHeight − clientHeight) */
-      tl.to(root + " #inbox-list", { scrollTop: 99999, duration: 2.15, ease: "power2.inOut" }, 2.35);
-
       tl.to(
         root + " .viewport",
         { scale: 1.03, duration: 0.55, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "50% 40%" },
@@ -459,10 +414,9 @@
         5.2
       );
 
-      /* — Reverse: scroll to top, clear rows (last→first), count down to $0. */
+      /* — Reverse: clear rows (last→first), count down to $0. */
       var revT = 6.25;
       var revSt = 0.05;
-      tl.to(root + " #inbox-list", { scrollTop: 0, duration: 0.5, ease: "power2.inOut" }, revT);
       var rem = total;
       for (var k = 0; k < n; k++) {
         var rIdx = n - k; /* 16 … 1 */
@@ -484,58 +438,9 @@
       }
 
       var tZero = revT + 0.08 + (n - 1) * revSt;
-      var tWave2 = tZero + 0.1;
-      var cfd = 0.72;
-      var kids = confettiHost ? confettiHost.children : null;
-      if (kids && kids.length === 22) {
-        for (var i1 = 0; i1 < 12; i1++) {
-          (function (ix) {
-            var p = kids[ix];
-            var st = tZero + ix * 0.018;
-            gsap.set(p, { opacity: 0, x: 0, y: 0, scale: 0.4, rotation: 0, transformOrigin: "50% 50%" });
-            tl.set(p, { opacity: 1, scale: 1 }, st);
-            tl.to(
-              p,
-              {
-                x: W1X[ix],
-                y: W1Y[ix],
-                rotation: W1R[ix],
-                opacity: 0,
-                scale: 0.45,
-                duration: cfd,
-                ease: "power2.out",
-                force3D: true,
-              },
-              st
-            );
-          })(i1);
-        }
-        for (var i2 = 0; i2 < 10; i2++) {
-          (function (ix) {
-            var p = kids[12 + ix];
-            var st = tWave2 + ix * 0.02;
-            gsap.set(p, { opacity: 0, x: 0, y: 0, scale: 0.4, rotation: 0, transformOrigin: "50% 50%" });
-            tl.set(p, { opacity: 1, scale: 1 }, st);
-            tl.to(
-              p,
-              {
-                x: W2X[ix],
-                y: W2Y[ix],
-                rotation: W2R[ix],
-                opacity: 0,
-                scale: 0.45,
-                duration: cfd,
-                ease: "power2.out",
-                force3D: true,
-              },
-              st
-            );
-          })(i2);
-        }
-      }
-      /* Last W2 piece ends: tWave2 + 9*0.02 + cfd; then 2s stillness; then chip out. */
-      var tAfterConf = tWave2 + 0.18 + cfd;
-      var tPauseEnd = tAfterConf + 2.0;
+      var rowFadeOut = 0.32;
+      /* 2s stillness after $0 and last row out; then chip out. */
+      var tPauseEnd = tZero + rowFadeOut + 2.0;
 
       tl.to(
         root + " #inbox-cost-clip",
