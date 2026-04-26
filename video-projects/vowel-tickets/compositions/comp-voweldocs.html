@@ -1,0 +1,494 @@
+<div
+  data-composition-id="comp-voweldocs"
+  data-start="0"
+  data-duration="9"
+  data-width="1920"
+  data-height="1080"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
+>
+  <div class="chrome">
+    <header class="topbar">
+      <button class="vd-brand clip" id="vd-nav-btn" type="button">
+        <span class="vd-ic" aria-hidden="true">⌁</span>
+        <span class="vd-txt">voweldocs</span>
+        <span class="vd-check" aria-hidden="true">✓</span>
+      </button>
+      <div class="search-abs clip" id="vd-search">
+        <div class="abs-bar search-long"></div>
+        <div class="abs-bar search-short"></div>
+      </div>
+      <div class="top-nav-abs">
+        <div class="abs-bar nav-seg"></div>
+        <div class="abs-bar nav-seg mid"></div>
+        <div class="abs-bar nav-seg short"></div>
+        <div class="abs-bar nav-seg tiny"></div>
+      </div>
+    </header>
+    <div class="viewport">
+      <aside class="sidebar">
+        <div class="abs-bar sb-logo-bar"></div>
+        <div class="sb-group">
+          <div class="abs-bar sb-sec-label"></div>
+          <div class="sb-row on clip" id="sb-start"><div class="abs-bar sb-line full"></div></div>
+          <div class="sb-row dim clip"><div class="abs-bar sb-line almost"></div></div>
+          <div class="sb-row dim clip"><div class="abs-bar sb-line half"></div></div>
+        </div>
+        <div class="sb-group">
+          <div class="abs-bar sb-sec-label wide"></div>
+          <div class="sb-row dim clip"><div class="abs-bar sb-line almost"></div></div>
+          <div class="sb-row dim clip" id="sb-rag"><div class="abs-bar sb-line full"></div></div>
+          <div class="sb-row dim clip"><div class="abs-bar sb-line narrow"></div></div>
+        </div>
+        <div class="sb-group">
+          <div class="abs-bar sb-sec-label"></div>
+          <div class="sb-row dim clip"><div class="abs-bar sb-line half"></div></div>
+          <div class="sb-row dim clip"><div class="abs-bar sb-line almost"></div></div>
+        </div>
+        <div class="sb-foot" aria-hidden="true"></div>
+      </aside>
+      <div class="main">
+        <div class="toast clip" id="vd-toast"><div class="toast-bar"></div></div>
+        <article class="doc">
+          <h1 class="clip" id="vd-h1">Getting Started</h1>
+          <div class="lead-wrap clip" id="vd-lead-wrap">
+            <div class="lead-set" id="lead-a">
+              <div class="abs-bar lead-line w-a1"></div>
+              <div class="abs-bar lead-line w-a2"></div>
+              <div class="abs-bar lead-line w-a3"></div>
+            </div>
+            <div class="lead-set lead-b" id="lead-b">
+              <div class="abs-bar lead-line w-b1"></div>
+              <div class="abs-bar lead-line w-b2"></div>
+            </div>
+          </div>
+          <div class="scroll-host clip" id="vd-scroll">
+            <div class="scroll-inner" id="vd-scroll-inner">
+              <h2 class="sub hash" id="vd-sub-a"><span class="hashsym">#</span> What is Vowel?</h2>
+              <div class="abs-stack">
+                <div class="abs-bar line w-100"></div>
+                <div class="abs-bar line w-92"></div>
+                <div class="abs-bar line w-78"></div>
+              </div>
+              <div class="abs-stack listish">
+                <div class="abs-bar line w-88 indent"></div>
+                <div class="abs-bar line w-85 indent"></div>
+                <div class="abs-bar line w-90 indent"></div>
+                <div class="abs-bar line w-70 indent"></div>
+              </div>
+              <h2 class="sub target" id="vd-sub-b">RAG debugging</h2>
+              <div class="abs-stack">
+                <div class="abs-bar line w-95"></div>
+                <div class="abs-bar line w-82"></div>
+              </div>
+              <div class="abs-bar line w-48"></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="fab clip" id="vd-fab"></div>
+  </div>
+  <style>
+    [data-composition-id="comp-voweldocs"] {
+      background: #0d0d0f;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: #e6edf3;
+    }
+    [data-composition-id="comp-voweldocs"] .chrome {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    [data-composition-id="comp-voweldocs"] .abs-bar {
+      display: block;
+      height: 12px;
+      border-radius: 6px;
+      background: #3f3f46;
+      flex-shrink: 0;
+    }
+    [data-composition-id="comp-voweldocs"] .topbar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 12px 20px 12px 18px;
+      background: #141418;
+      border-bottom: 1px solid #2a2a32;
+    }
+    [data-composition-id="comp-voweldocs"] .vd-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 8px 14px 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #2563eb;
+      background: rgba(37, 99, 235, 0.18);
+      color: #dbeafe;
+      cursor: default;
+    }
+    [data-composition-id="comp-voweldocs"] .vd-ic {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+    [data-composition-id="comp-voweldocs"] .vd-check {
+      color: #60a5fa;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    [data-composition-id="comp-voweldocs"] .search-abs {
+      flex: 1;
+      max-width: 420px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #1c1c22;
+      border: 1px solid #2f2f38;
+    }
+    [data-composition-id="comp-voweldocs"] .search-long {
+      flex: 1;
+      height: 11px;
+      background: #52525b;
+    }
+    [data-composition-id="comp-voweldocs"] .search-short {
+      width: 56px;
+      height: 11px;
+      background: #3f3f46;
+    }
+    [data-composition-id="comp-voweldocs"] .top-nav-abs {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    [data-composition-id="comp-voweldocs"] .nav-seg {
+      width: 72px;
+      height: 11px;
+      background: #52525b;
+    }
+    [data-composition-id="comp-voweldocs"] .nav-seg.mid {
+      width: 56px;
+      background: #3b82f6;
+      opacity: 0.85;
+    }
+    [data-composition-id="comp-voweldocs"] .nav-seg.short {
+      width: 48px;
+    }
+    [data-composition-id="comp-voweldocs"] .nav-seg.tiny {
+      width: 36px;
+      opacity: 0.55;
+    }
+    [data-composition-id="comp-voweldocs"] .viewport {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      transform-origin: 50% 50%;
+    }
+    [data-composition-id="comp-voweldocs"] .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: #121216;
+      border-right: 1px solid #2a2a32;
+      padding: 20px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-logo-bar {
+      width: 56%;
+      height: 14px;
+      background: #e4e4e7;
+      margin-bottom: 4px;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-sec-label {
+      width: 40%;
+      height: 8px;
+      background: #52525b;
+      margin-bottom: 2px;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-sec-label.wide {
+      width: 52%;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-row {
+      padding: 10px 10px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-row.on {
+      background: rgba(37, 99, 235, 0.22);
+      border-color: rgba(59, 130, 246, 0.35);
+    }
+    [data-composition-id="comp-voweldocs"] .sb-row.dim .sb-line {
+      background: #52525b;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-row.on .sb-line {
+      background: #93c5fd;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-line.full {
+      width: 100%;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-line.almost {
+      width: 92%;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-line.half {
+      width: 64%;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-line.narrow {
+      width: 48%;
+    }
+    [data-composition-id="comp-voweldocs"] .sb-foot {
+      margin-top: auto;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #2563eb, #1d4ed8);
+      align-self: flex-start;
+    }
+    [data-composition-id="comp-voweldocs"] .main {
+      flex: 1;
+      min-width: 0;
+      background: #16161c;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    [data-composition-id="comp-voweldocs"] .toast {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 28px;
+      border-radius: 999px;
+      background: #27272a;
+      border: 1px solid #3f3f46;
+      z-index: 20;
+      pointer-events: none;
+    }
+    [data-composition-id="comp-voweldocs"] .toast-bar {
+      width: min(420px, 36vw);
+      height: 11px;
+      border-radius: 6px;
+      background: #a1a1aa;
+    }
+    [data-composition-id="comp-voweldocs"] .doc {
+      flex: 1;
+      padding: 36px 48px 32px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    [data-composition-id="comp-voweldocs"] h1 {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+      color: #fafafa;
+    }
+    [data-composition-id="comp-voweldocs"] .lead-wrap {
+      position: relative;
+      min-height: 72px;
+      margin-bottom: 22px;
+    }
+    [data-composition-id="comp-voweldocs"] .lead-set {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 820px;
+    }
+    [data-composition-id="comp-voweldocs"] .lead-b {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    [data-composition-id="comp-voweldocs"] .lead-line {
+      height: 13px;
+      background: #71717a;
+    }
+    [data-composition-id="comp-voweldocs"] .w-a1 {
+      width: 96%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-a2 {
+      width: 88%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-a3 {
+      width: 62%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-b1 {
+      width: 94%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-b2 {
+      width: 76%;
+    }
+    [data-composition-id="comp-voweldocs"] .scroll-host {
+      flex: 1;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid #2a2a32;
+      background: #141418;
+    }
+    [data-composition-id="comp-voweldocs"] .scroll-inner {
+      padding: 28px 32px 140px;
+    }
+    [data-composition-id="comp-voweldocs"] .sub {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 26px 0 14px;
+      color: #fafafa;
+    }
+    [data-composition-id="comp-voweldocs"] .sub.hash {
+      color: #e4e4e7;
+    }
+    [data-composition-id="comp-voweldocs"] .hashsym {
+      color: #60a5fa;
+      margin-right: 6px;
+    }
+    [data-composition-id="comp-voweldocs"] .scroll-inner > .sub:first-child {
+      margin-top: 0;
+    }
+    [data-composition-id="comp-voweldocs"] .abs-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    [data-composition-id="comp-voweldocs"] .abs-stack.listish {
+      margin-bottom: 22px;
+    }
+    [data-composition-id="comp-voweldocs"] .line {
+      height: 12px;
+      background: #52525b;
+    }
+    [data-composition-id="comp-voweldocs"] .line.indent {
+      margin-left: 22px;
+    }
+    [data-composition-id="comp-voweldocs"] .w-100 {
+      width: 100%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-92 {
+      width: 92%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-90 {
+      width: 90%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-88 {
+      width: 88%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-85 {
+      width: 85%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-82 {
+      width: 82%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-78 {
+      width: 78%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-70 {
+      width: 70%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-95 {
+      width: 95%;
+    }
+    [data-composition-id="comp-voweldocs"] .w-48 {
+      width: 48%;
+      margin-top: 6px;
+    }
+    [data-composition-id="comp-voweldocs"] .fab {
+      position: absolute;
+      right: 28px;
+      bottom: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: #27272a;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55);
+      border: 1px solid #3f3f46;
+      z-index: 30;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      var root = '[data-composition-id="comp-voweldocs"]';
+
+      tl.from(root + " .topbar", { y: -14, autoAlpha: 0, duration: 0.4 }, 0.1);
+      tl.from(root + " .viewport", { autoAlpha: 0, duration: 0.45 }, 0.15);
+      tl.from(root + " .sb-row", { autoAlpha: 0, x: -10, duration: 0.28, stagger: 0.04 }, 0.25);
+      tl.from(root + " #vd-h1", { autoAlpha: 0, y: 16, duration: 0.42 }, 0.4);
+      tl.from(root + " #lead-a .abs-bar", { autoAlpha: 0, scaleX: 0.2, duration: 0.35, stagger: 0.08, transformOrigin: "left center" }, 0.48);
+      tl.from(root + " .scroll-host", { autoAlpha: 0, duration: 0.32 }, 0.58);
+
+      tl.from(root + " #vd-toast", { y: -36, autoAlpha: 0, duration: 0.42, ease: "back.out(1.35)" }, 0.82);
+      tl.to(root + " #vd-toast", { autoAlpha: 0, y: -20, duration: 0.32, ease: "power2.in" }, 2.05);
+
+      tl.to(root + " #vd-nav-btn", { scale: 0.96, duration: 0.1, ease: "power2.in" }, 1.1);
+      tl.to(root + " #vd-nav-btn", { scale: 1, duration: 0.32, ease: "power2.out" }, 1.2);
+
+      tl.to(
+        root + " .viewport",
+        { scale: 1.05, xPercent: -3, yPercent: -3, duration: 0.52, ease: "power2.inOut", transformOrigin: "0% 0%" },
+        1.35
+      );
+      tl.to(
+        root + " .viewport",
+        { scale: 1.05, xPercent: 3, yPercent: 3, duration: 0.52, ease: "power2.inOut", transformOrigin: "100% 100%" },
+        1.92
+      );
+      tl.to(root + " .viewport", { scale: 1, xPercent: 0, yPercent: 0, duration: 0.48, ease: "power3.out" }, 2.48);
+
+      tl.to(root + " #vd-h1", { autoAlpha: 0, y: -10, duration: 0.22, ease: "power2.in" }, 2.88);
+      tl.to(root + " #lead-a", { autoAlpha: 0, y: -6, duration: 0.2, ease: "power2.in" }, 2.92);
+      tl.add(function () {
+        var h = document.querySelector(root + " #vd-h1");
+        if (h) h.textContent = "RAG debugging";
+      }, 3.08);
+      tl.fromTo(root + " #vd-h1", { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.42, ease: "power2.out" }, 3.12);
+      tl.fromTo(
+        root + " #lead-b",
+        { autoAlpha: 0, y: 8 },
+        { autoAlpha: 1, y: 0, duration: 0.36, ease: "power2.out" },
+        3.15
+      );
+
+      tl.add(function () {
+        var a = document.querySelector(root + " #sb-start");
+        var b = document.querySelector(root + " #sb-rag");
+        if (a) {
+          a.classList.remove("on");
+          a.classList.add("dim");
+        }
+        if (b) {
+          b.classList.remove("dim");
+          b.classList.add("on");
+        }
+      }, 3.05);
+
+      tl.to(root + " #vd-scroll-inner", { y: -160, duration: 1.45, ease: "power2.inOut" }, 3.45);
+
+      tl.to(root + " #vd-fab", { backgroundColor: "#6b7280", duration: 0.14 }, 4.75);
+      tl.to(root + " #vd-fab", { backgroundColor: "#22c55e", duration: 0.2 }, 5.0);
+      tl.to(root + " #vd-fab", { backgroundColor: "#3b82f6", duration: 0.2 }, 5.35);
+      tl.to(root + " #vd-fab", { backgroundColor: "#eab308", duration: 0.2 }, 5.7);
+      tl.to(root + " #vd-fab", { backgroundColor: "#a855f7", duration: 0.2 }, 6.05);
+      tl.to(root + " #vd-fab", { backgroundColor: "#27272a", duration: 0.32, ease: "power2.inOut" }, 6.45);
+
+      tl.set({}, {}, 9);
+      window.__timelines["comp-voweldocs"] = tl;
+    })();
+  </script>
+</div>

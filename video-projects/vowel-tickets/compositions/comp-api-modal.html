@@ -1,0 +1,209 @@
+<div
+  data-composition-id="comp-api-modal"
+  data-start="0"
+  data-duration="7"
+  data-width="1920"
+  data-height="1080"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
+>
+  <div class="chrome">
+    <div class="viewport page-dim">
+      <header class="nav">
+        <span class="logo">voweldocs</span>
+        <span class="pill">Project</span>
+      </header>
+      <div class="body">
+        <p class="muted">█ █ █ █ █ █ █</p>
+      </div>
+    </div>
+    <div class="backdrop clip" id="api-back"></div>
+    <div class="modal-center clip" id="api-modal-wrap">
+      <div class="modal clip" id="api-modal">
+      <h2 class="mh">API configuration</h2>
+      <p class="ms">█ █ █ █ █ █</p>
+      <label class="lbl">Endpoint</label>
+      <div class="field">https://█ █ █</div>
+      <label class="lbl">Secret</label>
+      <div class="field secret">••••••••••••</div>
+      <button class="save clip" id="api-save" type="button">Save &amp; enable</button>
+      </div>
+    </div>
+  </div>
+  <style>
+    [data-composition-id="comp-api-modal"] {
+      background: #0f1419;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: #e6edf3;
+    }
+    [data-composition-id="comp-api-modal"] .chrome {
+      position: absolute;
+      inset: 0;
+    }
+    [data-composition-id="comp-api-modal"] .viewport {
+      position: absolute;
+      inset: 48px;
+      border-radius: 12px;
+      border: 1px solid #2d3a4f;
+      background: #1a2332;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transform-origin: 50% 50%;
+    }
+    [data-composition-id="comp-api-modal"] .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid #2d3a4f;
+      background: #151c28;
+    }
+    [data-composition-id="comp-api-modal"] .logo {
+      font-weight: 800;
+      font-size: 20px;
+    }
+    [data-composition-id="comp-api-modal"] .pill {
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #334155;
+      color: #cbd5e1;
+    }
+    [data-composition-id="comp-api-modal"] .body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    [data-composition-id="comp-api-modal"] .muted {
+      color: #64748b;
+      font-size: 18px;
+      letter-spacing: 0.06em;
+    }
+    [data-composition-id="comp-api-modal"] .backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.62);
+      z-index: 50;
+      opacity: 0;
+    }
+    [data-composition-id="comp-api-modal"] .modal-center {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    [data-composition-id="comp-api-modal"] .modal {
+      position: relative;
+      width: 520px;
+      transform: scale(0.92);
+      background: #0b1220;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 28px 28px 24px;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
+      opacity: 0;
+      pointer-events: none;
+    }
+    [data-composition-id="comp-api-modal"] .mh {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #f8fafc;
+    }
+    [data-composition-id="comp-api-modal"] .ms {
+      font-size: 15px;
+      color: #94a3b8;
+      margin-bottom: 22px;
+      letter-spacing: 0.05em;
+    }
+    [data-composition-id="comp-api-modal"] .lbl {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #64748b;
+      margin-bottom: 8px;
+      margin-top: 14px;
+    }
+    [data-composition-id="comp-api-modal"] .lbl:first-of-type {
+      margin-top: 0;
+    }
+    [data-composition-id="comp-api-modal"] .field {
+      height: 44px;
+      border-radius: 10px;
+      background: #111827;
+      border: 1px solid #334155;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    [data-composition-id="comp-api-modal"] .field.secret {
+      color: #eab308;
+    }
+    [data-composition-id="comp-api-modal"] .save {
+      margin-top: 26px;
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      background: linear-gradient(180deg, #3b82f6, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 4px 0 #1d4ed8;
+      cursor: default;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      var root = '[data-composition-id="comp-api-modal"]';
+
+      tl.from(root + " .viewport", { autoAlpha: 0, y: 14, duration: 0.45 }, 0.12);
+
+      tl.to(
+        root + " .viewport",
+        { scale: 1.05, xPercent: -4, yPercent: -4, duration: 0.5, ease: "power2.inOut", transformOrigin: "0% 0%" },
+        0.45
+      );
+      tl.to(
+        root + " .viewport",
+        { scale: 1.05, xPercent: 4, yPercent: 4, duration: 0.5, ease: "power2.inOut", transformOrigin: "100% 100%" },
+        1.0
+      );
+      tl.to(root + " .viewport", { scale: 1, xPercent: 0, yPercent: 0, duration: 0.45, ease: "power3.out" }, 1.55);
+
+      tl.to(root + " #api-back", { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 1.85);
+      tl.to(root + " .viewport", { filter: "brightness(0.72)", duration: 0.35, ease: "power2.out" }, 1.85);
+      tl.to(root + " #api-modal", { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(1.25)" }, 1.95);
+
+      tl.from(root + " .mh", { autoAlpha: 0, y: 12, duration: 0.35 }, 2.15);
+      tl.from(root + " .ms", { autoAlpha: 0, y: 8, duration: 0.3 }, 2.25);
+      tl.from(root + " .lbl", { autoAlpha: 0, x: -8, duration: 0.28, stagger: 0.06 }, 2.35);
+      tl.from(root + " .field", { autoAlpha: 0, y: 8, duration: 0.32, stagger: 0.08 }, 2.45);
+      tl.from(root + " #api-save", { autoAlpha: 0, y: 16, duration: 0.4, ease: "back.out(1.2)" }, 2.65);
+
+      tl.to(root + " #api-save", { scale: 0.96, y: 2, duration: 0.1, ease: "power2.in" }, 4.2);
+      tl.to(root + " #api-save", { scale: 1, y: 0, duration: 0.45, ease: "elastic.out(1,0.55)" }, 4.32);
+      tl.to(root + " #api-save", { boxShadow: "0 0 0 4px rgba(59,130,246,0.45)", duration: 0.25, yoyo: true, repeat: 1 }, 4.45);
+
+      tl.to(root + " #api-modal", { autoAlpha: 0, scale: 0.96, duration: 0.38, ease: "power3.in" }, 5.35);
+      tl.to(root + " #api-back", { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 5.45);
+      tl.to(root + " .viewport", { filter: "brightness(1)", duration: 0.35, ease: "power2.inOut" }, 5.45);
+
+      tl.set({}, {}, 7);
+      window.__timelines["comp-api-modal"] = tl;
+    })();
+  </script>
+</div>

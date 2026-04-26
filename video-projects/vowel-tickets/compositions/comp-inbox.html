@@ -1,0 +1,207 @@
+<div
+  data-composition-id="comp-inbox"
+  data-start="0"
+  data-duration="8"
+  data-width="1920"
+  data-height="1080"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
+>
+  <div class="chrome">
+    <div class="viewport">
+      <aside class="sidebar">
+        <div class="sb-row"></div>
+        <div class="sb-row"></div>
+        <div class="sb-row active"></div>
+      </aside>
+      <main class="main">
+        <header class="toolbar">
+          <span class="tb-title">Inbox</span>
+          <span class="tb-muted">Abstract</span>
+        </header>
+        <div class="list">
+          <div class="mail-row clip" id="inbox-r1">
+            <span class="dot"></span>
+            <div class="mail-meta">
+              <span class="mail-subject">Webhook setup — step three</span>
+              <span class="mail-preview">█ █ █ █</span>
+            </div>
+          </div>
+          <div class="mail-row clip" id="inbox-r2">
+            <span class="dot dim"></span>
+            <div class="mail-meta">
+              <span class="mail-subject">API key section not visible</span>
+              <span class="mail-preview">█ █</span>
+            </div>
+          </div>
+          <div class="mail-row clip" id="inbox-r3">
+            <span class="dot dim"></span>
+            <div class="mail-meta">
+              <span class="mail-subject">Stuck after OAuth redirect</span>
+              <span class="mail-preview">█ █ █</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div class="fab clip" id="inbox-fab" aria-hidden="true"></div>
+  </div>
+  <style>
+    [data-composition-id="comp-inbox"] {
+      background: #0f1419;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: #e6edf3;
+    }
+    [data-composition-id="comp-inbox"] .chrome {
+      position: absolute;
+      inset: 0;
+    }
+    [data-composition-id="comp-inbox"] .viewport {
+      position: absolute;
+      inset: 48px;
+      display: flex;
+      border-radius: 12px;
+      border: 1px solid #2d3a4f;
+      overflow: hidden;
+      transform-origin: 50% 50%;
+    }
+    [data-composition-id="comp-inbox"] .sidebar {
+      width: 220px;
+      background: #151c28;
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-right: 1px solid #2d3a4f;
+    }
+    [data-composition-id="comp-inbox"] .sb-row {
+      height: 36px;
+      border-radius: 8px;
+      background: #1f2937;
+      opacity: 0.7;
+    }
+    [data-composition-id="comp-inbox"] .sb-row.active {
+      background: #2563eb33;
+      border: 1px solid #2563eb88;
+      opacity: 1;
+    }
+    [data-composition-id="comp-inbox"] .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #1a2332;
+    }
+    [data-composition-id="comp-inbox"] .toolbar {
+      padding: 18px 24px;
+      border-bottom: 1px solid #2d3a4f;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+    [data-composition-id="comp-inbox"] .tb-title {
+      font-size: 28px;
+      font-weight: 600;
+    }
+    [data-composition-id="comp-inbox"] .tb-muted {
+      font-size: 16px;
+      color: #8b9cb3;
+    }
+    [data-composition-id="comp-inbox"] .list {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    [data-composition-id="comp-inbox"] .mail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 18px;
+      background: #151c28;
+      border-radius: 10px;
+      border: 1px solid #2d3a4f;
+    }
+    [data-composition-id="comp-inbox"] .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #38bdf8;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    [data-composition-id="comp-inbox"] .dot.dim {
+      background: #4b5563;
+    }
+    [data-composition-id="comp-inbox"] .mail-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    [data-composition-id="comp-inbox"] .mail-subject {
+      font-size: 20px;
+      font-weight: 600;
+      color: #e6edf3;
+    }
+    [data-composition-id="comp-inbox"] .mail-preview {
+      font-size: 15px;
+      color: #8b9cb3;
+      letter-spacing: 0.04em;
+    }
+    [data-composition-id="comp-inbox"] .fab {
+      position: absolute;
+      right: 56px;
+      bottom: 56px;
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      background: #6b7280;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      var root = '[data-composition-id="comp-inbox"]';
+
+      tl.from(root + " .viewport", { autoAlpha: 0, y: 24, duration: 0.55 }, 0.12);
+      tl.from(root + " .mail-row", { autoAlpha: 0, x: -28, duration: 0.45, stagger: 0.1, ease: "expo.out" }, 0.35);
+      tl.from(root + " .fab", { autoAlpha: 0, scale: 0.85, duration: 0.4, ease: "back.out(1.5)" }, 0.5);
+
+      tl.to(
+        root + " .viewport",
+        { scale: 1.08, xPercent: -6, yPercent: -6, duration: 0.9, ease: "power2.inOut", transformOrigin: "0% 0%" },
+        0.9
+      );
+      tl.to(
+        root + " .viewport",
+        { scale: 1.08, xPercent: 6, yPercent: -6, duration: 0.85, ease: "power2.inOut", transformOrigin: "100% 0%" },
+        1.85
+      );
+      tl.to(
+        root + " .viewport",
+        { scale: 1.08, xPercent: 6, yPercent: 6, duration: 0.85, ease: "power2.inOut", transformOrigin: "100% 100%" },
+        2.75
+      );
+      tl.to(
+        root + " .viewport",
+        { scale: 1.08, xPercent: -6, yPercent: 6, duration: 0.85, ease: "power2.inOut", transformOrigin: "0% 100%" },
+        3.65
+      );
+      tl.to(root + " .viewport", { scale: 1, xPercent: 0, yPercent: 0, duration: 0.7, ease: "power3.out", transformOrigin: "50% 50%" }, 4.55);
+
+      tl.to(root + " #inbox-fab", { backgroundColor: "#6b7280", duration: 0.2 }, 0.55);
+      tl.to(root + " #inbox-fab", { backgroundColor: "#22c55e", duration: 0.25 }, 1.2);
+      tl.to(root + " #inbox-fab", { backgroundColor: "#3b82f6", duration: 0.25 }, 2.1);
+      tl.to(root + " #inbox-fab", { backgroundColor: "#eab308", duration: 0.25 }, 3.0);
+      tl.to(root + " #inbox-fab", { backgroundColor: "#a855f7", duration: 0.25 }, 3.9);
+      tl.to(root + " #inbox-fab", { backgroundColor: "#6b7280", duration: 0.35, ease: "power2.inOut" }, 5.0);
+
+      tl.to(root + " #inbox-fab", { scale: 1.06, duration: 0.35, yoyo: true, repeat: 1, ease: "sine.inOut" }, 5.6);
+
+      tl.set({}, {}, 8);
+      window.__timelines["comp-inbox"] = tl;
+    })();
+  </script>
+</div>
