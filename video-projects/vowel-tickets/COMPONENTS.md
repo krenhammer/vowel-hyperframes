@@ -21,12 +21,8 @@ Inspration
 -video-projects/vowel-tickets/assets/inbox.png
 
 Animations
-- Show / Hide Global FAB voice button square in lower right changes colors 
-    - Gray - AI Voice Inactive
-    - Green - Voice Session Active
-    - Blue - User Talking
-    - Yellow - AI Thinking
-    - Purple - AI Talking
+- suppoirt emails fil inbox 
+- red $ counter pink rounded box overlays upper left  adding rand $50 -75 per email  
 
 ### Github Repo
 All text can be abstract except Repo and source titles
@@ -62,7 +58,7 @@ Page Title
 Section Titles
 
 Animations:
-- Caption toast at top middle (abstract text)
+- **Caption / transcript (top center; in vowel-tickets):** root `#vd-caption` in `index.html` (fixed, **~1/5 viewport width**). **Do not show while the API config modal (`#scene-api`) is visible** — the main timeline dismisses the modal **before** the voice FAB turns green and before any further FAB / caption color beats; captions start shortly after green. “Text” is **abstract horizontal bars** only (`.abs-bar`, **white** fill for contrast) — no title row, no readable strings. Call `window.vdCaptionSet({ speaker, lines }, state)`: `lines` = width keys `100` \| `92` \| `88` \| `80` \| `72` \| `60`; `speaker` = optional token for `data-vd-speaker` (logic / FAB, not rendered). Caption chrome stays **neutral gray**; `state` drives **`#vd-fab`** only. Main timeline steps caption + `#vd-fab` after the config modal is gone.
 - Blue voweldocs button in nav bar with click animation
 - Need be able to change Main Section (readable text)
 - Need to be able to mock scroll to appropriate Sub Section (readable text)

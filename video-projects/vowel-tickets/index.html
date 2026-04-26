@@ -55,6 +55,60 @@
         z-index: 6;
         opacity: 0;
       }
+      /* Post–API key caption: always neutral gray chrome (no hue). State is data-only + FAB. See COMPONENTS.md. */
+      #vd-caption {
+        position: fixed;
+        left: 50%;
+        top: 20px;
+        z-index: 200;
+        width: 20vw; /* 1/5 of screen (viewport) width */
+        padding: 14px 24px 18px;
+        border-radius: 14px;
+        background: rgba(15, 17, 23, 0.95);
+        border: 1px solid #3f3f46;
+        border-top: 2px solid #52525b;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+        text-align: left;
+      }
+      #vd-caption.vd-cap--inactive {
+        opacity: 0.72;
+        border-color: #27272a;
+        border-top-color: #3f3f46;
+      }
+      /* Abstract “text” = horizontal bars (same language as comp-inbox / comp-voweldocs `.abs-bar`). */
+      #vd-caption .abs-bar {
+        display: block;
+        height: 12px;
+        border-radius: 6px;
+        background: #ffffff;
+        flex-shrink: 0;
+        /* Hairline so white bars read clearly on the dark caption tray. */
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+      }
+      #vd-caption .vd-cap-body {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      #vd-caption .cap-w-100 {
+        width: 100%;
+      }
+      #vd-caption .cap-w-92 {
+        width: 92%;
+      }
+      #vd-caption .cap-w-88 {
+        width: 88%;
+      }
+      #vd-caption .cap-w-80 {
+        width: 80%;
+      }
+      #vd-caption .cap-w-72 {
+        width: 72%;
+      }
+      #vd-caption .cap-w-60 {
+        width: 60%;
+      }
     </style>
   </head>
   <body>
@@ -62,7 +116,7 @@
       id="root"
       data-composition-id="vowel-tickets-main"
       data-start="0"
-      data-duration="47.3"
+      data-duration="48.4"
       data-width="1920"
       data-height="1080"
     >
@@ -132,12 +186,63 @@
         data-width="1920"
         data-height="1080"
       ></div>
+      <!--
+        Caption: after config modal is dismissed (not while scene-api is up). 20vw tray, abs-bars. data-vd-state + data-vd-speaker; FAB (vdCaptionSet).
+        Hoisted in #root (fixed) so it stacks over scene-rag and scene-api.
+      -->
+      <div
+        id="vd-caption"
+        class="vd-caption clip vd-cap--inactive"
+        data-vd-state="inactive"
+        data-vd-speaker=""
+        aria-hidden="true"
+      >
+        <div class="vd-cap-inner">
+          <div class="vd-cap-body" id="vd-cap-body"></div>
+        </div>
+      </div>
     </div>
     <script>
       (function () {
+        /**
+         * Caption “copy” is abstract bars only (no readable strings, no title row). See COMPONENTS.md.
+         * @param {{ speaker?: string, lines: string[] }} spec - `lines` = width keys 100|92|88|80|72|60 per bar.
+         * @param {"inactive"|"active"|"user"|"thinking"|"ai"} state - drives `#vd-fab` only; caption stays neutral.
+         */
+        function vdCaptionSet(spec, state) {
+          var el = document.getElementById("vd-caption");
+          if (!el) {
+            return;
+          }
+          spec = spec || { lines: [] };
+          el.setAttribute("data-vd-state", state);
+          el.setAttribute("data-vd-speaker", spec.speaker || "");
+          el.className = "vd-caption clip vd-cap--" + (state || "inactive");
+          var body = el.querySelector("#vd-cap-body");
+          var L = spec.lines || [];
+          body.innerHTML = L.map(function (w) {
+            return '<div class="abs-bar clip cap-w-' + w + '" aria-hidden="true"></div>';
+          }).join("");
+          el.setAttribute("aria-hidden", "true");
+        }
+        /** Maps COMPONENTS.md states to the same #vd-fab palette as comp-voweldocs VOICE_FAB_COLORS. */
+        var VD_FAB_STATE = {
+          inactive: { bg: "#6b7280", border: "rgba(255,255,255,0.2)" },
+          active: { bg: "#22c55e", border: "#86efac" },
+          user: { bg: "#3b82f6", border: "rgba(255,255,255,0.3)" },
+          thinking: { bg: "#eab308", border: "rgba(0,0,0,0.2)" },
+          ai: { bg: "#a855f7", border: "rgba(255,255,255,0.3)" },
+        };
+        function vdApplyFabState(state) {
+          var c = VD_FAB_STATE[state] || VD_FAB_STATE.inactive;
+          return { backgroundColor: c.bg, borderColor: c.border, boxShadow: "0 12px 40px rgba(0,0,0,0.5)" };
+        }
+        window.vdCaptionSet = vdCaptionSet;
+
         window.__timelines = window.__timelines || {};
         var tl = gsap.timeline({ paused: true });
 
+        tl.set("#vd-caption", { xPercent: -50, autoAlpha: 0, y: -20, force3D: true }, 0);
         tl.set("#scene-inbox", { autoAlpha: 1 }, 0);
 
         tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65);
@@ -186,6 +291,11 @@
           T_API + T_KEY
         );
         tl.to("#vd-fab", { scale: 0.9, duration: 0.1, ease: "power2.in", ...ow }, T_API + T_KEY + 0.5);
+        /* Config modal must fully dismiss before green + any other FAB / caption colors. */
+        var T_MODAL_FADE = T_API + T_KEY + 0.45;
+        var T_MODAL_GONE = T_MODAL_FADE + 0.55;
+        tl.to("#scene-api", { autoAlpha: 0, duration: 0.55, ease: "power2.in" }, T_MODAL_FADE);
+        var T_GREEN = T_MODAL_GONE + 0.05;
         tl.to(
           "#vd-fab",
           {
@@ -197,13 +307,139 @@
             ease: "back.out(1.45)",
             ...ow,
           },
-          T_API + T_KEY + 0.6
+          T_GREEN
+        );
+        /* Post–modal: caption = abs-bars; #vd-fab = palette per COMPONENTS.md. */
+        var T1 = T_GREEN + 0.35;
+        tl.add(
+          function () {
+            vdCaptionSet({ speaker: "a", lines: ["100", "88"] }, "active");
+          },
+          T1
+        );
+        tl.fromTo(
+          "#vd-caption",
+          { xPercent: -50, y: -24, autoAlpha: 0 },
+          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.5, ease: "back.out(1.2)", ...ow },
+          T1
         );
 
-        tl.to("#scene-api", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, 46.5);
-        tl.to("#scene-voweldocs", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, 46.5);
+        tl.to(
+          "#vd-caption",
+          { xPercent: -50, y: -12, autoAlpha: 0, duration: 0.22, ease: "power2.in", overwrite: "auto" },
+          T1 + 0.9
+        );
+        var T2 = T1 + 0.95;
+        tl.add(
+          function () {
+            vdCaptionSet({ speaker: "b", lines: ["72"] }, "user");
+          },
+          T2
+        );
+        tl.fromTo(
+          "#vd-caption",
+          { xPercent: -50, y: 14, autoAlpha: 0 },
+          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.38, ease: "power3.out", ...ow },
+          T2
+        );
+        tl.to(
+          "#vd-fab",
+          { duration: 0.32, ease: "power2.out", ...vdApplyFabState("user"), ...ow },
+          T2
+        );
 
-        tl.set({}, {}, 47.3);
+        var T3 = T2 + 0.7;
+        tl.to(
+          "#vd-caption",
+          { xPercent: -50, y: -10, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
+          T3
+        );
+        var T4 = T3 + 0.06;
+        tl.add(
+          function () {
+            vdCaptionSet({ speaker: "a", lines: ["92", "80"] }, "thinking");
+          },
+          T4
+        );
+        tl.fromTo(
+          "#vd-caption",
+          { xPercent: -50, y: 12, autoAlpha: 0 },
+          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.4, ease: "power2.out", ...ow },
+          T4
+        );
+        tl.to(
+          "#vd-fab",
+          { duration: 0.32, ease: "power2.out", ...vdApplyFabState("thinking"), ...ow },
+          T4
+        );
+
+        var T5 = T4 + 0.85;
+        tl.to(
+          "#vd-caption",
+          { xPercent: -50, y: -10, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
+          T5
+        );
+        var T6 = T5 + 0.06;
+        tl.add(
+          function () {
+            vdCaptionSet({ speaker: "a", lines: ["100", "88"] }, "ai");
+          },
+          T6
+        );
+        tl.fromTo(
+          "#vd-caption",
+          { xPercent: -50, y: 14, autoAlpha: 0 },
+          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.42, ease: "power2.out", ...ow },
+          T6
+        );
+        tl.to(
+          "#vd-fab",
+          { duration: 0.32, ease: "power2.out", ...vdApplyFabState("ai"), ...ow },
+          T6
+        );
+
+        var T7 = T6 + 0.95;
+        tl.to(
+          "#vd-caption",
+          { xPercent: -50, y: -8, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
+          T7
+        );
+        var T8 = T7 + 0.06;
+        tl.add(
+          function () {
+            vdCaptionSet({ speaker: "a", lines: ["80"] }, "active");
+          },
+          T8
+        );
+        tl.fromTo(
+          "#vd-caption",
+          { xPercent: -50, y: 10, autoAlpha: 0 },
+          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.36, ease: "back.out(1.1)", ...ow },
+          T8
+        );
+        tl.to(
+          "#vd-fab",
+          { duration: 0.32, ease: "power2.out", ...vdApplyFabState("active"), ...ow },
+          T8
+        );
+        tl.to(
+          "#vd-caption",
+          { xPercent: -50, y: -16, autoAlpha: 0, duration: 0.3, ease: "power2.in", overwrite: "auto" },
+          T8 + 0.6
+        );
+        tl.add(
+          function () {
+            vdCaptionSet({ speaker: "", lines: [] }, "inactive");
+            gsap.set("#vd-caption", { xPercent: -50, y: 0, autoAlpha: 0 });
+          },
+          T8 + 0.64
+        );
+
+        /* After caption beat — hide voweldocs (FAB goes with it). */
+        var T_VOWEL_FADE = 47.75;
+        tl.to("#scene-voweldocs", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, T_VOWEL_FADE);
+
+        tl.set({}, {}, 48.4);
 
         window.__timelines["vowel-tickets-main"] = tl;
       })();
