@@ -9,37 +9,60 @@
   <div class="chrome">
     <div class="viewport">
       <header class="mini-nav">
-        <span class="mn-title">voweldocs</span>
-        <span class="mn-pill">Debug</span>
+        <div class="abs-bar mn-a"></div>
+        <div class="abs-bar mn-p"></div>
       </header>
       <div class="stage">
-        <p class="hint">█ █ █ █ █ █</p>
+        <div class="stage-stack">
+          <div class="abs-bar st1"></div>
+          <div class="abs-bar st2"></div>
+        </div>
       </div>
     </div>
     <button class="fab-left clip" id="rag-fab" type="button" aria-hidden="true"></button>
     <div class="modal-backdrop clip" id="rag-back"></div>
     <div class="modal-center clip" id="rag-modal-wrap">
       <div class="modal clip" id="rag-modal">
-      <div class="modal-h">
-        <span>RAG trace</span>
-        <span class="modal-x" id="rag-x">×</span>
-      </div>
-      <div class="chat" id="rag-chat">
-        <div class="bubble user clip" id="rag-u1">█ █ █</div>
-        <div class="bubble ai clip" id="rag-a1">█ █ █ █</div>
-      </div>
-      <div class="grades clip" id="rag-grades">
-        <div class="grade-row"><span class="g-lbl">doc-a.md</span><span class="g-bar"><span class="g-fill" style="width: 92%"></span></span><span class="g-num">0.92</span></div>
-        <div class="grade-row"><span class="g-lbl">api-ref</span><span class="g-bar"><span class="g-fill mid" style="width: 64%"></span></span><span class="g-num">0.64</span></div>
-        <div class="grade-row"><span class="g-lbl">blog-post</span><span class="g-bar"><span class="g-fill low" style="width: 31%"></span></span><span class="g-num">0.31</span></div>
-      </div>
-      <div class="chat-2 clip" id="rag-chat-2">
-        <div class="bubble user clip" id="rag-u2">█ █</div>
-        <div class="grades mini clip" id="rag-grades-2">
-          <div class="grade-row"><span class="g-lbl">chunk-12</span><span class="g-bar"><span class="g-fill" style="width: 0%"></span></span><span class="g-num">—</span></div>
-          <div class="grade-row"><span class="g-lbl">chunk-04</span><span class="g-bar"><span class="g-fill mid" style="width: 0%"></span></span><span class="g-num">—</span></div>
+        <div class="modal-h">
+          <span class="mh-title">RAG trace</span>
+          <div class="abs-bar mh-x"></div>
         </div>
-      </div>
+        <div class="chat" id="rag-chat">
+          <div class="bubble user clip" id="rag-u1"><div class="b-stack"><div class="abs-bar bb"></div><div class="abs-bar bb w70"></div></div></div>
+          <div class="bubble ai clip" id="rag-a1"><div class="b-stack"><div class="abs-bar bb w90"></div><div class="abs-bar bb w80"></div><div class="abs-bar bb w55"></div></div></div>
+        </div>
+        <div class="grades clip" id="rag-grades">
+          <div class="grade-row">
+            <div class="abs-bar gl"></div>
+            <span class="g-bar"><span class="g-fill"></span></span>
+            <div class="abs-bar gn"></div>
+          </div>
+          <div class="grade-row">
+            <div class="abs-bar gl short"></div>
+            <span class="g-bar"><span class="g-fill mid"></span></span>
+            <div class="abs-bar gn"></div>
+          </div>
+          <div class="grade-row">
+            <div class="abs-bar gl med"></div>
+            <span class="g-bar"><span class="g-fill low"></span></span>
+            <div class="abs-bar gn"></div>
+          </div>
+        </div>
+        <div class="chat-2 clip" id="rag-chat-2">
+          <div class="bubble user clip" id="rag-u2"><div class="abs-bar bb w40"></div></div>
+          <div class="grades mini clip" id="rag-grades-2">
+            <div class="grade-row">
+              <div class="abs-bar gl tiny"></div>
+              <span class="g-bar"><span class="g-fill"></span></span>
+              <div class="abs-bar gn dash" id="g2n0"></div>
+            </div>
+            <div class="grade-row">
+              <div class="abs-bar gl tiny"></div>
+              <span class="g-bar"><span class="g-fill mid"></span></span>
+              <div class="abs-bar gn dash" id="g2n1"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -48,6 +71,12 @@
       background: #0f1419;
       font-family: "DM Sans", system-ui, sans-serif;
       color: #e6edf3;
+    }
+    [data-composition-id="comp-rag-modal"] .abs-bar {
+      display: block;
+      height: 11px;
+      border-radius: 5px;
+      background: #64748b;
     }
     [data-composition-id="comp-rag-modal"] .chrome {
       position: absolute;
@@ -72,17 +101,16 @@
       border-bottom: 1px solid #2d3a4f;
       background: #151c28;
     }
-    [data-composition-id="comp-rag-modal"] .mn-title {
-      font-weight: 700;
-      font-size: 18px;
+    [data-composition-id="comp-rag-modal"] .mn-a {
+      width: 22%;
+      max-width: 200px;
+      background: #94a3b8;
     }
-    [data-composition-id="comp-rag-modal"] .mn-pill {
-      font-size: 13px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: #2563eb33;
-      color: #93c5fd;
-      border: 1px solid #3b82f688;
+    [data-composition-id="comp-rag-modal"] .mn-p {
+      width: 14%;
+      max-width: 100px;
+      background: #3b82f6;
+      opacity: 0.75;
     }
     [data-composition-id="comp-rag-modal"] .stage {
       flex: 1;
@@ -90,10 +118,17 @@
       align-items: center;
       justify-content: center;
     }
-    [data-composition-id="comp-rag-modal"] .hint {
-      color: #64748b;
-      font-size: 18px;
-      letter-spacing: 0.08em;
+    [data-composition-id="comp-rag-modal"] .stage-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 56%;
+    }
+    [data-composition-id="comp-rag-modal"] .st1 {
+      width: 100%;
+    }
+    [data-composition-id="comp-rag-modal"] .st2 {
+      width: 72%;
     }
     [data-composition-id="comp-rag-modal"] .fab-left {
       position: absolute;
@@ -144,13 +179,17 @@
       justify-content: space-between;
       padding: 18px 22px;
       border-bottom: 1px solid #334155;
-      font-weight: 700;
-      font-size: 18px;
     }
-    [data-composition-id="comp-rag-modal"] .modal-x {
-      font-size: 26px;
-      color: #94a3b8;
-      line-height: 1;
+    [data-composition-id="comp-rag-modal"] .mh-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    [data-composition-id="comp-rag-modal"] .mh-x {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: #475569;
     }
     [data-composition-id="comp-rag-modal"] .chat {
       padding: 18px 22px 8px;
@@ -164,23 +203,49 @@
       flex-direction: column;
       gap: 10px;
     }
+    [data-composition-id="comp-rag-modal"] .b-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+    [data-composition-id="comp-rag-modal"] .bb {
+      width: 100%;
+    }
+    [data-composition-id="comp-rag-modal"] .bb.w70 {
+      width: 70%;
+    }
+    [data-composition-id="comp-rag-modal"] .bb.w90 {
+      width: 92%;
+    }
+    [data-composition-id="comp-rag-modal"] .bb.w80 {
+      width: 80%;
+    }
+    [data-composition-id="comp-rag-modal"] .bb.w55 {
+      width: 55%;
+    }
+    [data-composition-id="comp-rag-modal"] .bb.w40 {
+      width: 42%;
+    }
     [data-composition-id="comp-rag-modal"] .bubble {
       max-width: 88%;
-      padding: 12px 16px;
+      padding: 14px 16px;
       border-radius: 12px;
-      font-size: 15px;
-      line-height: 1.45;
     }
     [data-composition-id="comp-rag-modal"] .bubble.user {
       align-self: flex-end;
       background: #2563eb;
-      color: #f8fafc;
+    }
+    [data-composition-id="comp-rag-modal"] .bubble.user .abs-bar {
+      background: rgba(255, 255, 255, 0.45);
     }
     [data-composition-id="comp-rag-modal"] .bubble.ai {
       align-self: flex-start;
       background: #1e293b;
-      color: #cbd5e1;
       border: 1px solid #334155;
+    }
+    [data-composition-id="comp-rag-modal"] .bubble.ai .abs-bar {
+      background: #64748b;
     }
     [data-composition-id="comp-rag-modal"] .grades {
       padding: 8px 22px 16px;
@@ -193,21 +258,37 @@
     }
     [data-composition-id="comp-rag-modal"] .grade-row {
       display: grid;
-      grid-template-columns: 120px 1fr 48px;
+      grid-template-columns: 120px 1fr 40px;
       align-items: center;
       gap: 12px;
-      font-size: 14px;
     }
-    [data-composition-id="comp-rag-modal"] .g-lbl {
-      color: #94a3b8;
-      font-family: "JetBrains Mono", ui-monospace, monospace;
-      font-size: 13px;
+    [data-composition-id="comp-rag-modal"] .gl {
+      width: 100%;
+    }
+    [data-composition-id="comp-rag-modal"] .gl.short {
+      width: 70%;
+    }
+    [data-composition-id="comp-rag-modal"] .gl.med {
+      width: 85%;
+    }
+    [data-composition-id="comp-rag-modal"] .gl.tiny {
+      width: 90%;
+    }
+    [data-composition-id="comp-rag-modal"] .gn {
+      width: 28px;
+      margin-left: auto;
+      height: 10px;
+    }
+    [data-composition-id="comp-rag-modal"] .gn.dash {
+      width: 22px;
+      background: #475569;
     }
     [data-composition-id="comp-rag-modal"] .g-bar {
       height: 8px;
       border-radius: 999px;
       background: #1e293b;
       overflow: hidden;
+      display: block;
     }
     [data-composition-id="comp-rag-modal"] .g-fill {
       display: block;
@@ -216,17 +297,13 @@
       background: linear-gradient(90deg, #22c55e, #4ade80);
       transform-origin: left center;
       transform: scaleX(0.02);
+      width: 100%;
     }
     [data-composition-id="comp-rag-modal"] .g-fill.mid {
       background: linear-gradient(90deg, #eab308, #facc15);
     }
     [data-composition-id="comp-rag-modal"] .g-fill.low {
       background: linear-gradient(90deg, #f97316, #fb923c);
-    }
-    [data-composition-id="comp-rag-modal"] .g-num {
-      text-align: right;
-      color: #e2e8f0;
-      font-variant-numeric: tabular-nums;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -275,11 +352,8 @@
         { scaleX: 1, duration: 0.55, ease: "power2.out", stagger: 0.1, transformOrigin: "left center" },
         5.85
       );
-      tl.add(function () {
-        var nums = document.querySelectorAll(root + " #rag-grades-2 .g-num");
-        if (nums[0]) nums[0].textContent = "0.88";
-        if (nums[1]) nums[1].textContent = "0.57";
-      }, 6.15);
+      tl.to(root + " #g2n0", { scaleX: 1.15, backgroundColor: "#cbd5e1", duration: 0.25 }, 6.15);
+      tl.to(root + " #g2n1", { scaleX: 1.15, backgroundColor: "#cbd5e1", duration: 0.25 }, 6.22);
 
       tl.to(root + " #rag-modal", { autoAlpha: 0, y: 24, duration: 0.38, ease: "power3.in" }, 7.05);
       tl.to(root + " #rag-back", { autoAlpha: 0, duration: 0.28, ease: "power2.in" }, 7.12);

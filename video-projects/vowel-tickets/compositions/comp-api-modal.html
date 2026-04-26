@@ -9,23 +9,29 @@
   <div class="chrome">
     <div class="viewport page-dim">
       <header class="nav">
-        <span class="logo">voweldocs</span>
-        <span class="pill">Project</span>
+        <div class="abs-bar nav-logo"></div>
+        <div class="abs-bar nav-pill"></div>
       </header>
       <div class="body">
-        <p class="muted">█ █ █ █ █ █ █</p>
+        <div class="body-stack">
+          <div class="abs-bar b1"></div>
+          <div class="abs-bar b2"></div>
+        </div>
       </div>
     </div>
     <div class="backdrop clip" id="api-back"></div>
     <div class="modal-center clip" id="api-modal-wrap">
       <div class="modal clip" id="api-modal">
-      <h2 class="mh">API configuration</h2>
-      <p class="ms">█ █ █ █ █ █</p>
-      <label class="lbl">Endpoint</label>
-      <div class="field">https://█ █ █</div>
-      <label class="lbl">Secret</label>
-      <div class="field secret">••••••••••••</div>
-      <button class="save clip" id="api-save" type="button">Save &amp; enable</button>
+        <h2 class="mh">API configuration</h2>
+        <div class="ms-stack">
+          <div class="abs-bar ms1"></div>
+          <div class="abs-bar ms2"></div>
+        </div>
+        <div class="abs-bar lbl lbl-first"></div>
+        <div class="field clip" id="api-f1"><div class="abs-bar fld"></div></div>
+        <div class="abs-bar lbl"></div>
+        <div class="field secret clip" id="api-f2"><div class="abs-bar fld sec"></div></div>
+        <button class="save clip" id="api-save" type="button">Save &amp; enable</button>
       </div>
     </div>
   </div>
@@ -34,6 +40,12 @@
       background: #0f1419;
       font-family: "DM Sans", system-ui, sans-serif;
       color: #e6edf3;
+    }
+    [data-composition-id="comp-api-modal"] .abs-bar {
+      display: block;
+      height: 11px;
+      border-radius: 5px;
+      background: #64748b;
     }
     [data-composition-id="comp-api-modal"] .chrome {
       position: absolute;
@@ -58,16 +70,17 @@
       border-bottom: 1px solid #2d3a4f;
       background: #151c28;
     }
-    [data-composition-id="comp-api-modal"] .logo {
-      font-weight: 800;
-      font-size: 20px;
+    [data-composition-id="comp-api-modal"] .nav-logo {
+      width: 24%;
+      max-width: 160px;
+      height: 14px;
+      background: #e2e8f0;
     }
-    [data-composition-id="comp-api-modal"] .pill {
-      font-size: 13px;
-      padding: 6px 12px;
+    [data-composition-id="comp-api-modal"] .nav-pill {
+      width: 18%;
+      max-width: 100px;
       border-radius: 999px;
-      background: #334155;
-      color: #cbd5e1;
+      height: 12px;
     }
     [data-composition-id="comp-api-modal"] .body {
       flex: 1;
@@ -75,10 +88,17 @@
       align-items: center;
       justify-content: center;
     }
-    [data-composition-id="comp-api-modal"] .muted {
-      color: #64748b;
-      font-size: 18px;
-      letter-spacing: 0.06em;
+    [data-composition-id="comp-api-modal"] .body-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 50%;
+    }
+    [data-composition-id="comp-api-modal"] .b1 {
+      width: 100%;
+    }
+    [data-composition-id="comp-api-modal"] .b2 {
+      width: 68%;
     }
     [data-composition-id="comp-api-modal"] .backdrop {
       position: absolute;
@@ -111,26 +131,29 @@
     [data-composition-id="comp-api-modal"] .mh {
       font-size: 26px;
       font-weight: 800;
-      margin-bottom: 8px;
+      margin-bottom: 14px;
       color: #f8fafc;
     }
-    [data-composition-id="comp-api-modal"] .ms {
-      font-size: 15px;
-      color: #94a3b8;
+    [data-composition-id="comp-api-modal"] .ms-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       margin-bottom: 22px;
-      letter-spacing: 0.05em;
+    }
+    [data-composition-id="comp-api-modal"] .ms1 {
+      width: 100%;
+    }
+    [data-composition-id="comp-api-modal"] .ms2 {
+      width: 78%;
     }
     [data-composition-id="comp-api-modal"] .lbl {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #64748b;
+      width: 28%;
+      height: 8px;
+      background: #52525b;
       margin-bottom: 8px;
       margin-top: 14px;
     }
-    [data-composition-id="comp-api-modal"] .lbl:first-of-type {
+    [data-composition-id="comp-api-modal"] .lbl-first {
       margin-top: 0;
     }
     [data-composition-id="comp-api-modal"] .field {
@@ -141,12 +164,15 @@
       display: flex;
       align-items: center;
       padding: 0 14px;
-      font-family: "JetBrains Mono", ui-monospace, monospace;
-      font-size: 14px;
-      color: #cbd5e1;
     }
-    [data-composition-id="comp-api-modal"] .field.secret {
-      color: #eab308;
+    [data-composition-id="comp-api-modal"] .fld {
+      width: 88%;
+      height: 12px;
+      background: #94a3b8;
+    }
+    [data-composition-id="comp-api-modal"] .fld.sec {
+      background: #eab308;
+      opacity: 0.85;
     }
     [data-composition-id="comp-api-modal"] .save {
       margin-top: 26px;
@@ -189,10 +215,10 @@
       tl.to(root + " #api-modal", { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(1.25)" }, 1.95);
 
       tl.from(root + " .mh", { autoAlpha: 0, y: 12, duration: 0.35 }, 2.15);
-      tl.from(root + " .ms", { autoAlpha: 0, y: 8, duration: 0.3 }, 2.25);
-      tl.from(root + " .lbl", { autoAlpha: 0, x: -8, duration: 0.28, stagger: 0.06 }, 2.35);
-      tl.from(root + " .field", { autoAlpha: 0, y: 8, duration: 0.32, stagger: 0.08 }, 2.45);
-      tl.from(root + " #api-save", { autoAlpha: 0, y: 16, duration: 0.4, ease: "back.out(1.2)" }, 2.65);
+      tl.from(root + " .ms-stack .abs-bar", { autoAlpha: 0, y: 8, duration: 0.28, stagger: 0.06 }, 2.22);
+      tl.from(root + " .lbl", { autoAlpha: 0, x: -8, duration: 0.26, stagger: 0.06 }, 2.32);
+      tl.from(root + " .field", { autoAlpha: 0, y: 8, duration: 0.3, stagger: 0.08 }, 2.4);
+      tl.from(root + " #api-save", { autoAlpha: 0, y: 16, duration: 0.4, ease: "back.out(1.2)" }, 2.6);
 
       tl.to(root + " #api-save", { scale: 0.96, y: 2, duration: 0.1, ease: "power2.in" }, 4.2);
       tl.to(root + " #api-save", { scale: 1, y: 0, duration: 0.45, ease: "elastic.out(1,0.55)" }, 4.32);

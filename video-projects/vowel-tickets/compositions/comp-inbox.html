@@ -15,29 +15,29 @@
       </aside>
       <main class="main">
         <header class="toolbar">
-          <span class="tb-title">Inbox</span>
-          <span class="tb-muted">Abstract</span>
+          <div class="abs-bar tb-a"></div>
+          <div class="abs-bar tb-b"></div>
         </header>
         <div class="list">
           <div class="mail-row clip" id="inbox-r1">
             <span class="dot"></span>
             <div class="mail-meta">
               <span class="mail-subject">Webhook setup — step three</span>
-              <span class="mail-preview">█ █ █ █</span>
+              <div class="prev"><div class="abs-bar p1"></div><div class="abs-bar p2"></div></div>
             </div>
           </div>
           <div class="mail-row clip" id="inbox-r2">
             <span class="dot dim"></span>
             <div class="mail-meta">
               <span class="mail-subject">API key section not visible</span>
-              <span class="mail-preview">█ █</span>
+              <div class="prev"><div class="abs-bar p3"></div></div>
             </div>
           </div>
           <div class="mail-row clip" id="inbox-r3">
             <span class="dot dim"></span>
             <div class="mail-meta">
               <span class="mail-subject">Stuck after OAuth redirect</span>
-              <span class="mail-preview">█ █ █</span>
+              <div class="prev"><div class="abs-bar p2"></div><div class="abs-bar p4"></div></div>
             </div>
           </div>
         </div>
@@ -47,9 +47,15 @@
   </div>
   <style>
     [data-composition-id="comp-inbox"] {
-      background: #0f1419;
+      background: #e8eaef;
       font-family: "DM Sans", system-ui, sans-serif;
-      color: #e6edf3;
+      color: #0f172a;
+    }
+    [data-composition-id="comp-inbox"] .abs-bar {
+      display: block;
+      height: 12px;
+      border-radius: 6px;
+      background: #cbd5e1;
     }
     [data-composition-id="comp-inbox"] .chrome {
       position: absolute;
@@ -60,50 +66,56 @@
       inset: 48px;
       display: flex;
       border-radius: 12px;
-      border: 1px solid #2d3a4f;
+      border: 1px solid #c5cad3;
       overflow: hidden;
       transform-origin: 50% 50%;
+      box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+      background: #ffffff;
     }
     [data-composition-id="comp-inbox"] .sidebar {
       width: 220px;
-      background: #151c28;
+      background: #f4f6f9;
       padding: 20px 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      border-right: 1px solid #2d3a4f;
+      border-right: 1px solid #e2e6ed;
     }
     [data-composition-id="comp-inbox"] .sb-row {
       height: 36px;
       border-radius: 8px;
-      background: #1f2937;
-      opacity: 0.7;
+      background: #e2e8f0;
+      opacity: 0.85;
     }
     [data-composition-id="comp-inbox"] .sb-row.active {
-      background: #2563eb33;
-      border: 1px solid #2563eb88;
+      background: #dbeafe;
+      border: 1px solid #93c5fd;
       opacity: 1;
     }
     [data-composition-id="comp-inbox"] .main {
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: #1a2332;
+      background: #ffffff;
     }
     [data-composition-id="comp-inbox"] .toolbar {
       padding: 18px 24px;
-      border-bottom: 1px solid #2d3a4f;
+      border-bottom: 1px solid #e8ecf1;
       display: flex;
-      align-items: baseline;
-      gap: 16px;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+      background: #fafbfc;
     }
-    [data-composition-id="comp-inbox"] .tb-title {
-      font-size: 28px;
-      font-weight: 600;
+    [data-composition-id="comp-inbox"] .tb-a {
+      width: 28%;
+      height: 14px;
+      background: #94a3b8;
     }
-    [data-composition-id="comp-inbox"] .tb-muted {
-      font-size: 16px;
-      color: #8b9cb3;
+    [data-composition-id="comp-inbox"] .tb-b {
+      width: 18%;
+      height: 10px;
+      background: #cbd5e1;
     }
     [data-composition-id="comp-inbox"] .list {
       padding: 20px 24px;
@@ -116,35 +128,50 @@
       align-items: flex-start;
       gap: 14px;
       padding: 16px 18px;
-      background: #151c28;
+      background: #f8fafc;
       border-radius: 10px;
-      border: 1px solid #2d3a4f;
+      border: 1px solid #e2e8f0;
     }
     [data-composition-id="comp-inbox"] .dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #38bdf8;
+      background: #0ea5e9;
       margin-top: 6px;
       flex-shrink: 0;
     }
     [data-composition-id="comp-inbox"] .dot.dim {
-      background: #4b5563;
+      background: #94a3b8;
     }
     [data-composition-id="comp-inbox"] .mail-meta {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
     }
     [data-composition-id="comp-inbox"] .mail-subject {
       font-size: 20px;
       font-weight: 600;
-      color: #e6edf3;
+      color: #0f172a;
     }
-    [data-composition-id="comp-inbox"] .mail-preview {
-      font-size: 15px;
-      color: #8b9cb3;
-      letter-spacing: 0.04em;
+    [data-composition-id="comp-inbox"] .prev {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 520px;
+    }
+    [data-composition-id="comp-inbox"] .p1 {
+      width: 100%;
+    }
+    [data-composition-id="comp-inbox"] .p2 {
+      width: 72%;
+    }
+    [data-composition-id="comp-inbox"] .p3 {
+      width: 55%;
+    }
+    [data-composition-id="comp-inbox"] .p4 {
+      width: 40%;
     }
     [data-composition-id="comp-inbox"] .fab {
       position: absolute;
@@ -154,8 +181,8 @@
       height: 64px;
       border-radius: 14px;
       background: #6b7280;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-      border: 2px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.9);
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>

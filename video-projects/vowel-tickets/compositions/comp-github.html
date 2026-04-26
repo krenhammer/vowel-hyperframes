@@ -10,26 +10,45 @@
     <div class="viewport">
       <aside class="tree">
         <div class="tree-title">vowel-sdk</div>
-        <div class="tree-item level-0">src</div>
-        <div class="tree-item level-1">lib</div>
+        <div class="tree-item level-0"><div class="abs-bar t-w"></div></div>
+        <div class="tree-item level-1"><div class="abs-bar t-m"></div></div>
         <div class="tree-item level-2 file" id="gh-file">vowel.ts</div>
-        <div class="tree-item level-2 dim">client.ts</div>
-        <div class="tree-item level-0">docs</div>
+        <div class="tree-item level-2 dim"><div class="abs-bar t-s"></div></div>
+        <div class="tree-item level-0"><div class="abs-bar t-w2"></div></div>
       </aside>
       <section class="editor">
         <div class="breadcrumbs clip" id="gh-crumb">
-          <span class="crumb-dim">src</span>
+          <div class="abs-bar cr a"></div>
           <span class="crumb-sep">/</span>
-          <span class="crumb-dim">lib</span>
+          <div class="abs-bar cr b"></div>
           <span class="crumb-sep">/</span>
           <span class="crumb-file">vowel.ts</span>
         </div>
         <div class="code-panel clip" id="gh-panel">
-          <div class="line">
-            <span class="ln">1</span><span class="kw">export</span> <span class="kw">async</span>
-            <span class="kw"> function</span> <span class="fn">connect</span><span class="muted">() { }</span>
+          <div class="code-line" id="gh-l1">
+            <span class="ln">1</span>
+            <span class="seg-line s1"></span>
           </div>
-          <div class="line dim"><span class="ln">2</span><span class="muted">// Voice session bridge</span></div>
+          <div class="code-line" id="gh-l2">
+            <span class="ln">2</span>
+            <span class="seg-line s2"></span>
+          </div>
+          <div class="code-line" id="gh-l3">
+            <span class="ln">3</span>
+            <span class="seg-line s3"></span>
+          </div>
+          <div class="code-line" id="gh-l4">
+            <span class="ln">4</span>
+            <span class="seg-line s4"></span>
+          </div>
+          <div class="code-line dim" id="gh-l5">
+            <span class="ln">5</span>
+            <span class="seg-line s5"></span>
+          </div>
+          <div class="code-line dim" id="gh-l6">
+            <span class="ln">6</span>
+            <span class="seg-line s6"></span>
+          </div>
         </div>
       </section>
     </div>
@@ -39,6 +58,12 @@
       background: #0f1419;
       font-family: "DM Sans", system-ui, sans-serif;
       color: #e6edf3;
+    }
+    [data-composition-id="comp-github"] .abs-bar {
+      display: block;
+      height: 11px;
+      border-radius: 5px;
+      background: #64748b;
     }
     [data-composition-id="comp-github"] .chrome {
       position: absolute;
@@ -71,7 +96,7 @@
     }
     [data-composition-id="comp-github"] .tree-item {
       font-size: 17px;
-      padding: 6px 10px;
+      padding: 8px 10px;
       border-radius: 6px;
       color: #cbd5e1;
     }
@@ -88,6 +113,18 @@
       font-family: "JetBrains Mono", ui-monospace, monospace;
       font-size: 15px;
     }
+    [data-composition-id="comp-github"] .t-w {
+      width: 44%;
+    }
+    [data-composition-id="comp-github"] .t-m {
+      width: 36%;
+    }
+    [data-composition-id="comp-github"] .t-s {
+      width: 52%;
+    }
+    [data-composition-id="comp-github"] .t-w2 {
+      width: 40%;
+    }
     [data-composition-id="comp-github"] .editor {
       flex: 1;
       display: flex;
@@ -97,53 +134,89 @@
     [data-composition-id="comp-github"] .breadcrumbs {
       padding: 16px 22px;
       border-bottom: 1px solid #2d3a4f;
-      font-family: "JetBrains Mono", ui-monospace, monospace;
-      font-size: 18px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
     }
-    [data-composition-id="comp-github"] .crumb-dim {
-      color: #8b9cb3;
+    [data-composition-id="comp-github"] .cr {
+      min-width: 48px;
+    }
+    [data-composition-id="comp-github"] .cr.a {
+      width: 56px;
+    }
+    [data-composition-id="comp-github"] .cr.b {
+      width: 44px;
     }
     [data-composition-id="comp-github"] .crumb-sep {
       color: #4b5563;
+      font-size: 16px;
     }
     [data-composition-id="comp-github"] .crumb-file {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 18px;
       color: #fbbf24;
       font-weight: 600;
     }
     [data-composition-id="comp-github"] .code-panel {
       padding: 24px 28px;
       flex: 1;
-      font-family: "JetBrains Mono", ui-monospace, monospace;
       font-size: 17px;
       line-height: 1.7;
     }
-    [data-composition-id="comp-github"] .line {
+    [data-composition-id="comp-github"] .code-line {
       display: flex;
       gap: 14px;
-      align-items: baseline;
+      align-items: center;
+      margin-bottom: 10px;
     }
-    [data-composition-id="comp-github"] .line.dim {
+    [data-composition-id="comp-github"] .code-line.dim {
       opacity: 0.55;
-      margin-top: 8px;
     }
     [data-composition-id="comp-github"] .ln {
       color: #64748b;
       width: 28px;
       text-align: right;
       flex-shrink: 0;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 14px;
     }
-    [data-composition-id="comp-github"] .kw {
-      color: #c084fc;
+    [data-composition-id="comp-github"] .seg-line {
+      display: block;
+      height: 12px;
+      border-radius: 6px;
+      flex: 1;
+      max-width: 92%;
     }
-    [data-composition-id="comp-github"] .fn {
-      color: #7dd3fc;
+    [data-composition-id="comp-github"] .s1 {
+      width: 88%;
+      flex: none;
+      background: #c084fc;
     }
-    [data-composition-id="comp-github"] .muted {
-      color: #64748b;
+    [data-composition-id="comp-github"] .s2 {
+      width: 76%;
+      flex: none;
+      background: #7dd3fc;
+    }
+    [data-composition-id="comp-github"] .s3 {
+      width: 82%;
+      flex: none;
+      background: #86efac;
+    }
+    [data-composition-id="comp-github"] .s4 {
+      width: 48%;
+      flex: none;
+      background: #fcd34d;
+    }
+    [data-composition-id="comp-github"] .s5 {
+      width: 64%;
+      flex: none;
+      background: #64748b;
+    }
+    [data-composition-id="comp-github"] .s6 {
+      width: 58%;
+      flex: none;
+      background: #94a3b8;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -173,9 +246,9 @@
       tl.from(root + " #gh-crumb", { autoAlpha: 0, y: -12, duration: 0.4 }, 2.4);
 
       tl.fromTo(
-        root + " .code-panel .line:first-child",
+        root + " .seg-line",
         { clipPath: "inset(0 100% 0 0)" },
-        { clipPath: "inset(0 0% 0 0)", duration: 1.0, ease: "none" },
+        { clipPath: "inset(0 0% 0 0)", duration: 0.38, ease: "none", stagger: 0.11 },
         2.85
       );
 
