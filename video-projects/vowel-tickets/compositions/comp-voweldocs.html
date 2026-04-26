@@ -44,12 +44,11 @@
           <div class="sb-row dim clip"><div class="abs-bar sb-line half"></div></div>
           <div class="sb-row dim clip"><div class="abs-bar sb-line almost"></div></div>
         </div>
-        <div class="sb-foot" aria-hidden="true"></div>
       </aside>
       <div class="main">
         <div class="toast clip" id="vd-toast"><div class="toast-bar"></div></div>
         <article class="doc">
-          <h1 class="clip" id="vd-h1">Getting Started</h1>
+          <h1 class="clip" id="vd-h1">Self-host</h1>
           <div class="lead-wrap clip" id="vd-lead-wrap">
             <div class="lead-set" id="lead-a">
               <div class="abs-bar lead-line w-a1"></div>
@@ -75,7 +74,7 @@
                 <div class="abs-bar line w-90 indent"></div>
                 <div class="abs-bar line w-70 indent"></div>
               </div>
-              <h2 class="sub target" id="vd-sub-b">RAG debugging</h2>
+              <h2 class="sub target" id="vd-sub-b">TLS &amp; certificates</h2>
               <div class="abs-stack">
                 <div class="abs-bar line w-95"></div>
                 <div class="abs-bar line w-82"></div>
@@ -87,7 +86,13 @@
       </div>
     </div>
     <button class="fab-rag clip" id="vd-rag-fab" type="button" aria-hidden="true"></button>
-    <div class="fab clip" id="vd-fab"></div>
+    <div class="fab-wrap">
+      <div class="fab-cap clip" id="vd-fab-cap" aria-hidden="true">
+        <p class="fab-cap-line user-line" id="vd-cap-user"></p>
+        <p class="fab-cap-line ai-line" id="vd-cap-ai"></p>
+      </div>
+      <div class="fab fab-voice clip" id="vd-fab"></div>
+    </div>
   </div>
   <style>
     [data-composition-id="comp-voweldocs"] {
@@ -97,7 +102,10 @@
     }
     [data-composition-id="comp-voweldocs"] .chrome {
       position: absolute;
-      inset: 0;
+      top: 0;
+      bottom: 0;
+      left: 320px;
+      right: 320px;
       display: flex;
       flex-direction: column;
     }
@@ -247,14 +255,6 @@
     }
     [data-composition-id="comp-voweldocs"] .sb-line.narrow {
       width: 48%;
-    }
-    [data-composition-id="comp-voweldocs"] .sb-foot {
-      margin-top: auto;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #2563eb, #1d4ed8);
-      align-self: flex-start;
     }
     [data-composition-id="comp-voweldocs"] .main {
       flex: 1;
@@ -421,17 +421,59 @@
       padding: 0;
       cursor: default;
     }
-    [data-composition-id="comp-voweldocs"] .fab {
+    [data-composition-id="comp-voweldocs"] .fab-wrap {
       position: absolute;
-      right: 24px;
-      bottom: 24px;
+      right: 40px;
+      bottom: 40px;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+      max-width: min(340px, 42vw);
+      pointer-events: none;
+    }
+    [data-composition-id="comp-voweldocs"] .fab-cap {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: #1c1c22;
+      border: 1px solid #3f3f46;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    [data-composition-id="comp-voweldocs"] .fab-cap-line {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.45;
+      min-height: 0;
+    }
+    [data-composition-id="comp-voweldocs"] .fab-cap-line:empty {
+      display: none;
+    }
+    [data-composition-id="comp-voweldocs"] .fab-cap-line.user-line {
+      color: #93c5fd;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    [data-composition-id="comp-voweldocs"] .fab-cap-line.user-line:empty {
+      margin-bottom: 0;
+    }
+    [data-composition-id="comp-voweldocs"] .fab-cap-line.ai-line {
+      color: #d8b4fe;
+      font-weight: 500;
+      white-space: pre-line;
+    }
+    [data-composition-id="comp-voweldocs"] .fab-voice {
       width: 72px;
       height: 72px;
-      border-radius: 16px;
+      border-radius: 50%;
       background: #27272a;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
-      border: 1px solid #3f3f46;
-      z-index: 30;
+      border: 2px solid #3f3f46;
+      flex-shrink: 0;
+      align-self: flex-end;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -467,13 +509,7 @@
       );
       tl.to(root + " .viewport", { scale: 1, xPercent: 0, yPercent: 0, duration: 0.48, ease: "power3.out" }, 2.48);
 
-      tl.to(root + " #vd-h1", { autoAlpha: 0, y: -10, duration: 0.22, ease: "power2.in" }, 2.88);
       tl.to(root + " #lead-a", { autoAlpha: 0, y: -6, duration: 0.2, ease: "power2.in" }, 2.92);
-      tl.add(function () {
-        var h = document.querySelector(root + " #vd-h1");
-        if (h) h.textContent = "RAG debugging";
-      }, 3.08);
-      tl.fromTo(root + " #vd-h1", { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.42, ease: "power2.out" }, 3.12);
       tl.fromTo(
         root + " #lead-b",
         { autoAlpha: 0, y: 8 },
@@ -496,12 +532,60 @@
 
       tl.to(root + " #vd-scroll-inner", { y: -160, duration: 1.45, ease: "power2.inOut" }, 3.45);
 
-      tl.to(root + " #vd-fab", { backgroundColor: "#6b7280", duration: 0.14 }, 4.75);
-      tl.to(root + " #vd-fab", { backgroundColor: "#22c55e", duration: 0.2 }, 5.0);
-      tl.to(root + " #vd-fab", { backgroundColor: "#3b82f6", duration: 0.2 }, 5.35);
-      tl.to(root + " #vd-fab", { backgroundColor: "#eab308", duration: 0.2 }, 5.7);
-      tl.to(root + " #vd-fab", { backgroundColor: "#a855f7", duration: 0.2 }, 6.05);
-      tl.to(root + " #vd-fab", { backgroundColor: "#27272a", duration: 0.32, ease: "power2.inOut" }, 6.45);
+      tl.set(root + " #vd-fab-cap", { autoAlpha: 0, y: 10 }, 4.34);
+      tl.from(root + " #vd-fab", { autoAlpha: 0, scale: 0.88, duration: 0.42, ease: "back.out(1.35)" }, 4.35);
+      tl.to(root + " #vd-fab-cap", { autoAlpha: 1, y: 0, duration: 0.38, ease: "power2.out" }, 4.58);
+
+      /**
+       * Parameterized voice-session beats: `colorKey` maps to VOICE_FAB_COLORS; set `user` / `ai` only when that line changes.
+       * Retune copy or timing by editing `voiceFabBeats` only.
+       */
+      var VOICE_FAB_COLORS = {
+        inactive: "#6b7280",
+        active: "#22c55e",
+        userSpeaking: "#3b82f6",
+        thinking: "#eab308",
+        aiSpeaking: "#a855f7",
+        idle: "#27272a",
+      };
+      var voiceFabBeats = [
+        { time: 4.52, colorKey: "inactive" },
+        { time: 4.66, colorKey: "userSpeaking", user: "Hey—" },
+        { time: 4.86, colorKey: "userSpeaking", user: "Open the self-host page." },
+        { time: 5.08, colorKey: "active" },
+        { time: 5.2, colorKey: "thinking" },
+        { time: 5.36, colorKey: "userSpeaking", user: "Add my keys in .env." },
+        { time: 5.58, colorKey: "thinking" },
+        { time: 5.72, colorKey: "thinking", user: "" },
+        {
+          time: 5.92,
+          colorKey: "aiSpeaking",
+          ai: "Done. Scroll to TLS & certificates and paste your bundle there.",
+        },
+        {
+          time: 6.28,
+          colorKey: "aiSpeaking",
+          ai: "Done.\nScroll to TLS & certificates.\nPaste your bundle in the box.",
+        },
+        { time: 6.72, colorKey: "active" },
+        { time: 6.92, colorKey: "inactive", ai: "" },
+        { time: 7.08, colorKey: "idle", user: "" },
+      ];
+
+      voiceFabBeats.forEach(function (beat) {
+        tl.add(
+          function () {
+            var u = document.querySelector(root + " #vd-cap-user");
+            var a = document.querySelector(root + " #vd-cap-ai");
+            if (u && beat.user !== undefined) u.textContent = beat.user;
+            if (a && beat.ai !== undefined) a.textContent = beat.ai;
+          },
+          beat.time
+        );
+        tl.to(root + " #vd-fab", { backgroundColor: VOICE_FAB_COLORS[beat.colorKey], duration: 0.2, ease: "power2.out" }, beat.time);
+      });
+
+      tl.to(root + " #vd-fab-cap", { autoAlpha: 0, y: 8, duration: 0.34, ease: "power2.in" }, 7.12);
 
       tl.set({}, {}, 23.25);
       window.__timelines["comp-voweldocs"] = tl;
