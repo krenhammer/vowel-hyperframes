@@ -1,0 +1,116 @@
+<!--
+  Ported from vowel-turso-rag #outro-layer (index.html + style.css) and entrance timing (script.js).
+  Landscape 1920×1080 — type scaled for shorter canvas height vs vertical turso-rag.
+  Standalone preview: ?comp=comp-outro
+-->
+<div
+  data-composition-id="comp-outro"
+  data-start="0"
+  data-duration="10"
+  data-width="1920"
+  data-height="1080"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
+>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,800&family=JetBrains+Mono:wght@500;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    [data-composition-id="comp-outro"] {
+      --comp-outro-text: #e8eef8;
+      --comp-outro-vowel-link: #a8d4ff;
+      --comp-outro-vowel-link-border: color-mix(in srgb, #a8d4ff 55%, transparent);
+    }
+    [data-composition-id="comp-outro"] #comp-outro-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      gap: 22px;
+      padding: 48px 56px min(120px, 11%);
+      text-align: left;
+      background: radial-gradient(ellipse 90% 75% at 50% 42%, #0f1728 0%, #06080f 62%);
+      opacity: 0;
+      pointer-events: none;
+      box-sizing: border-box;
+    }
+    [data-composition-id="comp-outro"] #comp-outro-layer .comp-outro-hero {
+      font-family: "Outfit", sans-serif;
+      font-size: clamp(40px, 4.2vw, 56px);
+      font-weight: 800;
+      color: var(--comp-outro-text);
+      line-height: 1.2;
+      max-width: min(1200px, 92vw);
+      text-align: left;
+    }
+    [data-composition-id="comp-outro"] #comp-outro-layer .comp-outro-url {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: clamp(32px, 3.2vw, 44px);
+      font-weight: 600;
+      color: var(--comp-outro-vowel-link);
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 14px;
+      border: 2px solid var(--comp-outro-vowel-link-border);
+      align-self: flex-start;
+      text-align: left;
+    }
+    [data-composition-id="comp-outro"] #comp-outro-layer .comp-outro-attr {
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: clamp(15px, 1.35vw, 18px);
+      font-weight: 400;
+      color: rgba(232, 238, 248, 0.38);
+      line-height: 1.45;
+      max-width: min(1100px, 90vw);
+      margin-top: 0.85em;
+      text-align: left;
+    }
+  </style>
+  <div id="comp-outro-layer">
+    <p class="comp-outro-hero">Get started today at</p>
+    <a class="comp-outro-url" href="https://vowel.to">https://vowel.to</a>
+    <p class="comp-outro-attr">
+      Music: «Memory Lane» by Joseph Sacco (Independent Music Licensing Collective — IMLC), licensed under
+      <a href="https://creativecommons.org/licenses/by/4.0/" style="color: inherit">CC BY 4.0</a>.
+      <a
+        href="https://freemusicarchive.org/music/independent-music-licensing-collective-imlc/new-signings-compilation/joseph-sacco-memory-lane/"
+        style="color: inherit"
+        >Free Music Archive</a
+      >.
+    </p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      var OUTRO_T0 = 0;
+      tl.fromTo("#comp-outro-layer", { opacity: 0 }, { opacity: 1, duration: 0.55, ease: "power2.out" }, OUTRO_T0);
+      tl.fromTo(
+        "#comp-outro-layer .comp-outro-hero",
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.52, ease: "expo.out" },
+        OUTRO_T0 + 0.06
+      );
+      tl.fromTo(
+        "#comp-outro-layer .comp-outro-url",
+        { scale: 0.88, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.22)" },
+        OUTRO_T0 + 0.2
+      );
+      tl.fromTo(
+        "#comp-outro-layer .comp-outro-attr",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.48, ease: "sine.out" },
+        OUTRO_T0 + 0.42
+      );
+      tl.set({}, {}, 10);
+      window.__timelines["comp-outro"] = tl;
+    })();
+  </script>
+</div>

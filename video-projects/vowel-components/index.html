@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;800&family=DM+Sans:ital,opsz,wght@0,9..40,400&family=JetBrains+Mono:wght@500;600&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -74,6 +74,11 @@
       /* Full-frame voweldocs CTA grid — own scene after Turso SVG (not under the mock). */
       #scene-voweldocs-cta-bg {
         z-index: 8;
+        opacity: 0;
+      }
+      /* vowel-turso-rag outro — comp-outro */
+      #scene-outro {
+        z-index: 9;
         opacity: 0;
       }
       /* Post–API key caption: always neutral gray chrome (no hue). State is data-only + FAB. See COMPONENTS.md. */
@@ -164,7 +169,7 @@
       id="root"
       data-composition-id="vowel-components-main"
       data-start="0"
-      data-duration="68.51"
+      data-duration="78.51"
       data-width="1920"
       data-height="1080"
     >
@@ -173,7 +178,7 @@
         id="vd-inapp-dialogue-chrome"
         class="clip vd-inapp-dialogue-chrome"
         data-start="0"
-        data-duration="68.51"
+        data-duration="78.51"
         data-track-index="8"
         aria-hidden="true"
       >
@@ -278,6 +283,17 @@
         data-width="1920"
         data-height="1080"
       ></div>
+      <div
+        id="scene-outro"
+        class="scene-wrap"
+        data-composition-id="comp-outro"
+        data-composition-src="compositions/comp-outro.html"
+        data-start="68.51"
+        data-duration="10"
+        data-track-index="13"
+        data-width="1920"
+        data-height="1080"
+      ></div>
       <!--
         Caption: after config modal is dismissed (not while scene-api is up). 20vw tray, abs-bars. data-vd-state + data-vd-speaker; FAB (vdCaptionSet).
         Hoisted in #root (fixed) so it stacks over scene-rag and scene-api.
@@ -345,6 +361,7 @@
         tl.set("#scene-inbox", { autoAlpha: 1 }, 0);
         tl.set("#scene-turso-svg", { autoAlpha: 0 }, 0);
         tl.set("#scene-voweldocs-cta-bg", { autoAlpha: 0 }, 0);
+        tl.set("#scene-outro", { autoAlpha: 0 }, 0);
 
         tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65 + INBOX_LEAD);
         tl.fromTo(
@@ -557,7 +574,11 @@
           T_TURSO_END
         );
 
-        tl.set({}, {}, 65.05 + INBOX_LEAD);
+        var T_CTA_END = 65.05 + INBOX_LEAD;
+        var OUTRO_LEN = 10;
+        tl.to("#scene-voweldocs-cta-bg", { autoAlpha: 0, duration: 0.48, ease: "power2.in" }, T_CTA_END - 0.38);
+        tl.to("#scene-outro", { autoAlpha: 1, duration: 0.52, ease: "power2.out" }, T_CTA_END - 0.35);
+        tl.set({}, {}, T_CTA_END + OUTRO_LEN);
 
         window.__timelines["vowel-components-main"] = tl;
       })();
