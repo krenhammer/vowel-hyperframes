@@ -8,6 +8,10 @@
 >
   <!-- Overlay only: voweldocs stays visible underneath -->
   <div class="backdrop clip" id="api-back"></div>
+  <!-- Voice FAB on this layer so it sits above the dim backdrop (voweldocs FAB is occluded by the full-screen API scene). -->
+  <div class="api-fab-host clip" id="api-fab-host">
+    <div class="api-fab-voice clip" id="api-fab" aria-hidden="true"></div>
+  </div>
   <div class="modal-center clip" id="api-modal-wrap">
     <div class="modal clip" id="api-modal">
       <div class="mh-row clip" id="api-mh-row">
@@ -44,25 +48,15 @@
       </div>
       <div class="btn-row clip" id="api-btn-row">
         <button type="button" class="text-btn text-btn--primary clip" id="api-save-wrap" aria-label="Save and enable">
-          <div class="abs-text">
-            <div class="abs-bar abs-txt long"></div>
-            <div class="abs-bar abs-txt mid"></div>
-            <div class="abs-bar abs-txt short"></div>
-          </div>
+          <span class="abs-bar abs-slab abs-slab--primary" aria-hidden="true"></span>
         </button>
         <button type="button" class="text-btn text-btn--remove clip" id="api-remove-wrap" aria-label="Remove">
-          <div class="abs-text abs-text--warn">
-            <div class="abs-bar abs-txt--line"></div>
-            <div class="abs-bar abs-txt--line narrow"></div>
-          </div>
+          <span class="abs-bar abs-slab abs-slab--remove" aria-hidden="true"></span>
         </button>
       </div>
       <button class="start-vowel clip" id="api-start-vowel" type="button">Start vowel session</button>
       <button type="button" class="text-btn text-btn--ghost clip" id="api-clear" aria-label="Clear saved configuration">
-        <div class="abs-text abs-text--subtle">
-          <div class="abs-bar abs-txt--sub w-a"></div>
-          <div class="abs-bar abs-txt--sub w-b"></div>
-        </div>
+        <span class="abs-bar abs-slab abs-slab--ghost" aria-hidden="true"></span>
       </button>
     </div>
   </div>
@@ -144,60 +138,42 @@
       background: #111827;
       border: 1px solid #334155;
     }
-    [data-composition-id="comp-api-modal"] .abs-text {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 5px;
-      width: 78%;
-    }
-    [data-composition-id="comp-api-modal"] .abs-text--warn {
-      width: 70%;
-    }
-    [data-composition-id="comp-api-modal"] .abs-text--subtle {
-      width: 38%;
-      gap: 4px;
+    /* Single abstract “text” block per button (one horizontal slab) */
+    [data-composition-id="comp-api-modal"] .abs-slab {
+      display: block;
+      width: 72%;
+      height: 12px;
       margin: 0 auto;
     }
-    [data-composition-id="comp-api-modal"] .text-btn--primary .abs-text {
-      margin: 0 auto;
-    }
-    [data-composition-id="comp-api-modal"] .text-btn--remove .abs-text--warn {
-      margin: 0 auto;
-    }
-    [data-composition-id="comp-api-modal"] .abs-txt,
-    [data-composition-id="comp-api-modal"] .abs-txt--line,
-    [data-composition-id="comp-api-modal"] .abs-txt--sub {
-      height: 5px;
-      border-radius: 2px;
-    }
-    [data-composition-id="comp-api-modal"] .text-btn--primary .abs-txt {
-      background: rgba(241, 245, 249, 0.92);
-    }
-    [data-composition-id="comp-api-modal"] .abs-txt.long {
-      width: 100%;
-    }
-    [data-composition-id="comp-api-modal"] .abs-txt.mid {
-      width: 88%;
-    }
-    [data-composition-id="comp-api-modal"] .abs-txt.short {
-      width: 58%;
-    }
-    [data-composition-id="comp-api-modal"] .abs-txt--line {
-      background: rgba(248, 113, 113, 0.9);
-    }
-    [data-composition-id="comp-api-modal"] .abs-txt--line.narrow {
+    [data-composition-id="comp-api-modal"] .text-btn--remove .abs-slab {
       width: 64%;
     }
-    [data-composition-id="comp-api-modal"] .abs-txt--sub {
-      background: #64748b;
-      opacity: 0.9;
+    [data-composition-id="comp-api-modal"] .text-btn--ghost .abs-slab--ghost {
+      width: 40%;
     }
-    [data-composition-id="comp-api-modal"] .w-a {
-      width: 100%;
+    [data-composition-id="comp-api-modal"] .abs-slab--primary {
+      background: rgba(241, 245, 249, 0.95);
     }
-    [data-composition-id="comp-api-modal"] .w-b {
-      width: 72%;
+    [data-composition-id="comp-api-modal"] .abs-slab--remove {
+      background: #fecaca;
+    }
+    [data-composition-id="comp-api-modal"] .abs-slab--ghost {
+      background: #94a3b8;
+    }
+    [data-composition-id="comp-api-modal"] .api-fab-host {
+      position: absolute;
+      right: 40px;
+      bottom: 40px;
+      z-index: 70;
+      pointer-events: none;
+    }
+    [data-composition-id="comp-api-modal"] .api-fab-voice {
+      width: 72px;
+      height: 72px;
+      border-radius: 4px;
+      background: #27272a;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+      border: 2px solid #3f3f46;
     }
     [data-composition-id="comp-api-modal"] .backdrop {
       position: absolute;
@@ -350,10 +326,12 @@
       border-radius: 10px;
       font-family: inherit;
       font-size: 15px;
-      font-weight: 700;
-      color: #f0fdf4;
-      background: linear-gradient(180deg, #4ade80, #22c55e);
-      box-shadow: 0 4px 0 #15803d;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      background: linear-gradient(180deg, #16a34a, #14532d);
+      box-shadow: 0 4px 0 #052e16;
       cursor: default;
     }
   </style>
@@ -364,32 +342,50 @@
       var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
       var root = '[data-composition-id="comp-api-modal"]';
       var keySel = root + " #api-key-sweep .key-chunk";
+      /* 5× stagger 0.09 + segment duration 0.1 → last segment ends 1.12 + 4*0.09 + 0.1 = 1.58 */
+      var keyDone = 1.58;
+      /* After key: voice FAB in (lower-right) → press → active green (matches voweldocs idle → active) */
+      var fabClickT = keyDone + 0.5;
 
-      tl.set(root + " #api-start-vowel", { autoAlpha: 0 });
-      tl.set(root + " #api-clear", { autoAlpha: 0 });
+      tl.set(root + " #api-fab", { autoAlpha: 0, scale: 0.88 });
+      tl.set(root + " #api-start-vowel", { autoAlpha: 0, height: 0, marginTop: 0, overflow: "hidden" });
       tl.set(keySel, { scaleX: 0 });
 
       tl.to(root + " #api-back", { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 0.42);
       tl.to(root + " #api-modal", { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(1.25)" }, 0.52);
 
-      tl.from(root + " #api-mh-row", { autoAlpha: 0, y: 12, duration: 0.35 }, 0.72);
-      tl.from(root + " #api-tabs", { autoAlpha: 0, y: 6, duration: 0.28 }, 0.82);
-      tl.from(root + " #api-lbl-app", { autoAlpha: 0, x: -6, duration: 0.24 }, 0.9);
-      tl.from(root + " #api-f-app", { autoAlpha: 0, y: 8, duration: 0.28 }, 0.95);
-      tl.from(root + " #api-lbl-key", { autoAlpha: 0, x: -6, duration: 0.24 }, 1.0);
-      tl.from(root + " #api-f-key", { autoAlpha: 0, y: 8, duration: 0.28 }, 1.05);
-      /* Entering key: segments fill in; Start only after key is present */
+      /* Key entering (only content animation besides Start) */
       tl.to(
         keySel,
         { scaleX: 1, duration: 0.1, ease: "power2.out", stagger: 0.09, transformOrigin: "left center" },
         1.12
       );
-      tl.from(root + " #api-eye-r", { autoAlpha: 0, duration: 0.15 }, 1.1);
-      /* key stagger ends ~1.58; UI chrome + actions, then green Start (key present) */
-      tl.from(root + " #api-hint", { autoAlpha: 0, duration: 0.2 }, 1.64);
-      tl.from(root + " #api-btn-row", { autoAlpha: 0, y: 8, duration: 0.3 }, 1.7);
-      tl.from(root + " #api-start-vowel", { autoAlpha: 0, y: 10, duration: 0.38, ease: "back.out(1.15)" }, 1.86);
-      tl.from(root + " #api-clear", { autoAlpha: 0, y: 6, duration: 0.24 }, 2.02);
+      /* Only the Start CTA eases in; all other UI appears with the modal (no per-element entrance) */
+      tl.fromTo(
+        root + " #api-start-vowel",
+        { autoAlpha: 0, y: 10, height: 0, marginTop: 0, overflow: "hidden" },
+        { autoAlpha: 1, y: 0, height: 48, marginTop: 12, duration: 0.42, ease: "back.out(1.12)" },
+        keyDone
+      );
+      tl.fromTo(
+        root + " #api-fab",
+        { autoAlpha: 0, scale: 0.88, backgroundColor: "#27272a" },
+        { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(1.25)" },
+        keyDone
+      );
+      tl.to(root + " #api-fab", { scale: 0.9, duration: 0.1, ease: "power2.in" }, fabClickT);
+      tl.to(
+        root + " #api-fab",
+        {
+          scale: 1,
+          backgroundColor: "#16a34a",
+          borderColor: "#86efac",
+          boxShadow: "0 12px 36px rgba(22, 163, 74, 0.5)",
+          duration: 0.4,
+          ease: "back.out(1.45)",
+        },
+        fabClickT + 0.1
+      );
 
       tl.to(root + " #api-save-wrap", { scale: 0.97, y: 2, duration: 0.1, ease: "power2.in" }, 2.77);
       tl.to(root + " #api-save-wrap", { scale: 1, y: 0, duration: 0.45, ease: "elastic.out(1,0.55)" }, 2.89);
@@ -400,6 +396,7 @@
       );
 
       tl.to(root + " #api-modal", { autoAlpha: 0, scale: 0.96, duration: 0.38, ease: "power3.in" }, 3.92);
+      tl.to(root + " #api-fab-host", { autoAlpha: 0, duration: 0.32, ease: "power3.in" }, 3.92);
       tl.to(root + " #api-back", { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 4.02);
 
       tl.set({}, {}, 7);

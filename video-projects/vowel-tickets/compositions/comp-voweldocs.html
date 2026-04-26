@@ -552,6 +552,13 @@
         tl.to(root + " #vd-fab", { backgroundColor: VOICE_FAB_COLORS[beat.colorKey], duration: 0.2, ease: "power2.out" }, beat.time);
       });
 
+      /* Global API scene starts at 40.25s → local 40.25 - 23.95: hide in-doc FAB; comp-api-modal carries the corner FAB above the dim layer. */
+      tl.to(
+        root + " #vd-fab",
+        { autoAlpha: 0, scale: 0.88, duration: 0.2, ease: "power2.in" },
+        16.3
+      );
+
       tl.set({}, {}, 23.25);
       window.__timelines["comp-voweldocs"] = tl;
     })();
