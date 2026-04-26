@@ -1,7 +1,7 @@
 <div
   data-composition-id="comp-voweldocs"
   data-start="0"
-  data-duration="9"
+  data-duration="23.25"
   data-width="1920"
   data-height="1080"
   style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
@@ -86,6 +86,7 @@
         </article>
       </div>
     </div>
+    <button class="fab-rag clip" id="vd-rag-fab" type="button" aria-hidden="true"></button>
     <div class="fab clip" id="vd-fab"></div>
   </div>
   <style>
@@ -406,15 +407,29 @@
       width: 48%;
       margin-top: 6px;
     }
-    [data-composition-id="comp-voweldocs"] .fab {
+    [data-composition-id="comp-voweldocs"] .fab-rag {
       position: absolute;
-      right: 28px;
-      bottom: 24px;
+      left: 28px;
+      bottom: 28px;
       width: 56px;
       height: 56px;
-      border-radius: 12px;
+      border-radius: 50%;
+      background: #2563eb;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 36px rgba(37, 99, 235, 0.4);
+      z-index: 31;
+      padding: 0;
+      cursor: default;
+    }
+    [data-composition-id="comp-voweldocs"] .fab {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
       background: #27272a;
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
       border: 1px solid #3f3f46;
       z-index: 30;
     }
@@ -429,6 +444,7 @@
       tl.from(root + " .topbar", { y: -14, autoAlpha: 0, duration: 0.4 }, 0.1);
       tl.from(root + " .viewport", { autoAlpha: 0, duration: 0.45 }, 0.15);
       tl.from(root + " .sb-row", { autoAlpha: 0, x: -10, duration: 0.28, stagger: 0.04 }, 0.25);
+      tl.from(root + " #vd-rag-fab", { autoAlpha: 0, scale: 0.86, duration: 0.4, ease: "back.out(1.4)" }, 0.38);
       tl.from(root + " #vd-h1", { autoAlpha: 0, y: 16, duration: 0.42 }, 0.4);
       tl.from(root + " #lead-a .abs-bar", { autoAlpha: 0, scaleX: 0.2, duration: 0.35, stagger: 0.08, transformOrigin: "left center" }, 0.48);
       tl.from(root + " .scroll-host", { autoAlpha: 0, duration: 0.32 }, 0.58);
@@ -487,7 +503,7 @@
       tl.to(root + " #vd-fab", { backgroundColor: "#a855f7", duration: 0.2 }, 6.05);
       tl.to(root + " #vd-fab", { backgroundColor: "#27272a", duration: 0.32, ease: "power2.inOut" }, 6.45);
 
-      tl.set({}, {}, 9);
+      tl.set({}, {}, 23.25);
       window.__timelines["comp-voweldocs"] = tl;
     })();
   </script>

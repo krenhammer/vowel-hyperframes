@@ -77,6 +77,10 @@ Animations:
 This non bolocking modal that displays over blue FAB button on left lower side of voweldocs 
 default hidden
 
+Modal title in mock matches inspiration screenshots: **Turso Browser RAG** (see assets below).
+
+RAG debug FAB: circular, lower-left, inset from bottom edge (not flush).
+
 All text can be abstract
 
 Inspiration 
