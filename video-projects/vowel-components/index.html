@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=1920, height=1080" />
     <title>vowel-components — component beats</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="animated-image-background/AnimatedImageBackground.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
       * {
         margin: 0;
@@ -57,6 +64,11 @@
       }
       #scene-turso-svg {
         z-index: 7;
+        opacity: 0;
+      }
+      /* Full-frame voweldocs CTA grid — own scene after Turso SVG (not under the mock). */
+      #scene-voweldocs-cta-bg {
+        z-index: 8;
         opacity: 0;
       }
       /* Post–API key caption: always neutral gray chrome (no hue). State is data-only + FAB. See COMPONENTS.md. */
@@ -113,6 +125,33 @@
       #vd-caption .cap-w-60 {
         width: 60%;
       }
+
+      /* Ported from vowel-turso-rag: in-app dialogue chrome (green rail + ghost word). */
+      :root {
+        --vd-turso-accent: #0fd06e;
+      }
+      .vd-inapp-dialogue-chrome {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+        overflow: hidden;
+        box-sizing: border-box;
+        border-left: 3px solid color-mix(in srgb, var(--vd-turso-accent) 50%, transparent);
+        padding-left: 28px;
+      }
+      .vd-inapp-dialogue-chrome__watermark {
+        position: absolute;
+        left: 8%;
+        top: 6%;
+        font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+        font-weight: 800;
+        font-size: clamp(120px, 14vw, 220px);
+        line-height: 1;
+        color: rgba(232, 238, 248, 0.12);
+        letter-spacing: -0.03em;
+        user-select: none;
+      }
     </style>
   </head>
   <body>
@@ -120,10 +159,21 @@
       id="root"
       data-composition-id="vowel-components-main"
       data-start="0"
-      data-duration="56.4"
+      data-duration="65.05"
       data-width="1920"
       data-height="1080"
     >
+      <!-- vowel-turso-rag: .karaoke-wrap--ai rail + ghost dialogue word (“There” in transcript). -->
+      <div
+        id="vd-inapp-dialogue-chrome"
+        class="clip vd-inapp-dialogue-chrome"
+        data-start="0"
+        data-duration="65.05"
+        data-track-index="8"
+        aria-hidden="true"
+      >
+        <div class="vd-inapp-dialogue-chrome__watermark" aria-hidden="true">There</div>
+      </div>
       <div
         id="scene-inbox"
         class="scene-wrap"
@@ -201,6 +251,17 @@
         data-width="1920"
         data-height="1080"
       ></div>
+      <div
+        id="scene-voweldocs-cta-bg"
+        class="scene-wrap"
+        data-composition-id="comp-voweldocs-cta-bg"
+        data-composition-src="compositions/comp-voweldocs-cta-bg.html"
+        data-start="56.4"
+        data-duration="8.65"
+        data-track-index="12"
+        data-width="1920"
+        data-height="1080"
+      ></div>
       <!--
         Caption: after config modal is dismissed (not while scene-api is up). 20vw tray, abs-bars. data-vd-state + data-vd-speaker; FAB (vdCaptionSet).
         Hoisted in #root (fixed) so it stacks over scene-rag and scene-api.
@@ -217,6 +278,7 @@
         </div>
       </div>
     </div>
+    <script src="animated-image-background/AnimatedImageBackground.js"></script>
     <script>
       (function () {
         /**
@@ -258,8 +320,10 @@
         var tl = gsap.timeline({ paused: true });
 
         tl.set("#vd-caption", { xPercent: -50, autoAlpha: 0, y: -20, force3D: true }, 0);
+        tl.set("#vd-inapp-dialogue-chrome", { autoAlpha: 0 }, 0);
         tl.set("#scene-inbox", { autoAlpha: 1 }, 0);
         tl.set("#scene-turso-svg", { autoAlpha: 0 }, 0);
+        tl.set("#scene-voweldocs-cta-bg", { autoAlpha: 0 }, 0);
 
         tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65);
         tl.fromTo(
@@ -284,7 +348,6 @@
           { autoAlpha: 1, filter: "blur(0px)", duration: 0.45, ease: "sine.inOut" },
           23.95
         );
-
         tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 32.6);
 
         tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 40.25);
@@ -294,6 +357,7 @@
           { autoAlpha: 1, y: 0, duration: 0.38, ease: "power3.out" },
           40.25
         );
+        tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 1, duration: 0.35, ease: "sine.out" }, 40.25);
 
         /* #vd-fab: same DOM node as comp-voweldocs; here we only drive API / key / “active” beat (overwrite child timeline). */
         var T_API = 40.25;
@@ -311,6 +375,7 @@
         var T_MODAL_FADE = T_API + T_KEY + 0.45;
         var T_MODAL_GONE = T_MODAL_FADE + 0.55;
         tl.to("#scene-api", { autoAlpha: 0, duration: 0.55, ease: "power2.in" }, T_MODAL_FADE);
+        tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 0, duration: 0.4, ease: "power2.in" }, T_MODAL_FADE);
         var T_GREEN = T_MODAL_GONE + 0.05;
         tl.to(
           "#vd-fab",
@@ -461,7 +526,17 @@
           T_VOWEL_FADE
         );
 
-        tl.set({}, {}, 56.4);
+        /* Full-frame CTA grid — separate scene after Turso SVG (comp-voweldocs-cta-bg). */
+        var T_TURSO_END = 47.75 + 8.65;
+        tl.to("#scene-turso-svg", { autoAlpha: 0, duration: 0.5, ease: "power2.in", overwrite: "auto" }, T_TURSO_END);
+        tl.fromTo(
+          "#scene-voweldocs-cta-bg",
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.5, ease: "power2.out" },
+          T_TURSO_END
+        );
+
+        tl.set({}, {}, 65.05);
 
         window.__timelines["vowel-components-main"] = tl;
       })();
