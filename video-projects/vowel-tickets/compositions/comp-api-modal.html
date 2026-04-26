@@ -8,10 +8,6 @@
 >
   <!-- Overlay only: voweldocs stays visible underneath -->
   <div class="backdrop clip" id="api-back"></div>
-  <!-- Voice FAB on this layer so it sits above the dim backdrop (voweldocs FAB is occluded by the full-screen API scene). -->
-  <div class="api-fab-host clip" id="api-fab-host">
-    <div class="api-fab-voice clip" id="api-fab" aria-hidden="true"></div>
-  </div>
   <div class="modal-center clip" id="api-modal-wrap">
     <div class="modal clip" id="api-modal">
       <div class="mh-row clip" id="api-mh-row">
@@ -159,21 +155,6 @@
     }
     [data-composition-id="comp-api-modal"] .abs-slab--ghost {
       background: #94a3b8;
-    }
-    [data-composition-id="comp-api-modal"] .api-fab-host {
-      position: absolute;
-      right: 40px;
-      bottom: 40px;
-      z-index: 70;
-      pointer-events: none;
-    }
-    [data-composition-id="comp-api-modal"] .api-fab-voice {
-      width: 72px;
-      height: 72px;
-      border-radius: 4px;
-      background: #27272a;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
-      border: 2px solid #3f3f46;
     }
     [data-composition-id="comp-api-modal"] .backdrop {
       position: absolute;
@@ -344,10 +325,7 @@
       var keySel = root + " #api-key-sweep .key-chunk";
       /* 5× stagger 0.09 + segment duration 0.1 → last segment ends 1.12 + 4*0.09 + 0.1 = 1.58 */
       var keyDone = 1.58;
-      /* After key: voice FAB in (lower-right) → press → active green (matches voweldocs idle → active) */
-      var fabClickT = keyDone + 0.5;
 
-      tl.set(root + " #api-fab", { autoAlpha: 0, scale: 0.88 });
       tl.set(root + " #api-start-vowel", { autoAlpha: 0, height: 0, marginTop: 0, overflow: "hidden" });
       tl.set(keySel, { scaleX: 0 });
 
@@ -367,26 +345,6 @@
         { autoAlpha: 1, y: 0, height: 48, marginTop: 12, duration: 0.42, ease: "back.out(1.12)" },
         keyDone
       );
-      tl.fromTo(
-        root + " #api-fab",
-        { autoAlpha: 0, scale: 0.88, backgroundColor: "#27272a" },
-        { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(1.25)" },
-        keyDone
-      );
-      tl.to(root + " #api-fab", { scale: 0.9, duration: 0.1, ease: "power2.in" }, fabClickT);
-      tl.to(
-        root + " #api-fab",
-        {
-          scale: 1,
-          backgroundColor: "#16a34a",
-          borderColor: "#86efac",
-          boxShadow: "0 12px 36px rgba(22, 163, 74, 0.5)",
-          duration: 0.4,
-          ease: "back.out(1.45)",
-        },
-        fabClickT + 0.1
-      );
-
       tl.to(root + " #api-save-wrap", { scale: 0.97, y: 2, duration: 0.1, ease: "power2.in" }, 2.77);
       tl.to(root + " #api-save-wrap", { scale: 1, y: 0, duration: 0.45, ease: "elastic.out(1,0.55)" }, 2.89);
       tl.to(
@@ -396,7 +354,6 @@
       );
 
       tl.to(root + " #api-modal", { autoAlpha: 0, scale: 0.96, duration: 0.38, ease: "power3.in" }, 3.92);
-      tl.to(root + " #api-fab-host", { autoAlpha: 0, duration: 0.32, ease: "power3.in" }, 3.92);
       tl.to(root + " #api-back", { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 4.02);
 
       tl.set({}, {}, 7);

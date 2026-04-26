@@ -164,7 +164,6 @@
           23.95
         );
 
-        /* voweldocs stays visible; RAG + API are transparent overlay scenes */
         tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 32.6);
 
         tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 40.25);
@@ -173,6 +172,32 @@
           { autoAlpha: 0, y: 28 },
           { autoAlpha: 1, y: 0, duration: 0.38, ease: "power3.out" },
           40.25
+        );
+
+        /* #vd-fab: same DOM node as comp-voweldocs; here we only drive API / key / “active” beat (overwrite child timeline). */
+        var T_API = 40.25;
+        var T_KEY = 1.58;
+        var ow = { overwrite: "auto" };
+        tl.to("#vd-fab", { autoAlpha: 0, scale: 0.88, duration: 0.2, ease: "power2.in", ...ow }, T_API);
+        tl.fromTo(
+          "#vd-fab",
+          { autoAlpha: 0, scale: 0.88, backgroundColor: "#27272a" },
+          { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(1.25)", ...ow },
+          T_API + T_KEY
+        );
+        tl.to("#vd-fab", { scale: 0.9, duration: 0.1, ease: "power2.in", ...ow }, T_API + T_KEY + 0.5);
+        tl.to(
+          "#vd-fab",
+          {
+            scale: 1,
+            backgroundColor: "#22c55e",
+            borderColor: "#86efac",
+            boxShadow: "0 12px 36px rgba(22, 163, 74, 0.5)",
+            duration: 0.4,
+            ease: "back.out(1.45)",
+            ...ow,
+          },
+          T_API + T_KEY + 0.6
         );
 
         tl.to("#scene-api", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, 46.5);
