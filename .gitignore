@@ -34,4 +34,5 @@ raw-media/
 
 # Kokoro TTS output (tts-utilities/kokoro_script.py)
 tts-utilities/output/
+**/assets/*.wav
 
