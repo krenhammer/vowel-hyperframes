@@ -1,6 +1,9 @@
 /**
  * Mock quadrant zoom (vowel-components): 2× scale with xPercent / yPercent panning.
  *
+ * Not loaded by vowel-components while comp-github / comp-codespace / comp-voweldocs have the
+ * mock-quadrant-tour.js script tag HTML-commented and tour calls block-commented — restore there.
+ *
  * **Holding a zoom while other anims run** — the zoom target only changes when you call
  * `hfMockQuadrant.addSegment` / `setState`. Gaps in time on your timeline = hold. Example:
  *   var t = 1.0;

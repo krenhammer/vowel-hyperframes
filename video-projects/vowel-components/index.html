@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
+    <!-- 16:9 master (commented, not removed): content="width=1920, height=1080" -->
+    <meta name="viewport" content="width=1080, height=1920" />
     <title>vowel-components — component beats</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <link rel="stylesheet" href="animated-image-background/AnimatedImageBackground.css" />
@@ -18,25 +19,71 @@
         padding: 0;
         box-sizing: border-box;
       }
+      /*
+        Previous horizontal (16:9) canvas — do not delete; see vertical + letterbox below.
+        html, body { width: 1920px; height: 1080px; }
+        #root { width: 1920px; height: 1080px; }
+        .scene-wrap { width: 1920px; height: 1080px; } — full-bleed, no .scene-scale-* wrapper.
+      */
       html,
       body {
-        width: 1920px;
-        height: 1080px;
+        width: 1080px;
+        height: 1920px;
         overflow: hidden;
         background: #020617;
         font-family: "DM Sans", system-ui, sans-serif;
       }
       #root {
         position: relative;
-        width: 1920px;
-        height: 1080px;
+        width: 1080px;
+        height: 1920px;
         overflow: hidden;
+        isolation: isolate;
+        /* Landscape mock comps stay 1920×1080; scale+letterbox into 9:16 (see COMPONENTS.md). */
+        --vf-mock-landscape-w: 1080;
+      }
+      /*
+        Letterbox 16:9 compositions into the portrait frame. Mock quadrant zoom in comp-*.html
+        is commented out (script include + calls); source kept in mock-quadrant-tour.js.
+      */
+      .scene-scale-host {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /*
+          Full-bleed solid here blocked every layer below: #scene-wordstack-intro is z-index 150
+          and the master timeline never toggled the host, so only the intro was visible. Keep the
+          letterbox / mock backing on .scene-scale-viewport only; body/#root still fill the frame.
+        */
+        background: transparent;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .scene-scale-viewport {
+        width: calc(1px * var(--vf-mock-landscape-w, 1080));
+        height: calc(1px * var(--vf-mock-landscape-w, 1080) * 1080 / 1920);
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: #020617;
+      }
+      .scene-scale-viewport > .scene-wrap {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px !important;
+        height: 1080px !important;
+        transform: scale(calc(var(--vf-mock-landscape-w, 1080) / 1920));
+        transform-origin: 0 0;
+        background: #020617;
+        backface-visibility: hidden;
+        pointer-events: none;
       }
       .scene-wrap {
         position: absolute;
         inset: 0;
-        width: 1920px;
-        height: 1080px;
         pointer-events: none;
       }
       /* Full-frame word-stack opener (comp-wordstack-intro); fades to reveal inbox underneath. */
@@ -165,13 +212,14 @@
     </style>
   </head>
   <body>
+    <!-- Master: 9:16; was 1920×1080 (data-width / data-height on #root). -->
     <div
       id="root"
       data-composition-id="vowel-components-main"
       data-start="0"
       data-duration="78.51"
-      data-width="1920"
-      data-height="1080"
+      data-width="1080"
+      data-height="1920"
     >
       <!-- vowel-turso-rag: .karaoke-wrap--ai rail + ghost dialogue word (“There” in transcript). -->
       <div
@@ -184,116 +232,146 @@
       >
         <div class="vd-inapp-dialogue-chrome__watermark" aria-hidden="true">There</div>
       </div>
-      <div
-        id="scene-wordstack-intro"
-        class="scene-wrap"
-        data-composition-id="comp-wordstack-intro"
-        data-composition-src="compositions/comp-wordstack-intro.html"
-        data-start="0"
-        data-duration="2.46"
-        data-track-index="0"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-inbox"
-        class="scene-wrap"
-        data-composition-id="comp-inbox"
-        data-composition-src="compositions/comp-inbox.html"
-        data-start="0"
-        data-duration="11.46"
-        data-track-index="1"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-github"
-        class="scene-wrap"
-        data-composition-id="comp-github"
-        data-composition-src="compositions/comp-github.html"
-        data-start="11.11"
-        data-duration="8"
-        data-track-index="2"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-codespace"
-        class="scene-wrap"
-        data-composition-id="comp-codespace"
-        data-composition-src="compositions/comp-codespace.html"
-        data-start="18.76"
-        data-duration="9"
-        data-track-index="3"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-voweldocs"
-        class="scene-wrap"
-        data-composition-id="comp-voweldocs"
-        data-composition-src="compositions/comp-voweldocs.html"
-        data-start="27.41"
-        data-duration="23.25"
-        data-track-index="4"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-rag"
-        class="scene-wrap"
-        data-composition-id="comp-rag-modal"
-        data-composition-src="compositions/comp-rag-modal.html"
-        data-start="36.06"
-        data-duration="8"
-        data-track-index="5"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-api"
-        class="scene-wrap"
-        data-composition-id="comp-api-modal"
-        data-composition-src="compositions/comp-api-modal.html"
-        data-start="43.71"
-        data-duration="7"
-        data-track-index="6"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-turso-svg"
-        class="scene-wrap"
-        data-composition-id="comp-turso-svg-bg"
-        data-composition-src="compositions/comp-turso-svg-bg.html"
-        data-start="51.21"
-        data-duration="8.65"
-        data-track-index="7"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-voweldocs-cta-bg"
-        class="scene-wrap"
-        data-composition-id="comp-voweldocs-cta-bg"
-        data-composition-src="compositions/comp-voweldocs-cta-bg.html"
-        data-start="59.86"
-        data-duration="8.65"
-        data-track-index="12"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-      <div
-        id="scene-outro"
-        class="scene-wrap"
-        data-composition-id="comp-outro"
-        data-composition-src="compositions/comp-outro.html"
-        data-start="68.51"
-        data-duration="10"
-        data-track-index="13"
-        data-width="1920"
-        data-height="1080"
-      ></div>
+      <div id="scene-wordstack-intro" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-wordstack-intro"
+            data-composition-src="compositions/comp-wordstack-intro.html"
+            data-start="0"
+            data-duration="2.46"
+            data-track-index="0"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-inbox" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-inbox"
+            data-composition-src="compositions/comp-inbox.html"
+            data-start="0"
+            data-duration="11.46"
+            data-track-index="1"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-github" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-github"
+            data-composition-src="compositions/comp-github.html"
+            data-start="11.11"
+            data-duration="8"
+            data-track-index="2"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-codespace" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-codespace"
+            data-composition-src="compositions/comp-codespace.html"
+            data-start="18.76"
+            data-duration="9"
+            data-track-index="3"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-voweldocs" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-voweldocs"
+            data-composition-src="compositions/comp-voweldocs.html"
+            data-start="27.41"
+            data-duration="23.25"
+            data-track-index="4"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-rag" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-rag-modal"
+            data-composition-src="compositions/comp-rag-modal.html"
+            data-start="36.06"
+            data-duration="8"
+            data-track-index="5"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-api" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-api-modal"
+            data-composition-src="compositions/comp-api-modal.html"
+            data-start="43.71"
+            data-duration="7"
+            data-track-index="6"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-turso-svg" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-turso-svg-bg"
+            data-composition-src="compositions/comp-turso-svg-bg.html"
+            data-start="51.21"
+            data-duration="8.65"
+            data-track-index="7"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-voweldocs-cta-bg" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-voweldocs-cta-bg"
+            data-composition-src="compositions/comp-voweldocs-cta-bg.html"
+            data-start="59.86"
+            data-duration="8.65"
+            data-track-index="12"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+      <div id="scene-outro" class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            class="scene-wrap"
+            data-composition-id="comp-outro"
+            data-composition-src="compositions/comp-outro.html"
+            data-start="68.51"
+            data-duration="10"
+            data-track-index="13"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
       <!--
         Caption: after config modal is dismissed (not while scene-api is up). 20vw tray, abs-bars. data-vd-state + data-vd-speaker; FAB (vdCaptionSet).
         Hoisted in #root (fixed) so it stacks over scene-rag and scene-api.
@@ -362,6 +440,13 @@
         tl.set("#scene-turso-svg", { autoAlpha: 0 }, 0);
         tl.set("#scene-voweldocs-cta-bg", { autoAlpha: 0 }, 0);
         tl.set("#scene-outro", { autoAlpha: 0 }, 0);
+        /* Hand off to inbox: the intro host must leave (in addition to any in-comp fade). */
+        tl.set("#scene-wordstack-intro", { autoAlpha: 1 }, 0);
+        tl.to(
+          "#scene-wordstack-intro",
+          { autoAlpha: 0, duration: 0.45, ease: "power2.inOut" },
+          Math.max(0, WORDSTACK_INTRO - 0.45)
+        );
 
         tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65 + INBOX_LEAD);
         tl.fromTo(

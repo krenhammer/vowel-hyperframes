@@ -7,12 +7,8 @@
   style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
 >
   <div class="chrome">
-    <div
-      class="viewport"
-      data-mock-qz="1"
-      data-mock-qz-hold="1"
-      data-mock-qz-scale="2"
-    >
+    <!-- Mock quadrant (disabled, kept): data-mock-qz="1" data-mock-qz-hold="1" data-mock-qz-scale="2" on .viewport -->
+    <div class="viewport">
       <aside class="sidebar">
         <div class="abs-bar sb-lbl"></div>
         <div class="f-item" id="f-a"><div class="abs-bar fi a"></div></div>
@@ -248,7 +244,7 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script src="compositions/components/mock-quadrant-tour.js"></script>
+  <!-- <script src="compositions/components/mock-quadrant-tour.js"></script> -->
   <script>
     (function () {
       window.__timelines = window.__timelines || {};
@@ -265,9 +261,11 @@
 
       tl.from(root + " #blk-tsx .c-line", { autoAlpha: 0, x: -14, duration: 0.3, stagger: 0.09, ease: "expo.out" }, 0.3);
 
+      /* Mock quadrant tour (disabled, kept)
       if (typeof window.hfAddMockQuadrantTour === "function") {
         window.hfAddMockQuadrantTour(tl, vp, 0.35, { scale: 2, holdAfterNW: 1, zoomInDuration: 0.75, panDuration: 0.7 });
       }
+      */
 
       tl.to(root + " #pv-scroll .mock-page", { y: -56, duration: 1.35, ease: "power2.inOut" }, 4.9);
 

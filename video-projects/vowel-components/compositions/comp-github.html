@@ -7,12 +7,8 @@
   style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
 >
   <div class="chrome">
-    <div
-      class="viewport"
-      data-mock-qz="1"
-      data-mock-qz-hold="1"
-      data-mock-qz-scale="2"
-    >
+    <!-- Mock quadrant (disabled, kept): data-mock-qz="1" data-mock-qz-hold="1" data-mock-qz-scale="2" on .viewport -->
+    <div class="viewport">
       <aside class="tree">
         <div class="tree-title">vowel-sdk</div>
         <div class="tree-item level-0"><div class="abs-bar t-w"></div></div>
@@ -228,7 +224,7 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script src="compositions/components/mock-quadrant-tour.js"></script>
+  <!-- <script src="compositions/components/mock-quadrant-tour.js"></script> -->
   <script>
     (function () {
       window.__timelines = window.__timelines || {};
@@ -239,7 +235,7 @@
       tl.from(vp, { autoAlpha: 0, scale: 0.97, duration: 0.5 }, 0.1);
       tl.from(root + " .tree-item", { autoAlpha: 0, x: -16, duration: 0.35, stagger: 0.06 }, 0.25);
 
-      /* NW (¼ screen) → 1s hold → NE → SE → SW → full view; see mock-quadrant-tour.js */
+      /* NW (¼ screen) → 1s hold → NE → SE → SW → full view; see mock-quadrant-tour.js
       if (typeof window.hfAddMockQuadrantTour === "function") {
         window.hfAddMockQuadrantTour(tl, vp, 0.4, {
           scale: 2,
@@ -248,6 +244,7 @@
           panDuration: 0.7,
         });
       }
+      */
 
       tl.to(root + " #gh-file", { backgroundColor: "rgba(37,99,235,0.25)", border: "1px solid #3b82f6", duration: 0.3 }, 4.95);
       tl.from(root + " #gh-panel", { autoAlpha: 0, x: 80, duration: 0.55, ease: "expo.out" }, 5.05);
