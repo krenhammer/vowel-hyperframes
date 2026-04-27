@@ -4,7 +4,7 @@
   data-duration="2.46"
   data-width="1920"
   data-height="1080"
-  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; background: transparent"
+  style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: transparent"
 >
   <!--
     Word-stack opener (from vowel-turso-rag #opener pattern).
@@ -29,6 +29,11 @@
   </div>
 
   <style>
+    /* Size container for cqi/cqh — works in both 16:9 and 9:16 when the host sets width/height. */
+    [data-composition-id="comp-wordstack-intro"] {
+      container-type: size;
+      container-name: vowel-wordstack-intro;
+    }
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro {
       position: absolute;
       inset: 0;
@@ -45,29 +50,37 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: clamp(18px, 2.8vh, 36px);
+      gap: clamp(18px, min(2.8cqi, 3.5cqh), 36px);
       text-align: center;
-      padding: 0 clamp(40px, 6vw, 100px);
+      padding: 0 clamp(16px, min(6cqi, 8cqh), 100px);
+      max-width: min(92cqi, 100%);
+      box-sizing: border-box;
     }
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro__inner--sub-above {
       flex-direction: column-reverse;
     }
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro__hero {
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: clamp(96px, 12vw, 200px);
+      font-size: clamp(42px, min(12cqi, 18cqh), 200px);
       font-weight: 900;
       color: #fff;
-      line-height: 0.9;
+      line-height: 0.95;
       letter-spacing: -0.04em;
       opacity: 1;
       transform-origin: 50% 50%;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-break: normal;
+      text-wrap: balance;
     }
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro__sub {
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: clamp(28px, 3.2vw, 56px);
+      font-size: clamp(22px, min(3.4cqi, 5cqh), 56px);
       font-weight: 700;
       color: #fff;
       letter-spacing: 0.14em;
+      max-width: 100%;
+      overflow-wrap: break-word;
     }
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro__sub span {
       display: inline-block;

@@ -4,6 +4,12 @@
 These are reusable components animated by hyperframes 
 with appropriate config params
 
+## Portrait (9:16) vs landscape (16:9)
+
+- **Landscape mocks** (`comp-inbox`, `comp-voweldocs`, etc.) are authored at **1920×1080**. Dropped straight into a **1080×1920** master, they must be **letterboxed** with a scale that does **not** rely on `transform: scale()` alone on the flex child — the child still lays out at **1920px wide** and will overflow a **1080px** canvas, clipping content (e.g. a word-stack hero cut off mid-word).
+- **Pattern** (see `video-projects/vowel-onboarding/style.css`): wrap the composition in `.scene-scale-viewport` sized to **`--vf-mock-landscape-w`** × **`--vf-mock-landscape-w` × 1080/1920**, with the 1920×1080 comp **absolutely positioned** and **`transform-origin: 0 0; scale(calc(var(--vf-mock-landscape-w) / 1920))`**. For a vertical master, set `#root { --vf-mock-landscape-w: 1080; }`; for a horizontal master that fills the mock, use **`1920`** (scale **1**).
+- **`comp-wordstack-intro`** fills its host with **`width/height: 100%`** and uses **container query units** (`cqi` / `cqh`) so typography tracks narrow **or** short frames without clipping.
+
 
 Global Animations
 - Quarter-screen zoom: `compositions/components/mock-quadrant-tour.js` defines **`window.hfMockQuadrant`**: `getState`, `addSegment` (tween from one named corner to the next: `full` | `nw` | `ne` | `se` | `sw`), `setState` (instant), `addTour` (one-shot loop), `fabTrackSelectors` for global FABs. Put zoom-related attributes on the **transform target** (e.g. `.vd-zoom-canvas` or `.viewport`): `data-mock-qz-scale` (e.g. `2`), `data-mock-qz-hold` (tour: pause after NW), `data-mock-qz-pan` (tour: pan leg duration). **Holding a zoom** while other GSAP anims run: use `addSegment` / return times — advance a `t` variable only when you add the *next* zoom leg; in between, schedule `tl.to(...)` at the same or overlapping times so the mock stays in `ne` (etc.) for that window.

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="vowel-onboarding-master"
+      data-width="1080"
+      data-height="1920"
+      data-start="0"
+      data-duration="91"
+    >
+      <audio
+        id="voice"
+        preload="auto"
+        data-start="0"
+        data-duration="80.8"
+        data-track-index="0"
+        src="assets/SCRIPT_DRAFT.wav"
+        data-volume="1"
+      ></audio>
+      <!-- BGM: duck under in-app dialogue (from “Hey,” through “shot.” + 2s breath). -->
+      <audio
+        id="bgm-pre"
+        preload="auto"
+        data-start="0"
+        data-duration="28.69"
+        data-track-index="1"
+        data-media-start="0"
+        src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3"
+        data-volume="0.06"
+      ></audio>
+      <audio
+        id="bgm-dialogue"
+        preload="auto"
+        data-start="28.69"
+        data-duration="46.97"
+        data-track-index="1"
+        data-media-start="28.69"
+        src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3"
+        data-volume="0"
+      ></audio>
+      <audio
+        id="bgm-post"
+        preload="auto"
+        data-start="75.66"
+        data-duration="15.34"
+        data-track-index="1"
+        data-media-start="75.66"
+        src="assets/Independent Music Licensing Collective (IMLC) - Joseph Sacco - Memory Lane.mp3"
+        data-volume="0.06"
+      ></audio>
+
+      <div id="stage-bg" class="clip" data-start="0" data-duration="91" data-track-index="2"></div>
+
+      <div class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            id="scene-inbox-host"
+            class="clip"
+            data-composition-id="comp-inbox"
+            data-composition-src="compositions/comp-inbox.html"
+            data-start="0"
+            data-duration="28.5"
+            data-track-index="3"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+
+      <div class="scene-scale-host">
+        <div class="scene-scale-viewport">
+          <div
+            id="scene-voweldocs-host"
+            class="clip"
+            data-composition-id="comp-voweldocs"
+            data-composition-src="compositions/comp-voweldocs.html"
+            data-start="28.35"
+            data-duration="52.5"
+            data-track-index="4"
+            data-width="1920"
+            data-height="1080"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Full-bleed portrait opener (same idea as vowel-turso-rag #opener — not letterboxed 16:9). -->
+      <div
+        id="scene-intro-host"
+        class="clip"
+        data-composition-id="comp-wordstack-intro"
+        data-composition-src="compositions/comp-wordstack-intro.html"
+        data-start="0"
+        data-duration="3.05"
+        data-track-index="5"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+
+      <div
+        id="vd-inapp-dialogue-chrome"
+        class="clip vd-inapp-dialogue-chrome"
+        data-start="0"
+        data-duration="91"
+        data-track-index="6"
+        aria-hidden="true"
+      >
+        <div class="vd-inapp-dialogue-chrome__watermark" aria-hidden="true">Hey</div>
+      </div>
+
+      <div id="karaoke-wrap" class="clip" data-start="0" data-duration="91" data-track-index="7">
+        <div id="karaoke-root" aria-live="polite">
+          <div id="karaoke-stage"></div>
+        </div>
+      </div>
+
+      <div id="outro-layer" class="clip" data-start="0" data-duration="91" data-track-index="8">
+        <p class="out-hero">Get started today at</p>
+        <a class="out-url" href="https://vowel.to">https://vowel.to</a>
+        <p class="out-attr">
+          Music: «Memory Lane» by Joseph Sacco (Independent Music Licensing Collective — IMLC), licensed under
+          <a href="https://creativecommons.org/licenses/by/4.0/" style="color: inherit">CC BY 4.0</a>.
+          <a
+            href="https://freemusicarchive.org/music/independent-music-licensing-collective-imlc/new-signings-compilation/joseph-sacco-memory-lane/"
+            style="color: inherit"
+            >Free Music Archive</a
+          >.
+        </p>
+      </div>
+
+      <div
+        id="vd-caption"
+        class="vd-caption clip vd-cap--inactive"
+        data-vd-state="inactive"
+        data-vd-speaker=""
+        aria-hidden="true"
+        data-start="0"
+        data-duration="91"
+        data-track-index="9"
+      >
+        <div class="vd-cap-inner">
+          <div class="vd-cap-body" id="vd-cap-body"></div>
+        </div>
+      </div>
+
+      <div class="grain-veil" aria-hidden="true"></div>
+    </div>
+
+    <script src="transcript-words.js"></script>
+    <script>
+      (function () {
+        var W = window.ONBOARDING_WORDS;
+        if (W && W.length) {
+          /* Hero = first 2 tokens (“Customer onboarding,”); sub = “how’s” “it” “going?” with transcript timings. */
+          window.VOWEL_WORDSTACK_INTRO = {
+            words: W.slice(0, 5),
+            headlineWordCount: 2,
+            subPosition: "below",
+          };
+        }
+      })();
+    </script>
+    <script src="script.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["vowel-onboarding-master"] =
+        window.__timelines["vowel-onboarding-master"] || gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

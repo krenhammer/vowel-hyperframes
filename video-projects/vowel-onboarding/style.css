@@ -1,0 +1,455 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,800&family=JetBrains+Mono:wght@500;600&display=swap");
+
+html {
+  background: #000000;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+  background: #000000;
+  font-family: "DM Sans", system-ui, sans-serif;
+}
+
+:root {
+  /* True black — letterbox + shell match comp canvas (#000) */
+  --bg-deep: #000000;
+  --text: #e8eef8;
+  --accent: #0fd06e;
+  --outro-vowel-link: #a8d4ff;
+  --outro-vowel-link-border: color-mix(in srgb, #a8d4ff 55%, transparent);
+}
+
+#root {
+  position: relative;
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+  background: #000000;
+  isolation: isolate;
+  /*
+    Landscape mock comps are authored at 1920×1080. In 9:16 masters, set this to the usable width
+    (usually the composition width) so scale + letterbox math matches. For 16:9 masters use 1920.
+  */
+  --vf-mock-landscape-w: 1080;
+}
+
+#stage-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg-deep);
+  pointer-events: none;
+}
+
+/*
+  Letterbox 1920×1080 mocks into the root frame.
+  Important: transform:scale() does NOT shrink layout width — without this viewport, a 1920px-wide
+  flex item overflows a 1080px-wide canvas and clips (e.g. “Customer onbo”).
+*/
+.scene-scale-host {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-deep);
+  pointer-events: none;
+  overflow: hidden;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.scene-scale-viewport {
+  width: calc(1px * var(--vf-mock-landscape-w, 1080));
+  height: calc(1px * var(--vf-mock-landscape-w, 1080) * 1080 / 1920);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  /* Fills subpixel hairlines at scaled comp edges (avoids grey fringes from transparency). */
+  background: #000000;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.scene-scale-viewport > * {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px !important;
+  height: 1080px !important;
+  transform: scale(calc(var(--vf-mock-landscape-w, 1080) / 1920));
+  transform-origin: 0 0;
+  /* Solid backing so scaled layer never composites against Studio / parent grey. */
+  background: #000000;
+  backface-visibility: hidden;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+#scene-intro-host {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  background: #000000;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#scene-inbox-host {
+  z-index: 4;
+  background: #000000;
+}
+
+#scene-voweldocs-host {
+  z-index: 5;
+  background: #000000;
+}
+
+#vd-inapp-dialogue-chrome {
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  pointer-events: none;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.vd-inapp-dialogue-chrome__watermark {
+  position: absolute;
+  left: 8%;
+  top: 6%;
+  font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(120px, 14vw, 220px);
+  line-height: 1;
+  color: rgba(232, 238, 248, 0.12);
+  letter-spacing: -0.03em;
+  user-select: none;
+}
+
+#karaoke-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 22;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  /* Upper-field copy (not vertically dead-center) + safer side padding so lines don’t clip. */
+  justify-content: flex-start;
+  padding: clamp(140px, 15vh, 260px) min(5%, 44px) min(10%, 160px);
+  pointer-events: none;
+  box-sizing: border-box;
+  overflow: visible;
+  min-height: 0;
+}
+
+#karaoke-wrap.karaoke-wrap--ai {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 120px min(1.8%, 20px) 40px;
+  box-sizing: border-box;
+}
+
+#karaoke-root {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+#karaoke-wrap:not(.karaoke-wrap--ai) #karaoke-root {
+  position: absolute;
+  inset: 0;
+  flex: none;
+  max-width: 100%;
+  width: 100%;
+  min-height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#karaoke-wrap.karaoke-wrap--ai #karaoke-root {
+  position: relative;
+  flex: 0 1 auto;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+#karaoke-stage {
+  position: relative;
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: visible;
+  height: 100%;
+}
+
+#karaoke-wrap:not(.karaoke-wrap--ai) #karaoke-stage {
+  min-height: 100%;
+  align-self: stretch;
+}
+
+#karaoke-wrap.karaoke-wrap--ai #karaoke-stage {
+  min-height: 1200px;
+  flex: 0 0 auto;
+  height: auto;
+}
+
+.beat-block {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0 min(3%, 36px);
+  box-sizing: border-box;
+  text-align: center;
+  align-items: flex-start;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  overflow: visible;
+}
+
+.beat-block.valign-mid {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.beat-inner {
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+}
+
+.beat-block.align-left:not(.valign-mid) {
+  justify-content: flex-start;
+}
+
+.beat-block.align-left .beat-inner {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.beat-block.beat-ai {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0 3% 0 3.5%;
+}
+
+.beat-block.beat-ai .beat-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  max-width: 100%;
+  font-style: normal;
+  font-weight: 400;
+  color: #f2f2f2;
+  font-size: 46px;
+}
+
+#karaoke-stage .kw {
+  display: inline-block;
+  margin-right: 0.12em;
+  margin-bottom: 0.04em;
+  opacity: 0;
+  transform-origin: 50% 80%;
+  will-change: transform, opacity;
+  vertical-align: baseline;
+  font-size: clamp(44px, 5.6vw, 64px);
+  line-height: 1.12;
+}
+
+#karaoke-stage .beat-block.beat-ai .kw {
+  font-size: 46px;
+  line-height: 1.28;
+  margin-bottom: 0.02em;
+  font-weight: 400;
+}
+
+#karaoke-stage .kw.em {
+  color: var(--accent);
+  font-weight: 800;
+  font-style: normal;
+}
+
+#karaoke-stage .kw.em-vowel {
+  color: #fff;
+  text-transform: lowercase;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.35), 0 0 22px rgba(255, 255, 255, 0.18);
+}
+
+#karaoke-stage .beat-block.beat-ai .kw.em {
+  color: #f2f2f2;
+  font-weight: 400;
+}
+
+#karaoke-stage .beat-block.beat-ai .kw.em-vowel {
+  color: #fff;
+  text-transform: lowercase;
+  font-weight: 500;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.32), 0 0 20px rgba(255, 255, 255, 0.14);
+}
+
+#outro-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 38;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 28px;
+  padding: 72px 48px min(200px, 12%);
+  text-align: left;
+  background: radial-gradient(ellipse 80% 70% at 50% 40%, #0f1728 0%, #000000 62%);
+  opacity: 0;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+#outro-layer .out-hero {
+  font-family: "Outfit", sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+  max-width: 100%;
+  text-align: left;
+}
+
+#outro-layer .out-url {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 40px;
+  font-weight: 600;
+  color: var(--outro-vowel-link);
+  text-decoration: none;
+  padding: 16px 28px;
+  border-radius: 14px;
+  border: 2px solid var(--outro-vowel-link-border);
+  align-self: flex-start;
+  text-align: left;
+}
+
+#outro-layer .out-attr {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(232, 238, 248, 0.38);
+  line-height: 1.45;
+  max-width: 100%;
+  margin-top: 1em;
+  text-align: left;
+}
+
+.grain-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  /* Normal blend keeps letterbox #000; overlay was lifting blacks / edges vs Studio grey. */
+  opacity: 0.045;
+  mix-blend-mode: normal;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+#vd-caption {
+  position: fixed;
+  left: 1.5%;
+  right: 1.5%;
+  top: 72px;
+  width: auto;
+  z-index: 200;
+  max-width: none;
+  padding: 14px 22px 16px;
+  box-sizing: border-box;
+  border-radius: 14px;
+  background: rgba(15, 17, 23, 0.95);
+  border: 1px solid #3f3f46;
+  border-top: 2px solid #52525b;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  text-align: left;
+}
+
+#vd-caption.vd-cap--inactive {
+  opacity: 0.72;
+  border-color: #27272a;
+  border-top-color: #3f3f46;
+}
+
+#vd-caption .abs-bar {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+#vd-caption .vd-cap-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#vd-caption .cap-w-100 {
+  width: 100%;
+}
+#vd-caption .cap-w-92 {
+  width: 92%;
+}
+#vd-caption .cap-w-88 {
+  width: 88%;
+}
+#vd-caption .cap-w-80 {
+  width: 80%;
+}
+#vd-caption .cap-w-72 {
+  width: 72%;
+}
+#vd-caption .cap-w-60 {
+  width: 60%;
+}
