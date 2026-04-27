@@ -291,6 +291,21 @@ body {
   line-height: 1.12;
 }
 
+/* Second half of merged tokens (timing only; see karaokeDisplayForIndex in script.js). */
+#karaoke-stage .kw.kw-merge-tail {
+  width: 0;
+  max-width: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+  line-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  vertical-align: bottom;
+}
+
 #karaoke-stage .beat-block.beat-ai .kw {
   font-size: 46px;
   line-height: 1.28;

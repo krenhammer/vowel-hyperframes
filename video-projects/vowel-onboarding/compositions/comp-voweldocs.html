@@ -34,25 +34,43 @@
         <div class="abs-bar sb-logo-bar"></div>
         <div class="sb-group">
           <div class="abs-bar sb-sec-label"></div>
-          <div class="sb-row on clip" id="sb-start"><div class="abs-bar sb-line full"></div></div>
-          <div class="sb-row dim clip"><div class="abs-bar sb-line almost"></div></div>
-          <div class="sb-row dim clip"><div class="abs-bar sb-line half"></div></div>
+          <div class="sb-row on clip" id="vd-sb-self" data-vd-nav="selfhost">
+            <div class="abs-bar sb-line full"></div>
+          </div>
+          <div class="sb-row dim clip">
+            <div class="abs-bar sb-line almost"></div>
+          </div>
         </div>
         <div class="sb-group">
           <div class="abs-bar sb-sec-label wide"></div>
-          <div class="sb-row dim clip"><div class="abs-bar sb-line almost"></div></div>
-          <div class="sb-row dim clip" id="sb-rag"><div class="abs-bar sb-line full"></div></div>
-          <div class="sb-row dim clip"><div class="abs-bar sb-line narrow"></div></div>
+          <div class="sb-row dim clip" id="vd-sb-skills" data-vd-nav="agentskills">
+            <div class="abs-bar sb-line full"></div>
+          </div>
+          <div class="sb-row dim clip">
+            <div class="abs-bar sb-line half"></div>
+          </div>
         </div>
         <div class="sb-group">
           <div class="abs-bar sb-sec-label"></div>
-          <div class="sb-row dim clip"><div class="abs-bar sb-line half"></div></div>
-          <div class="sb-row dim clip"><div class="abs-bar sb-line almost"></div></div>
+          <div class="sb-row dim clip" id="vd-sb-vowelbot" data-vd-nav="vowelbot">
+            <div class="abs-bar sb-line full"></div>
+          </div>
+          <div class="sb-row dim clip">
+            <div class="abs-bar sb-line almost"></div>
+          </div>
         </div>
       </aside>
       <div class="main">
         <article class="doc">
-          <h1 class="clip" id="vd-h1">Voice client</h1>
+          <!-- Toast overlay: absolutely positioned; .doc uses fixed padding-top so body copy never jumps. -->
+          <div class="vd-abs-cap-wrap" id="vd-abstract-captions" aria-hidden="true">
+            <div class="vd-ac-inner">
+              <div class="abs-bar vd-ac-line" data-ac-idx="0"></div>
+              <div class="abs-bar vd-ac-line" data-ac-idx="1"></div>
+              <div class="abs-bar vd-ac-line" data-ac-idx="2"></div>
+            </div>
+          </div>
+          <h1 class="clip" id="vd-h1">Self-host</h1>
           <div class="lead-wrap clip" id="vd-lead-wrap">
             <div class="lead-set" id="lead-a">
               <div class="abs-bar lead-line w-a1"></div>
@@ -66,7 +84,7 @@
           </div>
           <div class="scroll-host clip" id="vd-scroll">
             <div class="scroll-inner" id="vd-scroll-inner">
-              <h2 class="sub hash" id="vd-sub-a"><span class="hashsym">#</span> Integrating the client</h2>
+              <h2 class="sub hash" id="vd-sub-a"><span class="hashsym">#</span> What is Vowel?</h2>
               <div class="abs-stack">
                 <div class="abs-bar line w-100"></div>
                 <div class="abs-bar line w-92"></div>
@@ -78,7 +96,7 @@
                 <div class="abs-bar line w-90 indent"></div>
                 <div class="abs-bar line w-70 indent"></div>
               </div>
-              <h2 class="sub target" id="vd-sub-b">App shell &amp; routing</h2>
+              <h2 class="sub target" id="vd-sub-b">TLS &amp; certificates</h2>
               <div class="abs-stack">
                 <div class="abs-bar line w-95"></div>
                 <div class="abs-bar line w-82"></div>
@@ -300,13 +318,46 @@
       display: flex;
       flex-direction: column;
     }
+    /* Toast stack: absolutely positioned on top of doc body — fixed .doc padding reserves space so nothing jumps. */
     [data-composition-id="comp-voweldocs"] .doc {
+      position: relative;
       flex: 1;
-      padding: 28px 48px 32px;
+      /* Top band reserved for 1–3 toast lines + inner padding (constant; line count only changes overdraw in this band). */
+      padding: 100px 48px 32px 48px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       min-height: 0;
+    }
+    [data-composition-id="comp-voweldocs"] .vd-abs-cap-wrap {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 24px;
+      z-index: 5;
+      width: auto;
+      max-width: min(100%, 820px);
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+    [data-composition-id="comp-voweldocs"] .vd-ac-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 14px 10px;
+      border-radius: 10px;
+      background: rgba(27, 27, 34, 0.96);
+      border: 1px solid #2d2d38;
+      min-height: 0;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    }
+    [data-composition-id="comp-voweldocs"] .vd-ac-line {
+      height: 11px;
+      border-radius: 5px;
+      background: #52525b;
+      transition: width 0.12s ease, opacity 0.12s ease;
     }
     [data-composition-id="comp-voweldocs"] h1 {
       font-size: 38px;

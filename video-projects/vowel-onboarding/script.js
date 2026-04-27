@@ -75,47 +75,118 @@
     return stripPunct(String(t)).toLowerCase();
   }
 
-  /** Transcript time: first “Vowelbot” in the in-app dialogue (AI asks about Vowelbot). */
-  function findFirstVowelbotInDialogue() {
+  /**
+   * Display text for karaoke (timing stays on transcript words; copy-only fixes).
+   * Merged pairs: first index shows the full token; second gets class `kw-merge-tail` (see style.css).
+   */
+  function karaokeDisplayForIndex(i) {
+    if (i === 65 && wordNorm(WORDS[i].text) === "rag") {
+      return "RAG";
+    }
+    if (i === 169 && /^pool\.?$/i.test(String(WORDS[i].text).trim())) {
+      return "pull";
+    }
+    /* “welcome to Vowel Docs.” → “voweldocs” + hidden tail word */
+    if (i === 81 && wordNorm(WORDS[i].text) === "vowel" && WORDS[i + 1] && /^docs\.?$/i.test(String(WORDS[i + 1].text).trim())) {
+      return "voweldocs";
+    }
+    if (i === 82 && WORDS[i - 1] && wordNorm(WORDS[i - 1].text) === "vowel" && /^docs\.?$/i.test(String(WORDS[i].text).trim())) {
+      return "";
+    }
+    /* “GitHub code space” → “Codespace” + hidden tail */
+    if (i === 180 && wordNorm(WORDS[i].text) === "code" && WORDS[i + 1] && wordNorm(WORDS[i + 1].text) === "space") {
+      return "Codespace";
+    }
+    if (i === 181 && WORDS[i - 1] && wordNorm(WORDS[i - 1].text) === "code" && wordNorm(WORDS[i].text) === "space") {
+      return "";
+    }
+    return WORDS[i].text;
+  }
+
+  /** Transcript time: “Vowel’s … agent skills?” — fire when “skills?” hits (title + nav sync to the phrase). */
+  function findAgentSkillsMention() {
     var i;
-    for (i = AI_FIRST; i < WORDS.length; i++) {
-      if (wordNorm(WORDS[i].text) === "vowelbot") {
-        return { t: WORDS[i].start, idx: i };
+    for (i = AI_FIRST; i < WORDS.length - 1; i++) {
+      if (wordNorm(WORDS[i].text) === "agent") {
+        var n2 = wordNorm(WORDS[i + 1].text);
+        if (n2 === "skills" || n2 === "skills?") {
+          return { t: WORDS[i + 1].start, idx: i + 1 };
+        }
       }
     }
     return null;
   }
 
-  /** After Vowelbot beat: “… add the Vowel client to” — back to Voice client doc view. */
-  function findVowelClientPairAfter(minIdx) {
-    var i;
-    for (i = Math.max(0, minIdx || 0); i < WORDS.length - 1; i++) {
-      if (wordNorm(WORDS[i].text) === "vowel" && wordNorm(WORDS[i + 1].text) === "client") {
-        return { t: WORDS[i].start, idx: i };
+  /** Transcript time: first “Vowelbot” in the in-app dialogue (AI asks about Vowelbot). */
+  function findFirstVowelbotInDialogue() {
+    var j;
+    for (j = AI_FIRST; j < WORDS.length; j++) {
+      if (wordNorm(WORDS[j].text) === "vowelbot") {
+        return { t: WORDS[j].start, idx: j };
+      }
+    }
+    return null;
+  }
+
+  /**
+   * After the Vowelbot Q&A, return the mock to Self-host when the user acknowledges the long AI
+   * answer (first “Wow,” in dialogue). Do not use “Vowel” + “client” — that lands mid-answer while
+   * the agent is still explaining Vowelbot / add flow, and reads as a false title change.
+   */
+  function findUserWowAfterVowelbotSection() {
+    var w;
+    for (w = AI_FIRST; w < WORDS.length; w++) {
+      if (/^Wow,?\s*$/i.test(String(WORDS[w].text).trim())) {
+        return { t: WORDS[w].start, idx: w };
       }
     }
     return null;
   }
 
   var VD_MODES = {
-    client: {
-      h1: "Voice client",
-      subA: "# Integrating the client",
-      subB: "App shell & routing",
+    selfhost: {
+      h1: "Self-host",
+      subA: "# What is Vowel?",
+      subB: "TLS & certificates",
+    },
+    agentskills: {
+      h1: "Agent Skills",
+      subA: "# Skills & tools",
+      subB: "Plug-ins & capabilities",
     },
     vowelbot: {
       h1: "Vowelbot",
-      subA: "# Repo selection",
-      subB: "GitHub & branch setup",
+      subA: "# Install & connect",
+      subB: "Repo & GitHub",
     },
   };
 
-  function vdModeTargets() {
-    var host = document.getElementById("scene-voweldocs-host");
-    if (!host) {
+  function vdGetCompRoot() {
+    var r = document.querySelector(
+      '#scene-voweldocs-host [data-composition-id="comp-voweldocs"]'
+    );
+    if (r) {
+      return r;
+    }
+    r = document.querySelector('[data-composition-id="comp-voweldocs"]');
+    if (r) {
+      return r;
+    }
+    var h = document.getElementById("scene-voweldocs-host");
+    if (!h) {
       return null;
     }
-    var root = host.querySelector('[data-composition-id="comp-voweldocs"]');
+    if (h.shadowRoot) {
+      r = h.shadowRoot.querySelector('[data-composition-id="comp-voweldocs"]');
+      if (r) {
+        return r;
+      }
+    }
+    return h.querySelector('[data-composition-id="comp-voweldocs"]');
+  }
+
+  function vdModeTargets() {
+    var root = vdGetCompRoot();
     if (!root) {
       return null;
     }
@@ -124,25 +195,27 @@
       h1: root.querySelector("#vd-h1"),
       subA: root.querySelector("#vd-sub-a"),
       subB: root.querySelector("#vd-sub-b"),
+      acInner: root.querySelector("#vd-abstract-captions .vd-ac-inner"),
     };
   }
 
   function vdNavForMode(root, mode) {
-    var start = root.querySelector("#sb-start");
-    var rag = root.querySelector("#sb-rag");
-    if (!start || !rag) {
-      return;
-    }
-    if (mode === "client") {
-      start.classList.add("on");
-      start.classList.remove("dim");
-      rag.classList.remove("on");
-      rag.classList.add("dim");
-    } else {
-      start.classList.remove("on");
-      start.classList.add("dim");
-      rag.classList.remove("dim");
-      rag.classList.add("on");
+    var ids = ["vd-sb-self", "vd-sb-skills", "vd-sb-vowelbot"];
+    var activeId =
+      mode === "agentskills" ? "vd-sb-skills" : mode === "vowelbot" ? "vd-sb-vowelbot" : "vd-sb-self";
+    var k;
+    for (k = 0; k < ids.length; k++) {
+      var row = root.querySelector("#" + ids[k]);
+      if (!row) {
+        continue;
+      }
+      if (ids[k] === activeId) {
+        row.classList.add("on");
+        row.classList.remove("dim");
+      } else {
+        row.classList.remove("on");
+        row.classList.add("dim");
+      }
     }
   }
 
@@ -164,11 +237,8 @@
     if (!c) {
       return;
     }
-    var host = document.getElementById("scene-voweldocs-host");
-    if (!host) {
-      return;
-    }
-    var fab = host.querySelector("#vd-fab");
+    var root = vdGetCompRoot();
+    var fab = root ? root.querySelector("#vd-fab") : null;
     if (!fab) {
       return;
     }
@@ -221,6 +291,110 @@
       return "idle";
     }
     return "idle";
+  }
+
+  /** True at the first word of a new AI or user turn (not on every word while the same party speaks). */
+  function vdAbstractIsNewTurn(idx) {
+    if (idx < AI_FIRST || idx > 198) {
+      return false;
+    }
+    var r = inAppDialogueRole(idx);
+    if (r !== "ai" && r !== "user") {
+      return false;
+    }
+    if (idx === AI_FIRST) {
+      return true;
+    }
+    return inAppDialogueRole(idx - 1) !== r;
+  }
+
+  /** Deterministic abstract bar widths (%) — no Math.random (render contract). */
+  var VD_ABS_WIDTHS = [100, 92, 88, 80, 72, 68, 62, 55];
+
+  function vdAbstractCaptionIdle() {
+    var root = vdGetCompRoot();
+    if (!root) {
+      return;
+    }
+    var inner = root.querySelector("#vd-abstract-captions .vd-ac-inner");
+    var lines = root.querySelectorAll("#vd-abstract-captions .vd-ac-line");
+    if (!inner || !lines.length) {
+      return;
+    }
+    var base = [44, 58];
+    var li;
+    for (li = 0; li < lines.length; li++) {
+      lines[li].style.display = li < 2 ? "block" : "none";
+      if (li < 2) {
+        lines[li].style.width = (base[li] || 50) + "%";
+      }
+    }
+  }
+
+  /**
+   * New toast content for this turn only (called on speaker change, not each word).
+   * 1–3 lines, neutral — simulates a new “toast” when a party starts speaking.
+   */
+  function vdAbstractCaptionUpdate(wordIdx) {
+    var root = vdGetCompRoot();
+    if (!root) {
+      return;
+    }
+    var inner = root.querySelector("#vd-abstract-captions .vd-ac-inner");
+    var lines = root.querySelectorAll("#vd-abstract-captions .vd-ac-line");
+    if (!inner || !lines.length) {
+      return;
+    }
+    if (wordIdx < AI_FIRST || wordIdx > 198) {
+      return;
+    }
+    var role = inAppDialogueRole(wordIdx);
+    if (role !== "ai" && role !== "user") {
+      vdAbstractCaptionIdle();
+      return;
+    }
+    var nLines = 1 + ((wordIdx * 19 + (role === "ai" ? 1 : 2) * 7) % 3);
+    var li;
+    for (li = 0; li < lines.length; li++) {
+      var show = li < nLines;
+      lines[li].style.display = show ? "block" : "none";
+      if (show) {
+        lines[li].style.width =
+          VD_ABS_WIDTHS[(wordIdx * 13 + li * 5 + (role === "ai" ? 0 : 1)) % VD_ABS_WIDTHS.length] + "%";
+      }
+    }
+  }
+
+  function wireVdAbstractCaptionsToMaster(timeline) {
+    timeline.add(
+      function () {
+        vdAbstractCaptionIdle();
+      },
+      VOWELDOCS_IN
+    );
+    var ac;
+    for (ac = AI_FIRST; ac <= 198; ac++) {
+      if (!WORDS[ac]) {
+        break;
+      }
+      if (!vdAbstractIsNewTurn(ac)) {
+        continue;
+      }
+      (function (ix) {
+        timeline.add(
+          function () {
+            vdAbstractCaptionUpdate(ix);
+          },
+          WORDS[ix].start
+        );
+      })(ac);
+    }
+    timeline.add(
+      function () {
+        vdAbstractCaptionIdle();
+      },
+      INBOX_REPRISE
+    );
   }
 
   function wireVoweldocsVoiceFabToMaster(timeline) {
@@ -284,13 +458,59 @@
     );
   }
 
-  /** Apply copy + sidebar without animation (defaults + late sub-comp load). */
+  /** Last applied Vowel Docs nav mode; avoids re-animating on ensure retries. */
+  var vdLastAppliedMode = null;
+
+  /**
+   * Draw attention when the doc page mode changes: staggered blur+slide+fade on h1 and subs;
+   * slight scale pop on the main title.
+   */
+  function vowelDocsAnimateModeChange(t) {
+    var els = [t.h1, t.subA, t.subB].filter(Boolean);
+    if (!els.length) {
+      return;
+    }
+    gsap.killTweensOf(els);
+    var tlA = gsap.timeline({ defaults: { ease: "power2.out" } });
+    if (t.h1) {
+      gsap.set(t.h1, { transformOrigin: "0% 50%" });
+      tlA.fromTo(
+        t.h1,
+        { y: 14, autoAlpha: 0.3, filter: "blur(5px)", scale: 0.94 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          filter: "blur(0px)",
+          scale: 1,
+          duration: 0.48,
+          ease: "back.out(1.25)",
+        },
+        0
+      );
+    }
+    var subEls = [t.subA, t.subB].filter(Boolean);
+    if (subEls.length) {
+      tlA.fromTo(
+        subEls,
+        { y: 10, autoAlpha: 0.25, filter: "blur(4px)" },
+        { y: 0, autoAlpha: 1, filter: "blur(0px)", duration: 0.38, stagger: 0.08 },
+        0.06
+      );
+    }
+    tlA.eventCallback("onComplete", function () {
+      gsap.set(els, { clearProps: "filter" });
+    });
+  }
+
+  /** Apply copy + sidebar; optional entrance motion when `mode` differs from last application. */
   function vowelDocsApplyModeImmediate(mode) {
     var spec = VD_MODES[mode];
     var t = vdModeTargets();
-    if (!t || !spec) {
+    if (!t || !spec || !t.h1) {
       return false;
     }
+    var isChange = vdLastAppliedMode != null && vdLastAppliedMode !== mode;
+    vdLastAppliedMode = mode;
     t.h1.textContent = spec.h1;
     var subAText = spec.subA.replace(/^#\s*/, "");
     if (t.subA) {
@@ -300,65 +520,41 @@
       t.subB.textContent = spec.subB;
     }
     vdNavForMode(t.root, mode);
-    gsap.set([t.h1, t.subA, t.subB].filter(Boolean), { autoAlpha: 1, y: 0 });
+    if (isChange) {
+      vowelDocsAnimateModeChange(t);
+    } else {
+      gsap.set([t.h1, t.subA, t.subB].filter(Boolean), { autoAlpha: 1, y: 0, scale: 1, filter: "none" });
+    }
     return true;
   }
 
-  /** Sub-comp `data-composition-src` can resolve after the host clip starts — poll until DOM exists. */
-  function vowelDocsApplyModeImmediateRetry(mode, onDone) {
-    var n = 0;
-    function tick() {
-      if (vowelDocsApplyModeImmediate(mode)) {
-        if (typeof onDone === "function") {
-          onDone();
-        }
-        return;
-      }
-      n += 1;
-      if (n < 60) {
-        setTimeout(tick, 40);
-      }
-    }
-    tick();
-  }
-
   /**
-   * Fade doc title/sections + swap copy + sidebar. Sub-comp can load after VOWELDOCS_IN — retry until DOM is ready.
+   * Immediate apply + aggressive retry (sub-comp often mounts after timeline callbacks).
+   * No fade — fades were leaving titles invisible when GSAP + clip timing fought.
    */
-  function vowelDocsModeRun(mode) {
-    var spec = VD_MODES[mode];
-    if (!spec) {
+  function vowelDocsEnsureMode(mode) {
+    function tryOnce() {
+      return vowelDocsApplyModeImmediate(mode);
+    }
+    if (tryOnce()) {
       return;
     }
-    var attempt = 0;
-    var maxAttempts = 45;
-    function tryRun() {
-      var t = vdModeTargets();
-      if (!t) {
-        attempt += 1;
-        if (attempt < maxAttempts) {
-          setTimeout(tryRun, 40);
-        }
-        return;
+    var host = document.getElementById("scene-voweldocs-host");
+    var n = 0;
+    var id = setInterval(function () {
+      if (tryOnce() || n++ > 200) {
+        clearInterval(id);
       }
-      var els = [t.h1, t.subA, t.subB].filter(Boolean);
-      gsap
-        .timeline({ defaults: { ease: "power2.out" } })
-        .to(els, { autoAlpha: 0, y: -10, duration: 0.22, stagger: 0.04, ease: "power2.in" })
-        .add(function () {
-          t.h1.textContent = spec.h1;
-          var subAText = spec.subA.replace(/^#\s*/, "");
-          if (t.subA) {
-            t.subA.innerHTML = '<span class="hashsym">#</span> ' + subAText;
-          }
-          if (t.subB) {
-            t.subB.textContent = spec.subB;
-          }
-          vdNavForMode(t.root, mode);
-        })
-        .fromTo(els, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.36, stagger: 0.07, ease: "power2.out" });
+    }, 25);
+    if (host && typeof MutationObserver !== "undefined") {
+      var obs = new MutationObserver(function () {
+        tryOnce();
+      });
+      obs.observe(host, { childList: true, subtree: true });
+      setTimeout(function () {
+        obs.disconnect();
+      }, 12000);
     }
-    tryRun();
   }
 
   if (!WORDS || !WORDS.length) {
@@ -395,12 +591,16 @@
     var sp = document.createElement("span");
     sp.className = "kw";
     sp.id = "kw-" + i;
+    var disp = karaokeDisplayForIndex(i);
+    if (disp === "") {
+      sp.classList.add("kw-merge-tail");
+    }
     if (isEmVowel(WORDS[i], prevText)) {
       sp.classList.add("em-vowel");
     } else if (isEm(WORDS[i], prevText)) {
       sp.classList.add("em");
     }
-    sp.textContent = WORDS[i].text + "\u00a0";
+    sp.textContent = disp === "" ? "" : disp + "\u00a0";
     prevText = WORDS[i].text;
     if (i < AI_FIRST) {
       innerP.appendChild(sp);
@@ -409,10 +609,13 @@
     }
   }
 
+  var agentSk = findAgentSkillsMention();
   var vowelbotAsk = findFirstVowelbotInDialogue();
-  var vowelClientAfterBot = vowelbotAsk ? findVowelClientPairAfter(vowelbotAsk.idx + 1) : null;
+  var wowAfterBot = findUserWowAfterVowelbotSection();
+  var T_VD_AGENT_SKILLS = agentSk ? agentSk.t : 42.12;
   var T_VD_VOWELBOT = vowelbotAsk ? vowelbotAsk.t : 44.78;
-  var T_VD_CLIENT_RETURN = vowelClientAfterBot ? vowelClientAfterBot.t : 56.28;
+  /** Back to Self-host when the user breaks in after the full GitHub / client answer (not mid “add the Vowel client…”). */
+  var T_VD_RETURN = wowAfterBot ? wowAfterBot.t : 68.74;
 
   var tl = gsap.timeline({ paused: true });
 
@@ -473,26 +676,40 @@
     }
     /* Do not dim the word we just sentence-cleared (would fight autoAlpha: 0). */
     if (idx > 0 && !endsSentence(WORDS[idx - 1].text)) {
-      tl.to(
-        "#kw-" + (idx - 1),
-        { opacity: 0.38, scale: 0.99, duration: 0.12, ease: "sine.out" },
+      if (karaokeDisplayForIndex(idx) === "") {
+        /* Second half of a merged on-screen word — do not dim the previous span (81 / 180). */
+      } else {
+        var dimAt = idx - 1;
+        if (karaokeDisplayForIndex(dimAt) === "") {
+          dimAt = idx - 2;
+        }
+        if (dimAt >= 0) {
+          tl.to(
+            "#kw-" + dimAt,
+            { opacity: 0.38, scale: 0.99, duration: 0.12, ease: "sine.out" },
+            t0
+          );
+        }
+      }
+    }
+    if (karaokeDisplayForIndex(idx) === "") {
+      tl.set(sel, { opacity: 0, y: 0, scale: 1, display: "inline-block" }, t0);
+    } else {
+      tl.fromTo(
+        sel,
+        { opacity: 0, y: 10, scale: 0.98, display: "inline-block" },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          display: "inline-block",
+          duration: 0.14,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
         t0
       );
     }
-    tl.fromTo(
-      sel,
-      { opacity: 0, y: 10, scale: 0.98, display: "inline-block" },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        display: "inline-block",
-        duration: 0.14,
-        ease: "power2.out",
-        overwrite: "auto",
-      },
-      t0
-    );
   }
 
   tl.to("#scene-inbox-host", { autoAlpha: 0, duration: 0.4, ease: "power3.in" }, VOWELDOCS_IN);
@@ -522,29 +739,43 @@
     KARAOKE_HANDOFF
   );
 
-  /* Vowel Docs: default mock is client (comp HTML). Animate to Vowelbot + repo beat, then back to client. */
+  /* Vowel Docs: Self-host → Agent Skills → Vowelbot → Self-host after user “Wow,” (end of Vowelbot answer). */
   tl.add(
     function () {
-      vowelDocsApplyModeImmediateRetry("client");
+      vowelDocsEnsureMode("selfhost");
     },
     VOWELDOCS_IN
   );
   tl.add(
     function () {
-      vowelDocsModeRun("vowelbot");
+      vowelDocsEnsureMode("agentskills");
+    },
+    T_VD_AGENT_SKILLS
+  );
+  tl.add(
+    function () {
+      vowelDocsEnsureMode("vowelbot");
     },
     T_VD_VOWELBOT
   );
   tl.add(
     function () {
-      vowelDocsModeRun("client");
+      vowelDocsEnsureMode("selfhost");
     },
-    T_VD_CLIENT_RETURN
+    T_VD_RETURN
+  );
+  /* Backup: sub-comp can attach just after these beats. */
+  tl.add(
+    function () {
+      vowelDocsEnsureMode("agentskills");
+    },
+    T_VD_AGENT_SKILLS + 0.35
   );
 
   wireVoweldocsVoiceFabToMaster(tl);
+  wireVdAbstractCaptionsToMaster(tl);
 
-  /* Closing CTA: NE zoom to costs, then stagger + unload — after “give Vowel a try”; leads into “clearing out that support inbox.” */
+  /* Closing CTA: cut to inbox already in NE zoom + cost total; no extra camera or row motion (comp-inbox reprise). */
   tl.to(
     "#scene-voweldocs-host",
     { autoAlpha: 0, duration: 0.45, filter: "blur(2px)", ease: "power2.in" },

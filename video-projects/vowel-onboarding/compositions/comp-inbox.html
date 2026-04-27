@@ -662,25 +662,41 @@
       }
       window.resetInboxToFullList = resetInboxToFullList;
       /**
-       * Manual NE/cost/unwind (master ~74.5s) — comp timeline is past the opening act; run a fresh sub-timeline.
+       * End CTA (~74.5s): snap to the same NE zoom + cost chip as the opening “on top of these” beat — no camera
+       * tween in, no row stagger, no unload. Stays static while the outro VO runs.
        */
       window.playInboxNeCostUnwindReprise = function () {
-        resetInboxToFullList();
         var r = document.querySelector("[data-composition-id=\"comp-inbox\"]");
         if (!r) {
           return null;
         }
+        var zel = r.querySelector(".inbox-camera-surface");
+        var tw = { force3D: true, overwrite: "auto" };
+        if (zel) {
+          gsap.set(zel, {
+            x: 0,
+            y: 0,
+            z: 0,
+            scale: sOpen,
+            rotation: 0,
+            skewX: 0,
+            skewY: 0,
+            transformOrigin: originCost,
+            ...tw,
+          });
+        }
         var rows = r.querySelectorAll(".mail-row");
         var rj;
         for (rj = 0; rj < rows.length; rj++) {
-          gsap.set(rows[rj], { autoAlpha: 0, y: 18 });
+          gsap.set(rows[rj], { autoAlpha: 1, y: 0, x: 0, scale: 1 });
         }
         var cclip = r.querySelector("#inbox-cost-clip");
         if (cclip) {
-          gsap.set(cclip, { autoAlpha: 0, y: 0, display: "block" });
+          gsap.set(cclip, { autoAlpha: 1, y: 0, display: "block" });
         }
-        var rt = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
-        addNeCostUnwindBlock(rt, 0);
+        setCostDisplay(total);
+        var rt = gsap.timeline({ paused: true });
+        rt.set({}, {}, 0.01);
         return rt;
       };
       window.__timelines["comp-inbox"] = tl;
