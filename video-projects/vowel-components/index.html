@@ -99,6 +99,27 @@
         transform: scale(calc(1920 / 1080));
         transform-origin: center center;
       }
+      /*
+        comp-outro: left-aligned 1920×1080 layout sits in the cropped-off left region after cover-scale.
+        Inset the flex column to the visible center band: width 1080px * 1080/1920 ≈ 607.5px, centered in 1920.
+      */
+      #scene-outro.scene-scale-host--portrait-fill [data-composition-id="comp-outro"] #comp-outro-layer {
+        align-items: center;
+        padding-left: calc(50% - (1080 / 1920 * 1080px) / 2);
+        padding-right: calc(50% - (1080 / 1920 * 1080px) / 2);
+      }
+      #scene-outro.scene-scale-host--portrait-fill [data-composition-id="comp-outro"] #comp-outro-layer .comp-outro-hero,
+      #scene-outro.scene-scale-host--portrait-fill [data-composition-id="comp-outro"] #comp-outro-layer .comp-outro-url,
+      #scene-outro.scene-scale-host--portrait-fill [data-composition-id="comp-outro"] #comp-outro-layer .comp-outro-attr {
+        max-width: 100%;
+        align-self: center;
+        text-align: left;
+      }
+      #scene-outro.scene-scale-host--portrait-fill [data-composition-id="comp-outro"] #comp-outro-layer .comp-outro-attr {
+        /* Narrow visible band: a bit more horizontal inset than the 16:9 comp defaults. */
+        padding-left: clamp(28px, 3.2vmin, 44px);
+        padding-right: clamp(28px, 3.2vmin, 44px);
+      }
       .scene-wrap {
         position: absolute;
         inset: 0;

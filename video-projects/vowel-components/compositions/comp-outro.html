@@ -62,13 +62,19 @@
     }
     [data-composition-id="comp-outro"] #comp-outro-layer .comp-outro-attr {
       font-family: "DM Sans", system-ui, sans-serif;
-      font-size: clamp(15px, 1.35vw, 18px);
+      font-size: clamp(10px, 0.95vw, 13px);
       font-weight: 400;
       color: rgba(232, 238, 248, 0.38);
-      line-height: 1.45;
+      line-height: 1.5;
       max-width: min(1100px, 90vw);
       margin-top: 0.85em;
+      margin-left: 0;
+      margin-right: 0;
       text-align: left;
+      box-sizing: border-box;
+      /* Inset from comp / portrait visible band edges so lines do not hug the viewport. */
+      padding-left: clamp(20px, 2.8vw, 48px);
+      padding-right: clamp(20px, 2.8vw, 48px);
     }
   </style>
   <div id="comp-outro-layer">
