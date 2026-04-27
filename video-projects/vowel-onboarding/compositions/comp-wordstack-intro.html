@@ -1,10 +1,10 @@
 <div
   data-composition-id="comp-wordstack-intro"
   data-start="0"
-  data-duration="3.05"
-  data-width="1080"
-  data-height="1920"
-  style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #000000"
+  data-duration="3.38"
+  data-width="1920"
+  data-height="1080"
+  style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: transparent"
 >
   <!--
     Word-stack opener (from vowel-turso-rag #opener pattern).
@@ -19,7 +19,7 @@
     id="wordstack-intro-root"
     class="wordstack-intro clip"
     data-start="0"
-    data-duration="3.05"
+    data-duration="3.38"
     data-track-index="0"
   >
     <div class="wordstack-intro__inner">
@@ -29,14 +29,11 @@
   </div>
 
   <style>
+    /* Size container for cqi/cqh — works in both 16:9 and 9:16 when the host sets width/height. */
     [data-composition-id="comp-wordstack-intro"] {
-      background: #000000;
-      border: none;
-      outline: none;
-      box-shadow: none;
       container-type: size;
+      container-name: vowel-wordstack-intro;
     }
-    /* Match vowel-turso-rag #opener: full-frame flex, centered both axes. */
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro {
       position: absolute;
       inset: 0;
@@ -46,70 +43,42 @@
       justify-content: center;
       pointer-events: none;
       box-sizing: border-box;
-      background: #000000;
-      border: none;
-      outline: none;
-      box-shadow: none;
-      padding: 0;
+      background: #000;
     }
-    /* Match vowel-turso-rag #opener-inner: column, centered, same gap + horizontal padding. */
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro__inner {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 36px;
+      gap: clamp(18px, min(2.8cqi, 3.5cqh), 36px);
       text-align: center;
-      width: 100%;
-      max-width: 100%;
-      padding: 0 80px;
+      padding: 0 clamp(16px, min(6cqi, 8cqh), 100px);
+      max-width: min(92cqi, 100%);
       box-sizing: border-box;
-      border: none;
-      outline: none;
     }
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro__inner--sub-above {
       flex-direction: column-reverse;
     }
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro__hero {
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: 120px;
+      font-size: clamp(42px, min(12cqi, 18cqh), 200px);
       font-weight: 900;
-      color: #ffffff;
-      line-height: 0.92;
+      color: #fff;
+      line-height: 0.95;
       letter-spacing: -0.04em;
       opacity: 1;
       transform-origin: 50% 50%;
-      width: 100%;
       max-width: 100%;
-      box-sizing: border-box;
-      text-align: center;
-      hyphens: none;
-    }
-    /* Stacked headline: true horizontal center per line (avoids inline/br offset + clipping). */
-    [data-composition-id="comp-wordstack-intro"] .wordstack-intro__hero--stack {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    [data-composition-id="comp-wordstack-intro"] .wordstack-intro__hero-line {
-      display: block;
-      width: max-content;
-      max-width: 100%;
-      text-align: center;
-      box-sizing: border-box;
-    }
-    /* Second line: never break inside “onboarding,”. */
-    [data-composition-id="comp-wordstack-intro"] .wordstack-intro__hero-atom {
-      white-space: nowrap;
+      overflow-wrap: break-word;
+      word-break: normal;
+      text-wrap: balance;
     }
     [data-composition-id="comp-wordstack-intro"] .wordstack-intro__sub {
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: clamp(32px, min(7.5vw, 5.5vh), 80px);
+      font-size: clamp(22px, min(3.4cqi, 5cqh), 56px);
       font-weight: 700;
-      color: #ffffff;
-      letter-spacing: 0.08em;
-      width: 100%;
+      color: #fff;
+      letter-spacing: 0.14em;
       max-width: 100%;
       overflow-wrap: break-word;
     }
@@ -143,7 +112,11 @@
             ? window.ONBOARDING_WORDS.slice(0, 5)
             : DEMO_WORDS;
       var headlineWordCount =
-        typeof cfg.headlineWordCount === "number" ? cfg.headlineWordCount : 2;
+        typeof cfg.headlineWordCount === "number"
+          ? cfg.headlineWordCount
+          : window.ONBOARDING_WORDS && window.ONBOARDING_WORDS.length
+            ? 2
+            : 1;
       headlineWordCount = Math.max(1, Math.min(headlineWordCount, WORDS.length));
       var subPosition = cfg.subPosition === "above" ? "above" : "below";
 
@@ -151,109 +124,13 @@
       var subEl = document.getElementById("wordstack-sub");
       var innerEl = document.querySelector('[data-composition-id="comp-wordstack-intro"] .wordstack-intro__inner');
 
-      /** Title-case each headline token for display (transcript may be “onboarding,”). */
-      function titleCaseHeadlineToken(s) {
-        if (s == null || s === "") {
-          return s;
-        }
-        var t = String(s);
-        var m = /^([^a-zA-Z]*)([a-zA-Z])([\s\S]*)$/.exec(t);
-        if (!m) {
-          return t;
-        }
-        return m[1] + m[2].toUpperCase() + m[3];
-      }
-
-      function escapeHtml(s) {
-        return String(s)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
-      }
-
       var heroParts = [];
       var hi;
       for (hi = 0; hi < headlineWordCount; hi++) {
-        heroParts.push(titleCaseHeadlineToken(WORDS[hi].text));
+        heroParts.push(WORDS[hi].text);
       }
       if (heroEl) {
-        heroEl.classList.remove("wordstack-intro__hero--stack");
-        if (heroParts.length >= 2) {
-          heroEl.classList.add("wordstack-intro__hero--stack");
-          var firstLine = escapeHtml(heroParts[0]);
-          var restLine = escapeHtml(heroParts.slice(1).join(" "));
-          heroEl.innerHTML =
-            '<span class="wordstack-intro__hero-line">' +
-            firstLine +
-            '</span><span class="wordstack-intro__hero-line wordstack-intro__hero-atom">' +
-            restLine +
-            "</span>";
-        } else if (heroParts.length === 1) {
-          heroEl.textContent = heroParts[0];
-        } else {
-          heroEl.textContent = "";
-        }
-      }
-
-      /**
-       * Usable width for hero lines: .wordstack-intro__inner has padding 0 80px; `clientWidth`
-       * includes that padding, so measuring against full clientWidth allowed ~160px overflow (clipped “g”).
-       */
-      function innerContentWidthPx(el) {
-        if (!el) {
-          return 0;
-        }
-        var cs = window.getComputedStyle(el);
-        var pl = parseFloat(cs.paddingLeft) || 0;
-        var pr = parseFloat(cs.paddingRight) || 0;
-        return Math.max(0, el.clientWidth - pl - pr);
-      }
-
-      function heroLinesOverflow(maxW) {
-        var tol = 0.5;
-        if (heroEl.classList.contains("wordstack-intro__hero--stack")) {
-          var lines = heroEl.querySelectorAll(".wordstack-intro__hero-line");
-          var li;
-          for (li = 0; li < lines.length; li++) {
-            if (lines[li].scrollWidth > maxW + tol) {
-              return true;
-            }
-          }
-          return false;
-        }
-        return heroEl.scrollWidth > maxW + tol;
-      }
-
-      function fitHeroToInnerWidth() {
-        if (!heroEl || !innerEl) {
-          return;
-        }
-        var maxW = innerContentWidthPx(innerEl) - 14;
-        if (maxW < 80) {
-          return;
-        }
-        var minPx = 40;
-        var maxPx = 220;
-        var lo = minPx;
-        var hi = maxPx;
-        var i;
-        for (i = 0; i < 24; i++) {
-          var mid = (lo + hi) / 2;
-          heroEl.style.fontSize = mid + "px";
-          if (heroLinesOverflow(maxW)) {
-            hi = mid;
-          } else {
-            lo = mid;
-          }
-        }
-        var fs = Math.max(minPx, Math.floor(lo));
-        heroEl.style.fontSize = fs + "px";
-        while (fs > minPx && heroLinesOverflow(maxW)) {
-          fs -= 1;
-          heroEl.style.fontSize = fs + "px";
-        }
+        heroEl.textContent = heroParts.join(" ");
       }
 
       if (innerEl) {
@@ -283,8 +160,7 @@
       var OPENER_READ = lastEnd + 0.48;
       var FADE = OPENER_READ + 0.12;
 
-      gsap.set(rootSel + " .wordstack-intro__sub span", { opacity: 0, y: 0 });
-      gsap.set(rootSel + " .wordstack-intro__inner", { y: 0, scale: 1 });
+      gsap.set(rootSel + " .wordstack-intro__sub span", { opacity: 0 });
 
       for (var wi = headlineWordCount; wi < WORDS.length; wi++) {
         var w = WORDS[wi];
@@ -292,28 +168,33 @@
         if (!el) {
           continue;
         }
-        /* Opacity only — no y tween (centered column was drifting as lines appeared). */
-        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, w.start);
+        tl.fromTo(
+          el,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.15, ease: "power2.out" },
+          w.start
+        );
       }
 
       tl.to(
+        rootSel + " .wordstack-intro__inner",
+        {
+          scale: 1.08,
+          y: subPosition === "above" ? 8 : -8,
+          duration: 0.45,
+          ease: "power3.in",
+        },
+        FADE
+      );
+      tl.to(
         rootSel + " .wordstack-intro",
         { autoAlpha: 0, duration: 0.42, ease: "power2.in" },
-        FADE
+        FADE + 0.05
       );
 
       var TOTAL = FADE + 0.55;
       tl.set({}, {}, TOTAL);
       window.__timelines["comp-wordstack-intro"] = tl;
-
-      fitHeroToInnerWidth();
-      if (typeof gsap !== "undefined" && typeof gsap.delayedCall === "function") {
-        gsap.delayedCall(0.02, fitHeroToInnerWidth);
-        gsap.delayedCall(0.12, fitHeroToInnerWidth);
-      }
-      if (typeof document !== "undefined" && document.fonts && typeof document.fonts.ready !== "undefined") {
-        document.fonts.ready.then(fitHeroToInnerWidth);
-      }
     })();
   </script>
 </div>

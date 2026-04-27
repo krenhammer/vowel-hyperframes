@@ -81,6 +81,18 @@ body {
   box-shadow: none;
 }
 
+/*
+  Inbox 2× camera: scaled paint extends past 1920×1080 — default letterbox overflow was clipping
+  the mock when zoomed (vowel-components #scene-inbox + .scene-wrap use overflow: visible here).
+*/
+#scene-inbox-wrap.scene-scale-host {
+  overflow: visible;
+}
+#scene-inbox-wrap .scene-scale-viewport,
+#scene-inbox-wrap .scene-scale-viewport > * {
+  overflow: visible;
+}
+
 .scene-scale-viewport > * {
   position: absolute;
   left: 0;
@@ -114,6 +126,11 @@ body {
 #scene-inbox-host {
   z-index: 4;
   background: #000000;
+}
+
+/* Stack above voweldocs (5) only for end CTA reprise — no long-run z override. */
+#scene-inbox-host.scene-inbox-reprise {
+  z-index: 25;
 }
 
 #scene-voweldocs-host {
@@ -150,19 +167,23 @@ body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  /* Upper-field copy (not vertically dead-center) + safer side padding so lines don’t clip. */
   justify-content: flex-start;
-  padding: clamp(140px, 15vh, 260px) min(5%, 44px) min(10%, 160px);
+  /*
+    Symmetric vertical insets: asymmetric top/bottom padding was shoving the speech-caption block
+    downward and made sync karaoke feel like it “drifted” as beats wrapped.
+  */
+  padding: min(14%, 220px) min(5%, 44px);
   pointer-events: none;
   box-sizing: border-box;
   overflow: visible;
   min-height: 0;
 }
 
+/* VowelDocs / in-app line: a bit more horizontal copy room; keep same vertical rhythm as promo. */
 #karaoke-wrap.karaoke-wrap--ai {
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 120px min(1.8%, 20px) 40px;
+  padding: min(14%, 220px) min(1.8%, 20px);
   box-sizing: border-box;
 }
 
@@ -182,7 +203,8 @@ body {
   color: var(--text);
 }
 
-#karaoke-wrap:not(.karaoke-wrap--ai) #karaoke-root {
+/* Narration: one layout for promo + AI — don’t switch root/stage to flow + huge min-height at handoff. */
+#karaoke-wrap #karaoke-root {
   position: absolute;
   inset: 0;
   flex: none;
@@ -191,14 +213,6 @@ body {
   min-height: 100%;
   margin-left: auto;
   margin-right: auto;
-}
-
-#karaoke-wrap.karaoke-wrap--ai #karaoke-root {
-  position: relative;
-  flex: 0 1 auto;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
 }
 
 #karaoke-stage {
@@ -210,15 +224,9 @@ body {
   height: 100%;
 }
 
-#karaoke-wrap:not(.karaoke-wrap--ai) #karaoke-stage {
+#karaoke-wrap #karaoke-stage {
   min-height: 100%;
   align-self: stretch;
-}
-
-#karaoke-wrap.karaoke-wrap--ai #karaoke-stage {
-  min-height: 1200px;
-  flex: 0 0 auto;
-  height: auto;
 }
 
 .beat-block {

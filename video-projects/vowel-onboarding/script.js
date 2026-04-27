@@ -7,8 +7,10 @@
   var AI_FIRST = 78;
   var SCENE_HANDOFF = 28.35;
   var OUTRO_IN = 80.35;
-  /** No karaoke during word-stack intro — keep in sync with `#scene-intro-host` data-duration. */
-  var WORDSTACK_INTRO_END = 3.05;
+  /** CTA: transcript “…clearing out that support inbox.” — re-show + reset comp-inbox; “clearing” @ 78.68s. */
+  var INBOX_CTA = 78.4;
+  /** No karaoke during word-stack intro — keep in sync with `#scene-intro-host` + comp-wordstack-intro TOTAL. */
+  var WORDSTACK_INTRO_END = 3.38;
 
   function stripPunct(s) {
     return String(s).replace(/[.,?!:;'"'"]/g, "").trim();
@@ -249,7 +251,18 @@
           for (k = fromIdx; k <= toIdx; k++) {
             var sameBeat = (k < AI_FIRST) === (activeIdx < AI_FIRST);
             if (sameBeat) {
-              gsap.set("#kw-" + k, { autoAlpha: 0, scale: 1, y: 0 });
+              /*
+                autoAlpha+visibility still reserves layout for .kw { display: inline-block } — cleared
+                lines stack as invisible “ghost” width, so the next sentence drifts down. True clear = display.
+              */
+              gsap.set("#kw-" + k, {
+                display: "none",
+                opacity: 0,
+                visibility: "hidden",
+                scale: 1,
+                y: 0,
+                overwrite: "auto",
+              });
             }
           }
         }, tClear);
@@ -265,8 +278,16 @@
     }
     tl.fromTo(
       sel,
-      { opacity: 0, y: 10, scale: 0.98 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.14, ease: "power2.out" },
+      { opacity: 0, y: 10, scale: 0.98, display: "inline-block" },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        display: "inline-block",
+        duration: 0.14,
+        ease: "power2.out",
+        overwrite: "auto",
+      },
       t0
     );
   }
@@ -388,9 +409,43 @@
     68.0
   );
 
+  /* CTA: bring inbox back (not continuous — only for this line); reset to full 16 rows + static camera. */
+  tl.add(
+    function () {
+      if (typeof window.resetInboxToFullList === "function") {
+        window.resetInboxToFullList();
+      }
+      var inh = document.getElementById("scene-inbox-host");
+      if (inh) {
+        inh.classList.add("scene-inbox-reprise");
+      }
+    },
+    INBOX_CTA
+  );
+  tl.to(
+    "#scene-voweldocs-host",
+    { autoAlpha: 0, duration: 0.4, filter: "blur(2px)", ease: "power2.in" },
+    INBOX_CTA
+  );
+  tl.to(
+    "#scene-inbox-host",
+    { autoAlpha: 1, duration: 0.45, ease: "power2.out", overwrite: "auto" },
+    INBOX_CTA
+  );
+
   tl.fromTo("#outro-layer", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.65, ease: "power2.out" }, OUTRO_IN);
+  tl.add(
+    function () {
+      var inh = document.getElementById("scene-inbox-host");
+      if (inh) {
+        inh.classList.remove("scene-inbox-reprise");
+      }
+    },
+    OUTRO_IN
+  );
   tl.to("#karaoke-wrap", { autoAlpha: 0, duration: 0.45, ease: "power2.in" }, OUTRO_IN);
   tl.to("#scene-voweldocs-host", { autoAlpha: 0, filter: "blur(8px)", duration: 0.5 }, OUTRO_IN);
+  tl.to("#scene-inbox-host", { autoAlpha: 0, duration: 0.4, ease: "power2.in" }, OUTRO_IN);
   tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 0, duration: 0.35 }, OUTRO_IN);
   tl.to("#vd-caption", { autoAlpha: 0, duration: 0.3 }, OUTRO_IN);
 

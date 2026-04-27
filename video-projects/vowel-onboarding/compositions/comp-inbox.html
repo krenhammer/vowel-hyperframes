@@ -1,21 +1,22 @@
 <div
   data-composition-id="comp-inbox"
   data-start="0"
-  data-duration="11.46"
+  data-duration="91"
   data-width="1920"
   data-height="1080"
-  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible"
 >
   <div class="chrome">
-    <div class="inbox-zoom-wrap" id="inbox-zoom-wrap">
-      <div class="vd-zoom-canvas">
-      <div class="viewport">
-      <aside class="sidebar">
-        <h1 class="inbox-page-title" id="inbox-page-title">Support Inbox</h1>
-        <div class="sb-row"></div>
-        <div class="sb-row"></div>
-        <div class="sb-row active"></div>
-      </aside>
+    <!-- Single camera: entire 1280×1080 mock (sidebar + list) — uniform scale only, origin drives “closer to user”. -->
+    <div class="inbox-camera-surface">
+    <aside class="inbox-sidebar" aria-label="Inbox navigation">
+      <h1 class="inbox-page-title" id="inbox-page-title">Support Inbox</h1>
+      <div class="sb-row"></div>
+      <div class="sb-row"></div>
+      <div class="sb-row active"></div>
+    </aside>
+    <div class="inbox-main-column">
+        <div class="viewport">
       <main class="main">
         <!-- Large red $ in pink chip — upper‑right of main list. -->
         <div
@@ -26,8 +27,9 @@
           data-track-index="0"
         >
           <div class="inbox-cost-box" id="inbox-cost-box" aria-hidden="true">
-            <span class="inbox-cost-sym">$</span>
-            <span class="inbox-cost-val" id="inbox-cost-val">0</span>
+            <div class="inbox-cost-amount">
+              <span class="inbox-cost-sym">$</span><span class="inbox-cost-val" id="inbox-cost-val">0</span>
+            </div>
             <div class="inbox-cost-label">support</div>
           </div>
         </div>
@@ -150,8 +152,8 @@
           </div>
         </div>
       </main>
-      </div>
-      </div>
+        </div>
+    </div>
     </div>
   </div>
   <style>
@@ -167,40 +169,46 @@
       background: #3f3f46;
     }
     [data-composition-id="comp-inbox"] .chrome {
+      /* Filled band only — no flex “centering” (that + scale reads like aspect drift). */
       position: absolute;
-      top: 0;
-      bottom: 0;
+      inset: 0;
       left: 320px;
       right: 320px;
-      display: flex;
-      flex-direction: column;
-      /* Let zoomed UI extend vertically; frame is clipped by composition root only. */
       overflow: visible;
     }
     /*
-      Fills voweldocs-width chrome (1280×1080). Zoom uses transform-origin top-left + GSAP y compensation.
+      Fixed 1280×1080 (16:9) stage — all camera motion is uniform scale on this node only
+      (no scaleX/scaleY, no anisotropic transforms).
     */
-    [data-composition-id="comp-inbox"] .inbox-zoom-wrap {
+    [data-composition-id="comp-inbox"] .inbox-camera-surface {
       position: absolute;
-      inset: 0;
-      transform-origin: 0 0;
+      left: 0;
+      top: 0;
+      width: 1280px;
+      height: 1080px;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      box-sizing: border-box;
+      /* Must not clip own layer — 2× scale paints past 1280×1080; ancestors handle frame bounds. */
+      overflow: visible;
       will-change: transform;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
+      backface-visibility: hidden;
+      transform: translateZ(0);
     }
-    [data-composition-id="comp-inbox"] .vd-zoom-canvas {
+    [data-composition-id="comp-inbox"] .inbox-main-column {
       flex: 1;
+      min-width: 0;
       min-height: 0;
-      position: relative;
       display: flex;
       flex-direction: column;
+      position: relative;
       overflow: hidden;
     }
     [data-composition-id="comp-inbox"] .inbox-cost-clip {
       position: absolute;
       z-index: 3;
-      right: 12px;
+      right: 36px;
       top: 58px;
       left: auto;
       transform-origin: 50% 50%;
@@ -208,19 +216,31 @@
     }
     [data-composition-id="comp-inbox"] .inbox-cost-box {
       display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0 12px;
-      padding: 26px 32px 22px 28px;
-      border-radius: 24px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 224px;
+      min-width: 224px;
+      max-width: 224px;
+      box-sizing: border-box;
+      padding: 14px 12px 12px;
+      border-radius: 18px;
       background: linear-gradient(180deg, #fce7f3 0%, #fbcfe8 100%);
-      border: 3px solid #f472b6;
-      box-shadow: 0 14px 40px rgba(190, 24, 93, 0.26), 0 3px 0 rgba(255, 255, 255, 0.65) inset;
+      border: 2px solid #f472b6;
+      box-shadow: 0 10px 32px rgba(190, 24, 93, 0.22), 0 2px 0 rgba(255, 255, 255, 0.65) inset;
+    }
+    [data-composition-id="comp-inbox"] .inbox-cost-amount {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: center;
+      width: 100%;
+      gap: 0.08em;
     }
     [data-composition-id="comp-inbox"] .inbox-cost-sym,
     [data-composition-id="comp-inbox"] .inbox-cost-val {
       font-weight: 800;
-      font-size: 78px;
+      font-size: 72px;
       line-height: 1;
       color: #dc2626;
       font-variant-numeric: tabular-nums;
@@ -228,27 +248,31 @@
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
     }
     [data-composition-id="comp-inbox"] .inbox-cost-sym {
-      font-size: 58px;
-      margin-right: 4px;
+      font-size: 54px;
+      margin-right: 0;
     }
     [data-composition-id="comp-inbox"] .inbox-cost-label {
       width: 100%;
-      margin-top: 6px;
-      font-size: 15px;
+      margin-top: 5px;
+      text-align: center;
+      font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       color: #be185d;
     }
-    /* Flat flex shell — same pattern as comp-voweldocs .viewport (no card radius / drop shadow). */
+    /* Flat flex shell — only .main (email column) lives here; sidebar is outside zoom. */
     [data-composition-id="comp-inbox"] .viewport {
       flex: 1;
       min-height: 0;
+      height: 100%;
       display: flex;
+      flex-direction: column;
       transform-origin: 50% 50%;
       overflow: hidden;
+      min-width: 0;
     }
-    [data-composition-id="comp-inbox"] .sidebar {
+    [data-composition-id="comp-inbox"] .inbox-sidebar {
       width: 280px;
       flex-shrink: 0;
       background: #121216;
@@ -258,11 +282,13 @@
       gap: 8px;
       border-right: 1px solid #2a2a32;
       align-items: stretch;
+      box-sizing: border-box;
     }
     [data-composition-id="comp-inbox"] .inbox-page-title {
       margin: 0;
       padding: 0 0 4px;
-      font-size: clamp(19px, 1.25vw, 26px);
+      /* Pixels only — not affected by parent transforms (sidebar is not scaled). */
+      font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.04em;
       line-height: 1.1;
@@ -288,13 +314,15 @@
       background: #16161c;
       min-width: 0;
       min-height: 0;
+      height: 100%;
+      overflow: hidden;
     }
     [data-composition-id="comp-inbox"] .toolbar {
-      padding: 14px 18px;
+      padding: 10px 16px;
       border-bottom: 1px solid #2a2a32;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       align-items: flex-start;
       background: #141418;
       flex-shrink: 0;
@@ -310,21 +338,21 @@
       background: #3f3f46;
     }
     [data-composition-id="comp-inbox"] .list {
-      padding: 12px 14px 14px;
+      padding: 8px 12px 10px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      flex: 1;
+      gap: 5px;
+      flex: 1 1 auto;
       min-height: 0;
-      overflow-y: auto;
+      /* Fills the column; no scrollbar — content is sized to stay within 1080px mock. */
+      overflow: hidden;
       overflow-x: hidden;
-      scrollbar-gutter: stable;
     }
     [data-composition-id="comp-inbox"] .mail-row {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      padding: 10px 12px;
+      gap: 10px;
+      padding: 6px 10px;
       background: rgba(127, 29, 29, 0.18);
       border-radius: 8px;
       border: 1px solid #3f2a2a;
@@ -349,7 +377,8 @@
       min-width: 0;
     }
     [data-composition-id="comp-inbox"] .mail-subject {
-      font-size: 16px;
+      font-size: 14.5px;
+      line-height: 1.25;
       font-weight: 600;
       color: #fecaca;
     }
@@ -384,27 +413,72 @@
     (function () {
       window.__timelines = window.__timelines || {};
       /**
-       * Delay until word-stack intro in index finishes (`comp-wordstack-intro` data-duration).
+       * Delay inbox motion until the word-stack intro finishes — must match `TOTAL` in
+       * compositions/comp-wordstack-intro.html (`FADE + 0.55` where `FADE = lastEnd + 0.6`).
+       * Hosts set `window.VOWEL_WORDSTACK_INTRO.words` (vowel-onboarding: first 5 transcript words).
        */
-      var WORDSTACK_INTRO_PAD = 3.05;
-      /** Beat after intro before inbox UI motion (title + zoomed hold). */
+      function vowelWordstackIntroPadSeconds() {
+        var cfg = window.VOWEL_WORDSTACK_INTRO || {};
+        var words =
+          cfg.words && cfg.words.length
+            ? cfg.words
+            : window.ONBOARDING_WORDS && window.ONBOARDING_WORDS.length >= 5
+              ? window.ONBOARDING_WORDS.slice(0, 5)
+              : [];
+        if (!words.length) {
+          return 2.46;
+        }
+        var lastEnd = words[words.length - 1].end;
+        var fade = lastEnd + 0.48 + 0.12;
+        return fade + 0.55;
+      }
+      var WORDSTACK_INTRO_PAD = vowelWordstackIntroPadSeconds();
+      /** Beat after word-stack intro (list / cost motion still starts at O) — keep in sync with `INBOX_PRE_ANIM_PAUSE` in index.html. */
       var INBOX_TITLE_PAUSE = 1;
       var PAD = WORDSTACK_INTRO_PAD;
       var T_ANIM = PAD + INBOX_TITLE_PAUSE;
-      /** Aligns shifted timeline with original beat map (first motion was at 0.12s). */
-      var O = T_ANIM - 0.12;
-      /** Zoom wrap box (must match CSS: chrome 320 + 320 gutters → 1280×1080 fill). */
-      var ZOOM_WRAP_W = 1920 - 320 - 320;
-      var ZOOM_WRAP_H = 1080;
-      /** Hold zoomed-in framing for 1s once the $ counter appears; then zoom out while rows run. */
-      var ZOOM_HOLD_AFTER_COUNTER = 1;
-      /** Zoom-in level (NW origin); x/y compensation keeps full window inside 1920×1080. */
-      var ZOOM_IN_SCALE = 2.08;
-      function zoomComp(scale) {
-        return { x: ZOOM_WRAP_W * (1 - scale), y: ZOOM_WRAP_H * (1 - scale) };
-      }
+      /**
+       * 2s hold + 0.75s zoom-out; list/cost motion after — keep in sync with `INBOX_ZOOM_PREAMBLE` in index.html.
+       */
+      var ZOOM_NW_HOLD = 2;
+      var ZOOM_OUT_TO_FULL = 0.75;
+      var INBOX_ZOOM_PREAMBLE = ZOOM_NW_HOLD + ZOOM_OUT_TO_FULL;
+      var B = T_ANIM + INBOX_ZOOM_PREAMBLE;
       var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
       var root = '[data-composition-id="comp-inbox"]';
+      var zc = root + " .inbox-camera-surface";
+      var tw = { force3D: true, overwrite: "auto" };
+      var originNw = "0% 0%";
+      var originCost = "84% 9%";
+      /** One zoom level for both NW (start) and NE (cost) — no tween *into* the first zoom; it’s set, not animated. */
+      var sOpen = 2;
+      function camIdentity() {
+        return { x: 0, y: 0, z: 0, scale: 1, rotation: 0, skewX: 0, skewY: 0, transformOrigin: "50% 50%" };
+      }
+      function camAtNw(s) {
+        return { x: 0, y: 0, z: 0, scale: s, rotation: 0, skewX: 0, skewY: 0, transformOrigin: originNw };
+      }
+      /* Whole 1280×1080 layer: uniform `scale` only. Start already at NW zoom — no anim into it; only set(). */
+      tl.set(zc, { ...camAtNw(sOpen), ...tw }, 0);
+      tl.set(zc, { ...camAtNw(sOpen), ...tw }, T_ANIM);
+      tl.to(
+        zc,
+        { ...camIdentity(), transformOrigin: originNw, scale: 1, duration: ZOOM_OUT_TO_FULL, ease: "sine.inOut", ...tw },
+        T_ANIM + ZOOM_NW_HOLD
+      );
+      /* NE: same scale as opening NW (sOpen), different origin. */
+      tl.fromTo(
+        zc,
+        { ...camIdentity(), transformOrigin: originCost, scale: 1, ...tw },
+        { transformOrigin: originCost, scale: sOpen, x: 0, y: 0, z: 0, rotation: 0, skewX: 0, skewY: 0, duration: 0.88, ease: "sine.out", ...tw },
+        B
+      );
+      tl.to(
+        zc,
+        { ...camIdentity(), transformOrigin: originCost, scale: 1, duration: 0.55, ease: "sine.inOut", ...tw },
+        B + 6.1
+      );
+      tl.set(zc, { ...camIdentity(), ...tw }, B + 6.65);
       var n = 16;
       /* Deterministic “$50–75 per email” (no unseeded Math.random — render contract). */
       var costs = [];
@@ -422,58 +496,22 @@
         }
       }
       var costShadow0 =
-        "0 14px 40px rgba(190, 24, 93, 0.26), 0 3px 0 rgba(255, 255, 255, 0.65) inset";
+        "0 10px 32px rgba(190, 24, 93, 0.22), 0 2px 0 rgba(255, 255, 255, 0.65) inset";
       var costShadow1 =
-        "0 0 0 3px #fda4af, 0 18px 48px rgba(190, 24, 93, 0.32), 0 3px 0 rgba(255, 255, 255, 0.65) inset";
-      gsap.set(root + " #inbox-page-title", { autoAlpha: 0 });
-      gsap.set(root + " .mail-subject", { autoAlpha: 0 });
-      var z0 = zoomComp(ZOOM_IN_SCALE);
-      gsap.set(root + " #inbox-zoom-wrap", {
-        scale: ZOOM_IN_SCALE,
-        x: z0.x,
-        y: z0.y,
-        transformOrigin: "0 0",
-        force3D: true,
-      });
-      var tCounter = O + 0.12;
+        "0 0 0 2px #fda4af, 0 14px 40px rgba(190, 24, 93, 0.28), 0 2px 0 rgba(255, 255, 255, 0.65) inset";
+      /* Cost chip: no extra scale (parent camera is already scaled — avoids compounding / warped look). */
       tl.from(
         root + " #inbox-cost-clip",
-        { autoAlpha: 0, scale: 0.88, y: 12, duration: 0.4, ease: "back.out(1.2)" },
-        tCounter
+        { autoAlpha: 0, y: 10, duration: 0.4, ease: "back.out(1.2)" },
+        B + 0.0
       );
 
       var rowStagger = 0.085;
-      var tRows = tCounter + 0.02;
-      var tZoomOutStart = tCounter + ZOOM_HOLD_AFTER_COUNTER;
-      var rowBlockEnd = tRows + 0.38 + rowStagger * (n - 1);
-      var zoomOutDur = Math.max(0.55, rowBlockEnd - tZoomOutStart + 0.12);
-      /* Sidebar title: only after zoom-out starts so it is never clipped while scaled in. */
-      tl.fromTo(
-        root + " #inbox-page-title",
-        { autoAlpha: 0, y: 6 },
-        { autoAlpha: 1, y: 0, duration: 0.32, ease: "power2.out" },
-        tZoomOutStart
-      );
+      var tRows = B + 0.1;
       tl.from(
         root + " .mail-row",
         { autoAlpha: 0, y: 18, duration: 0.38, stagger: rowStagger, ease: "expo.out" },
         tRows
-      );
-      tl.to(
-        root + " #inbox-zoom-wrap",
-        {
-          scale: 1,
-          x: 0,
-          y: 0,
-          duration: zoomOutDur,
-          ease: "power2.out",
-        },
-        tZoomOutStart
-      );
-      tl.to(
-        root + " .mail-subject",
-        { autoAlpha: 1, duration: 0.24, stagger: 0.035, ease: "power2.out" },
-        tZoomOutStart + 0.06
       );
 
       var running = 0;
@@ -496,11 +534,11 @@
         root + " .inbox-cost-box",
         { boxShadow: costShadow0 },
         { boxShadow: costShadow1, duration: 0.18, yoyo: true, repeat: 1, ease: "sine.inOut" },
-        O + 5.2
+        B + 5.08
       );
 
       /* — Reverse: clear rows (last→first), count down to $0. */
-      var revT = O + 6.25;
+      var revT = B + 6.25;
       var revSt = 0.05;
       var rem = total;
       for (var k = 0; k < n; k++) {
@@ -525,11 +563,51 @@
       /* Exit cost chip as scene handoff nears (parent fades #scene-inbox in index.html). */
       tl.to(
         root + " #inbox-cost-clip",
-        { autoAlpha: 0, scale: 0.92, y: -8, duration: 0.4, ease: "power2.in" },
-        O + 7.45
+        { autoAlpha: 0, y: -8, duration: 0.4, ease: "power2.in" },
+        B + 7.33
       );
 
-      tl.set({}, {}, T_ANIM + 8);
+      /* Pad to master #scene-inbox-host duration (91s) so the comp stays in sync; reprise is manual reset from vowel-onboarding/script.js. */
+      tl.set({}, {}, 91);
+      /**
+       * Snap UI to a full 16-row list + neutral camera (used when master brings inbox back for “clear out that support inbox”).
+       * Must match camIdentity() + row selectors in this comp.
+       */
+      function resetInboxToFullList() {
+        var r = document.querySelector("[data-composition-id=\"comp-inbox\"]");
+        if (!r) {
+          return;
+        }
+        var zel = r.querySelector(".inbox-camera-surface");
+        if (zel) {
+          gsap.set(zel, {
+            x: 0,
+            y: 0,
+            z: 0,
+            scale: 1,
+            rotation: 0,
+            skewX: 0,
+            skewY: 0,
+            transformOrigin: "50% 50%",
+            force3D: true,
+            overwrite: "auto",
+          });
+        }
+        var rows = r.querySelectorAll(".mail-row");
+        var ri;
+        for (ri = 0; ri < rows.length; ri++) {
+          gsap.set(rows[ri], { autoAlpha: 1, x: 0, y: 0, scale: 1 });
+        }
+        var clip = r.querySelector("#inbox-cost-clip");
+        if (clip) {
+          gsap.set(clip, { autoAlpha: 0, y: 0, x: 0, display: "none" });
+        }
+        var val = r.querySelector("#inbox-cost-val");
+        if (val) {
+          val.textContent = "0";
+        }
+      }
+      window.resetInboxToFullList = resetInboxToFullList;
       window.__timelines["comp-inbox"] = tl;
     })();
   </script>
