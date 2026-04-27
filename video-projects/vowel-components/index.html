@@ -82,6 +82,15 @@
         pointer-events: none;
       }
       /*
+        Modal comps (RAG + API) are separate tracks but must read as overlays on the voweldocs mock.
+        Default letterbox viewport + .scene-wrap use solid #020617, which hides #scene-voweldocs beneath.
+        Transparent stack here so comp-*-modal backdrops dim the mock instead of replacing it.
+      */
+      .scene-scale-host--modal-over-mock .scene-scale-viewport,
+      .scene-scale-host--modal-over-mock .scene-scale-viewport > .scene-wrap {
+        background: transparent;
+      }
+      /*
         Non-mock scenes (wordstack, Turso marquee, CTA pattern, outro): fill 9:16 with the 16:9 comp
         “cover”-style (scale to full height, clip sides). Avoids letterbox gutters where e.g. the
         dialogue chrome or #root would show through.
@@ -290,7 +299,7 @@
           ></div>
         </div>
       </div>
-      <div id="scene-rag" class="scene-scale-host">
+      <div id="scene-rag" class="scene-scale-host scene-scale-host--modal-over-mock">
         <div class="scene-scale-viewport">
           <div
             class="scene-wrap"
@@ -304,7 +313,7 @@
           ></div>
         </div>
       </div>
-      <div id="scene-api" class="scene-scale-host">
+      <div id="scene-api" class="scene-scale-host scene-scale-host--modal-over-mock">
         <div class="scene-scale-viewport">
           <div
             class="scene-wrap"
