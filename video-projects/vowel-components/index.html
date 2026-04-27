@@ -81,6 +81,24 @@
         backface-visibility: hidden;
         pointer-events: none;
       }
+      /*
+        Non-mock scenes (wordstack, Turso marquee, CTA pattern, outro): fill 9:16 with the 16:9 comp
+        “cover”-style (scale to full height, clip sides). Avoids letterbox gutters where e.g. the
+        dialogue chrome or #root would show through.
+      */
+      .scene-scale-host--portrait-fill .scene-scale-viewport {
+        width: 1080px;
+        height: 1920px;
+        flex-shrink: 0;
+      }
+      .scene-scale-host--portrait-fill .scene-scale-viewport > .scene-wrap {
+        left: 50%;
+        top: 50%;
+        margin-left: -960px;
+        margin-top: -540px;
+        transform: scale(calc(1920 / 1080));
+        transform-origin: center center;
+      }
       .scene-wrap {
         position: absolute;
         inset: 0;
@@ -221,7 +239,11 @@
       data-width="1080"
       data-height="1920"
     >
-      <!-- vowel-turso-rag: .karaoke-wrap--ai rail + ghost dialogue word (“There” in transcript). -->
+      <!--
+        vowel-turso-rag: green rail (karaoke) chrome; optional large faint watermark for AI line emphasis.
+        No literal copy here — a placeholder word was visible in letterbox gutters; watermark stays empty
+        until/unless a host passes transcript-driven text via script.
+      -->
       <div
         id="vd-inapp-dialogue-chrome"
         class="clip vd-inapp-dialogue-chrome"
@@ -230,9 +252,9 @@
         data-track-index="8"
         aria-hidden="true"
       >
-        <div class="vd-inapp-dialogue-chrome__watermark" aria-hidden="true">There</div>
+        <div class="vd-inapp-dialogue-chrome__watermark" aria-hidden="true"></div>
       </div>
-      <div id="scene-wordstack-intro" class="scene-scale-host">
+      <div id="scene-wordstack-intro" class="scene-scale-host scene-scale-host--portrait-fill">
         <div class="scene-scale-viewport">
           <div
             class="scene-wrap"
@@ -330,7 +352,7 @@
           ></div>
         </div>
       </div>
-      <div id="scene-turso-svg" class="scene-scale-host">
+      <div id="scene-turso-svg" class="scene-scale-host scene-scale-host--portrait-fill">
         <div class="scene-scale-viewport">
           <div
             class="scene-wrap"
@@ -344,7 +366,7 @@
           ></div>
         </div>
       </div>
-      <div id="scene-voweldocs-cta-bg" class="scene-scale-host">
+      <div id="scene-voweldocs-cta-bg" class="scene-scale-host scene-scale-host--portrait-fill">
         <div class="scene-scale-viewport">
           <div
             class="scene-wrap"
@@ -358,7 +380,7 @@
           ></div>
         </div>
       </div>
-      <div id="scene-outro" class="scene-scale-host">
+      <div id="scene-outro" class="scene-scale-host scene-scale-host--portrait-fill">
         <div class="scene-scale-viewport">
           <div
             class="scene-wrap"
