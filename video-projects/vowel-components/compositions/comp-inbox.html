@@ -436,23 +436,27 @@
       var tw = { force3D: true, overwrite: "auto" };
       var originNw = "0% 0%";
       var originCost = "84% 9%";
+      /** One zoom level for both NW (start) and NE (cost) — no tween *into* the first zoom; it’s set, not animated. */
       var sOpen = 2;
-      var sCost = 1.45;
       function camIdentity() {
         return { x: 0, y: 0, z: 0, scale: 1, rotation: 0, skewX: 0, skewY: 0, transformOrigin: "50% 50%" };
       }
-      /* Whole 1280×1080 layer: one uniform `scale` only — no scaleX/scaleY, no anisotropy. */
-      tl.set(zc, { ...camIdentity(), ...tw }, 0);
-      tl.set(zc, { ...camIdentity(), transformOrigin: originNw, scale: sOpen, ...tw }, T_ANIM);
+      function camAtNw(s) {
+        return { x: 0, y: 0, z: 0, scale: s, rotation: 0, skewX: 0, skewY: 0, transformOrigin: originNw };
+      }
+      /* Whole 1280×1080 layer: uniform `scale` only. Start already at NW zoom — no anim into it; only set(). */
+      tl.set(zc, { ...camAtNw(sOpen), ...tw }, 0);
+      tl.set(zc, { ...camAtNw(sOpen), ...tw }, T_ANIM);
       tl.to(
         zc,
         { ...camIdentity(), transformOrigin: originNw, scale: 1, duration: ZOOM_OUT_TO_FULL, ease: "sine.inOut", ...tw },
         T_ANIM + ZOOM_NW_HOLD
       );
+      /* NE: same scale as opening NW (sOpen), different origin. */
       tl.fromTo(
         zc,
         { ...camIdentity(), transformOrigin: originCost, scale: 1, ...tw },
-        { transformOrigin: originCost, scale: sCost, x: 0, y: 0, z: 0, rotation: 0, skewX: 0, skewY: 0, duration: 0.88, ease: "sine.out", ...tw },
+        { transformOrigin: originCost, scale: sOpen, x: 0, y: 0, z: 0, rotation: 0, skewX: 0, skewY: 0, duration: 0.88, ease: "sine.out", ...tw },
         B
       );
       tl.to(
