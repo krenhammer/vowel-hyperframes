@@ -168,10 +168,6 @@ body {
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  /*
-    Symmetric vertical insets: asymmetric top/bottom padding was shoving the speech-caption block
-    downward and made sync karaoke feel like it “drifted” as beats wrapped.
-  */
   padding: min(14%, 220px) min(5%, 44px);
   pointer-events: none;
   box-sizing: border-box;
@@ -179,7 +175,7 @@ body {
   min-height: 0;
 }
 
-/* VowelDocs / in-app line: a bit more horizontal copy room; keep same vertical rhythm as promo. */
+/* VowelDocs / in-app line: a bit more horizontal copy room. */
 #karaoke-wrap.karaoke-wrap--ai {
   align-items: flex-start;
   justify-content: flex-start;
@@ -206,11 +202,15 @@ body {
 /* Narration: one layout for promo + AI — don’t switch root/stage to flow + huge min-height at handoff. */
 #karaoke-wrap #karaoke-root {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Explicit top (not inset:0) so captions sit lower over the 16:9 band; same for promo + AI. */
+  top: 140px;
   flex: none;
   max-width: 100%;
   width: 100%;
-  min-height: 100%;
+  min-height: 0;
   margin-left: auto;
   margin-right: auto;
 }
