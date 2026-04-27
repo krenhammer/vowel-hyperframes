@@ -5,10 +5,17 @@
   var WORDS = window.ONBOARDING_WORDS;
   var MASTER = 91;
   var AI_FIRST = 78;
-  var SCENE_HANDOFF = 28.35;
-  var OUTRO_IN = 80.35;
-  /** CTA: transcript “…clearing out that support inbox.” — re-show + reset comp-inbox; “clearing” @ 78.68s. */
-  var INBOX_CTA = 78.4;
+  /** Inbox out → Vowel Docs in on “What if your users…” (transcript: `VOWEL_VOWELDOCS_IN` in index). */
+  var VOWELDOCS_IN =
+    typeof window.VOWEL_VOWELDOCS_IN === "number" ? window.VOWEL_VOWELDOCS_IN : 12.99;
+  /** Karaoke: promo block → in-app “Hey,” + bb-ai; unchanged from pre-docs audio sync. */
+  var KARAOKE_HANDOFF = 28.35;
+  var INBOX_HOST_START =
+    typeof window.VOWEL_INBOX_HOST_START === "number" ? window.VOWEL_INBOX_HOST_START : 2.23;
+  /** After “give Vowel a try” + NE/cost/unwind (~7.4s); karaoke through “that support inbox.” ~80.8s. */
+  var OUTRO_IN = 81.25;
+  /** Return to inbox + play NE zoom / costs / email unload (comp-inbox `playInboxNeCostUnwindReprise`). “try” ends ~74.65s. */
+  var INBOX_REPRISE = 74.55;
   /** No karaoke during word-stack intro — keep in sync with `#scene-intro-host` + comp-wordstack-intro TOTAL. */
   var WORDSTACK_INTRO_END = 3.38;
 
@@ -213,7 +220,8 @@
   gsap.set("#karaoke-wrap", { autoAlpha: 0, visibility: "hidden" });
   gsap.set("#bb-ai", { autoAlpha: 0, visibility: "hidden" });
   gsap.set("#scene-voweldocs-host", { autoAlpha: 0 });
-  gsap.set("#scene-inbox-host", { autoAlpha: 1 });
+  /* Inbox hidden until after “how’s it going?”; host `data-start` = `VOWEL_INBOX_HOST_START`. */
+  gsap.set("#scene-inbox-host", { autoAlpha: 0 });
   gsap.set("#vd-inapp-dialogue-chrome", { autoAlpha: 0 });
   gsap.set("#vd-caption", {
     xPercent: 0,
@@ -235,6 +243,11 @@
     { autoAlpha: 0, visibility: "visible" },
     { autoAlpha: 1, duration: 0.35, ease: "power2.out" },
     WORDSTACK_INTRO_END
+  );
+  tl.to(
+    "#scene-inbox-host",
+    { autoAlpha: 1, duration: 0.35, ease: "power2.out" },
+    INBOX_HOST_START
   );
 
   var idx;
@@ -292,12 +305,20 @@
     );
   }
 
-  tl.to("#bb-promo", { autoAlpha: 0, duration: 0.32, ease: "power2.in" }, SCENE_HANDOFF);
+  tl.to("#scene-inbox-host", { autoAlpha: 0, duration: 0.4, ease: "power3.in" }, VOWELDOCS_IN);
+  tl.fromTo(
+    "#scene-voweldocs-host",
+    { autoAlpha: 0 },
+    { autoAlpha: 1, duration: 0.45, ease: "power2.out" },
+    VOWELDOCS_IN
+  );
+
+  tl.to("#bb-promo", { autoAlpha: 0, duration: 0.32, ease: "power2.in" }, KARAOKE_HANDOFF);
   tl.fromTo(
     "#bb-ai",
     { autoAlpha: 0, visibility: "visible" },
     { autoAlpha: 1, duration: 0.45, ease: "power2.out" },
-    SCENE_HANDOFF + 0.02
+    KARAOKE_HANDOFF + 0.02
   );
 
   tl.add(
@@ -307,18 +328,10 @@
         wrap.classList.add("karaoke-wrap--ai");
       }
     },
-    SCENE_HANDOFF
+    KARAOKE_HANDOFF
   );
 
-  tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 1, duration: 0.4, ease: "sine.out" }, SCENE_HANDOFF + 0.05);
-
-  tl.to("#scene-inbox-host", { autoAlpha: 0, duration: 0.4, ease: "power3.in" }, SCENE_HANDOFF);
-  tl.fromTo(
-    "#scene-voweldocs-host",
-    { autoAlpha: 0 },
-    { autoAlpha: 1, duration: 0.45, ease: "power2.out" },
-    SCENE_HANDOFF
-  );
+  tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 1, duration: 0.4, ease: "sine.out" }, KARAOKE_HANDOFF + 0.05);
 
   /* Vowel Docs: swap title/sections + sidebar when dialogue moves between Voice client and Vowelbot. */
   tl.add(
@@ -409,28 +422,29 @@
     68.0
   );
 
-  /* CTA: bring inbox back (not continuous — only for this line); reset to full 16 rows + static camera. */
+  /* Closing CTA: NE zoom to costs, then stagger + unload — after “give Vowel a try”; leads into “clearing out that support inbox.” */
+  tl.to(
+    "#scene-voweldocs-host",
+    { autoAlpha: 0, duration: 0.45, filter: "blur(2px)", ease: "power2.in" },
+    INBOX_REPRISE
+  );
+  tl.to(
+    "#scene-inbox-host",
+    { autoAlpha: 1, duration: 0.4, ease: "power2.out", overwrite: "auto" },
+    INBOX_REPRISE
+  );
   tl.add(
     function () {
-      if (typeof window.resetInboxToFullList === "function") {
-        window.resetInboxToFullList();
-      }
       var inh = document.getElementById("scene-inbox-host");
       if (inh) {
         inh.classList.add("scene-inbox-reprise");
       }
+      var anim = typeof window.playInboxNeCostUnwindReprise === "function" ? window.playInboxNeCostUnwindReprise() : null;
+      if (anim && typeof anim.play === "function") {
+        anim.play(0);
+      }
     },
-    INBOX_CTA
-  );
-  tl.to(
-    "#scene-voweldocs-host",
-    { autoAlpha: 0, duration: 0.4, filter: "blur(2px)", ease: "power2.in" },
-    INBOX_CTA
-  );
-  tl.to(
-    "#scene-inbox-host",
-    { autoAlpha: 1, duration: 0.45, ease: "power2.out", overwrite: "auto" },
-    INBOX_CTA
+    INBOX_REPRISE + 0.04
   );
 
   tl.fromTo("#outro-layer", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.65, ease: "power2.out" }, OUTRO_IN);

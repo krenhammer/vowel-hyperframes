@@ -65,8 +65,8 @@
             class="clip"
             data-composition-id="comp-inbox"
             data-composition-src="compositions/comp-inbox.html"
-            data-start="0"
-            data-duration="91"
+            data-start="2.23"
+            data-duration="88.77"
             data-track-index="3"
             data-width="1920"
             data-height="1080"
@@ -81,8 +81,8 @@
             class="clip"
             data-composition-id="comp-voweldocs"
             data-composition-src="compositions/comp-voweldocs.html"
-            data-start="28.35"
-            data-duration="52.5"
+            data-start="12.99"
+            data-duration="78.01"
             data-track-index="4"
             data-width="1920"
             data-height="1080"
@@ -157,12 +157,45 @@
       (function () {
         var W = window.ONBOARDING_WORDS;
         if (W && W.length) {
-          /* Hero = first 2 tokens (“Customer onboarding,”); sub = “how’s” “it” “going?” with transcript timings. */
+          /* Hero = first 2 tokens (“Customer Onboarding”); sub = “how’s” “it” “going?” — display fix: no comma, capital O. */
+          var w5 = W.slice(0, 5).map(function (w, i) {
+            if (i === 1) {
+              return { type: w.type, text: "Onboarding", start: w.start, end: w.end };
+            }
+            return w;
+          });
           window.VOWEL_WORDSTACK_INTRO = {
-            words: W.slice(0, 5),
+            words: w5,
             headlineWordCount: 2,
             subPosition: "below",
           };
+        }
+        /* Inbox comp clock: host `data-start` = end of “going?”; pad 0 = wordstack not in this comp’s timeline. */
+        window.VOWEL_INBOX_WORDSTACK_PAD = 0;
+        if (W && W.length) {
+          var a;
+          var hostStart = 2.23;
+          var tTrouble = 4.88;
+          var tTop = 7.33;
+          var tWhat = 12.99;
+          for (a = 0; a < W.length; a++) {
+            if (W[a].text === "going?") {
+              hostStart = W[a].end;
+            }
+            if (W[a].text === "trouble" && a + 1 < W.length && W[a + 1].text === "tickets?") {
+              tTrouble = W[a].start;
+            }
+            if (W[a].text === "top" && a > 0 && W[a - 1].text === "on" && a + 1 < W.length && W[a + 1].text === "of") {
+              tTop = W[a].start;
+            }
+            if (W[a].text === "What" && a + 1 < W.length && W[a + 1].text === "if") {
+              tWhat = W[a].start;
+            }
+          }
+          window.VOWEL_INBOX_HOST_START = hostStart;
+          window.VOWEL_INBOX_T_TROUBLE = tTrouble - hostStart;
+          window.VOWEL_INBOX_T_NE = tTop - hostStart;
+          window.VOWEL_VOWELDOCS_IN = tWhat;
         }
       })();
     </script>
