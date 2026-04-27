@@ -153,6 +153,8 @@
           var tTrouble = 4.88;
           var tTop = 7.33;
           var tWhat = 12.99;
+          var tFilling = 3.81;
+          var tExpensiveEnd = 10.76;
           for (a = 0; a < W.length; a++) {
             if (W[a].text === "going?") {
               hostStart = W[a].end;
@@ -166,10 +168,19 @@
             if (W[a].text === "What" && a + 1 < W.length && W[a + 1].text === "if") {
               tWhat = W[a].start;
             }
+            if (W[a].text === "filling") {
+              tFilling = W[a].start;
+            }
+            if (/^expensive\.?$/.test(String(W[a].text).trim())) {
+              tExpensiveEnd = W[a].end;
+            }
           }
           window.VOWEL_INBOX_HOST_START = hostStart;
           window.VOWEL_INBOX_T_TROUBLE = tTrouble - hostStart;
           window.VOWEL_INBOX_T_NE = tTop - hostStart;
+          /* Email row infill: comp-local [filling … end of expensive] — set after hostStart is known. */
+          window.VOWEL_INBOX_T_FILL = tFilling - hostStart;
+          window.VOWEL_INBOX_T_EXPENSIVE_END = tExpensiveEnd - hostStart;
           window.VOWEL_VOWELDOCS_IN = tWhat;
         }
       })();

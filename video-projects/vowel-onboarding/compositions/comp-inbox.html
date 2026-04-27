@@ -416,10 +416,17 @@
       var HOST0 =
         typeof window.VOWEL_INBOX_HOST_START === "number" ? window.VOWEL_INBOX_HOST_START : 2.23;
       /**
-       * Comp-local times: index inline sets from transcript — “trouble” / “top” of “on top of these” / handoff to docs.
+       * Comp-local times from index (transcript): T_FILL…T_EXPENSIVE_END = email row stagger; T_NE_PAN = “on top…” + $ chip.
        */
-      var T_TROUBLE =
-        typeof window.VOWEL_INBOX_T_TROUBLE === "number" ? window.VOWEL_INBOX_T_TROUBLE : 4.88 - HOST0;
+      var T_FILL =
+        typeof window.VOWEL_INBOX_T_FILL === "number" ? window.VOWEL_INBOX_T_FILL : 3.81 - HOST0;
+      var T_EXPENSIVE_END =
+        typeof window.VOWEL_INBOX_T_EXPENSIVE_END === "number"
+          ? window.VOWEL_INBOX_T_EXPENSIVE_END
+          : 10.76 - HOST0;
+      /** “on top of these” — NE pan + $ chip (was bundled with row start; split so slow fill can start at T_FILL). */
+      var T_NE_PAN =
+        typeof window.VOWEL_INBOX_T_NE === "number" ? window.VOWEL_INBOX_T_NE : 7.33 - HOST0;
       var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
       var root = '[data-composition-id="comp-inbox"]';
       var zc = root + " .inbox-camera-surface";
@@ -439,7 +446,7 @@
       }
       /**
        * Open zoomed to the list NW; no pull-back to full frame before the Vowel Docs handoff (master crossfade).
-       * “Trouble” row in-fill and “on top of these” NE + cost all stay in zoomed camera space until then.
+       * “Filling … expensive” row in-fill and “on top of these” NE + cost all stay in zoomed camera space until the docs handoff.
        */
       var T_INBOX_BEAT = 0.2;
       tl.set(zc, { ...camAtNw(sOpen), ...tw }, 0);
@@ -625,13 +632,19 @@
         );
       }
 
-      /* “Trouble tickets” → row in-fill + NE camera + pink cost chip on the same beat (not delayed to “top”). */
-      var rowStaggerOpen = 0.085;
-      var tRowOpen = T_TROUBLE;
+      /* “Filling up” … “expensive” — long row in-fill; NE + $ chip on “on top of these” (T_NE_PAN). */
+      var infillSpan = Math.max(0.35, T_EXPENSIVE_END - T_FILL);
+      var rowDurationOpen = 0.52;
+      var rowStaggerOpen = (infillSpan - rowDurationOpen) / 15;
+      if (rowStaggerOpen < 0) {
+        rowStaggerOpen = 0.04;
+        rowDurationOpen = Math.max(0.2, infillSpan - 15 * rowStaggerOpen);
+      }
+      var tRowOpen = T_FILL;
       tl.fromTo(
         root + " .mail-row",
         { autoAlpha: 0, y: 18 },
-        { autoAlpha: 1, y: 0, duration: 0.38, stagger: rowStaggerOpen, ease: "expo.out" },
+        { autoAlpha: 1, y: 0, duration: rowDurationOpen, stagger: rowStaggerOpen, ease: "expo.out" },
         tRowOpen
       );
       var running4 = 0;
@@ -648,7 +661,7 @@
           );
         })(running4);
       }
-      addNeCostUnwindAfterRowsOnly(tl, tRowOpen);
+      addNeCostUnwindAfterRowsOnly(tl, T_NE_PAN);
 
       var MASTER_DUR = 91;
       var COMP_DUR = MASTER_DUR - HOST0;
