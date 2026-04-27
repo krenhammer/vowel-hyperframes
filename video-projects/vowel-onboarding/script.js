@@ -158,6 +158,22 @@
     return 77.85;
   }
 
+  /** First word of the closing CTA “Give Vowel a try …” — promo-sized karaoke, ahead of inbox reprise. */
+  function findGiveVowelATryTime() {
+    var i;
+    for (i = 0; i < WORDS.length - 3; i++) {
+      if (
+        wordNorm(WORDS[i].text) === "give" &&
+        wordNorm(WORDS[i + 1].text) === "vowel" &&
+        wordNorm(WORDS[i + 2].text) === "a" &&
+        /^try/.test(wordNorm(WORDS[i + 3].text))
+      ) {
+        return WORDS[i].start;
+      }
+    }
+    return 73.73;
+  }
+
   var VD_MODES = {
     selfhost: {
       h1: "Self-host",
@@ -632,6 +648,7 @@
   /** Back to Self-host when the user breaks in after the full GitHub / client answer (not mid “add the Vowel client…”). */
   var T_VD_RETURN = wowAfterBot ? wowAfterBot.t : 68.74;
   var T_INBOX_EMAIL_UNLOAD = findHeadStartOnTime();
+  var T_GIVE_VOWEL_TRY = findGiveVowelATryTime();
 
   var tl = gsap.timeline({ paused: true });
 
@@ -791,7 +808,20 @@
   wireVoweldocsVoiceFabToMaster(tl);
   wireVdAbstractCaptionsToMaster(tl);
 
-  /* Closing CTA: cut to inbox in static NE; email unload when narrator hits “head start on”. */
+  tl.add(
+    function () {
+      var wrap = document.getElementById("karaoke-wrap");
+      if (!wrap) {
+        return;
+      }
+      wrap.classList.remove("karaoke-wrap--dialogue");
+      wrap.classList.remove("karaoke-wrap--ai");
+      wrap.classList.add("karaoke-wrap--closing-narration");
+    },
+    T_GIVE_VOWEL_TRY
+  );
+
+  /* Closing CTA: cut to inbox in static NE; email rows unload on “head start on”; cost chip stays until inbox hide. */
   tl.to(
     "#scene-voweldocs-host",
     { autoAlpha: 0, duration: 0.45, filter: "blur(2px)", ease: "power2.in" },
@@ -828,22 +858,20 @@
   );
 
   tl.fromTo("#outro-layer", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.65, ease: "power2.out" }, OUTRO_IN);
+  var T_END_CHROME = MASTER - 0.5;
+  tl.to("#karaoke-wrap", { autoAlpha: 0, duration: 0.45, ease: "power2.in" }, T_END_CHROME);
+  tl.to("#scene-voweldocs-host", { autoAlpha: 0, filter: "blur(8px)", duration: 0.45, ease: "power2.in" }, T_END_CHROME);
+  tl.to("#scene-inbox-host", { autoAlpha: 0, duration: 0.45, ease: "power2.in" }, T_END_CHROME);
   tl.add(
     function () {
       var inh = document.getElementById("scene-inbox-host");
       if (inh) {
         inh.classList.remove("scene-inbox-reprise");
       }
-      var wrap = document.getElementById("karaoke-wrap");
-      if (wrap) {
-        wrap.classList.remove("karaoke-wrap--dialogue");
-      }
     },
-    OUTRO_IN
+    T_END_CHROME + 0.46
   );
-  tl.to("#karaoke-wrap", { autoAlpha: 0, duration: 0.45, ease: "power2.in" }, OUTRO_IN);
-  tl.to("#scene-voweldocs-host", { autoAlpha: 0, filter: "blur(8px)", duration: 0.5 }, OUTRO_IN);
-  tl.to("#scene-inbox-host", { autoAlpha: 0, duration: 0.4, ease: "power2.in" }, OUTRO_IN);
+  tl.set("#outro-layer", { autoAlpha: 1 }, MASTER);
 
   tl.set({}, {}, MASTER);
 

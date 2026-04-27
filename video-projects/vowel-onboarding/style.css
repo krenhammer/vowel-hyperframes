@@ -164,6 +164,37 @@ body {
   box-sizing: border-box;
 }
 
+/* After in-app mock (words still in `#bb-ai`): match promo / opener `.kw` scale + weight. */
+#karaoke-wrap.karaoke-wrap--closing-narration {
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: min(14%, 220px) min(5%, 44px);
+  box-sizing: border-box;
+}
+#karaoke-wrap.karaoke-wrap--closing-narration .beat-block.beat-ai .beat-inner {
+  font-size: 56px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--text);
+}
+#karaoke-wrap.karaoke-wrap--closing-narration #karaoke-stage .beat-block.beat-ai .kw {
+  font-size: clamp(44px, 5.6vw, 64px);
+  line-height: 1.12;
+  margin-bottom: 0.04em;
+  font-weight: 700;
+}
+#karaoke-wrap.karaoke-wrap--closing-narration #karaoke-stage .beat-block.beat-ai .kw.em {
+  color: var(--accent);
+  font-weight: 800;
+  font-style: normal;
+}
+#karaoke-wrap.karaoke-wrap--closing-narration #karaoke-stage .beat-block.beat-ai .kw.em-vowel {
+  color: #fff;
+  text-transform: lowercase;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.35), 0 0 22px rgba(255, 255, 255, 0.18);
+}
+
 #karaoke-root {
   position: relative;
   z-index: 1;

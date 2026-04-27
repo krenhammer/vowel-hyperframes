@@ -559,8 +559,8 @@
       }
 
       /**
-       * Reverse row unload + cost chip hide only — for end CTA when UI is already at NE + full list (after
-       * `playInboxNeCostUnwindReprise`). Compressed timing so it fits before outro; same cost math as `addNeCostUnwindBlock`.
+       * Reverse row unload only — for end CTA when UI is already at NE + full list (after
+       * `playInboxNeCostUnwindReprise`). Pink cost chip stays; same cost tick math as `addNeCostUnwindBlock` tail.
        */
       function addEmailUnloadRepriseOnly(ux) {
         var B = 0;
@@ -586,11 +586,7 @@
             );
           })(rem2, rIdx3, revT2 + 0.08 + k2 * revSt2);
         }
-        ux.to(
-          root + " #inbox-cost-clip",
-          { autoAlpha: 0, y: -8, duration: 0.36, ease: "power2.in" },
-          B + 1.28
-        );
+        /* Keep pink $ chip visible (master hides whole inbox at end of video). */
       }
 
       /**
