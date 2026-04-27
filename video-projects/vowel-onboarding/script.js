@@ -75,17 +75,6 @@
     return stripPunct(String(t)).toLowerCase();
   }
 
-  /** Transcript time: first “voice … client” (user integrating the client). */
-  function findVoiceClientStart() {
-    var i;
-    for (i = 0; i < WORDS.length - 1; i++) {
-      if (wordNorm(WORDS[i].text) === "voice" && wordNorm(WORDS[i + 1].text) === "client") {
-        return { t: WORDS[i].start, idx: i };
-      }
-    }
-    return null;
-  }
-
   /** Transcript time: first “Vowelbot” in the in-app dialogue (AI asks about Vowelbot). */
   function findFirstVowelbotInDialogue() {
     var i;
@@ -116,8 +105,8 @@
     },
     vowelbot: {
       h1: "Vowelbot",
-      subA: "# Agent skills",
-      subB: "Actions & tools",
+      subA: "# Repo selection",
+      subB: "GitHub & branch setup",
     },
   };
 
@@ -295,29 +284,81 @@
     );
   }
 
-  /** Fade doc title/sections + swap copy + sidebar (run when timeline hits — comp DOM may load after first paint). */
-  function vowelDocsModeRun(mode) {
+  /** Apply copy + sidebar without animation (defaults + late sub-comp load). */
+  function vowelDocsApplyModeImmediate(mode) {
     var spec = VD_MODES[mode];
     var t = vdModeTargets();
     if (!t || !spec) {
+      return false;
+    }
+    t.h1.textContent = spec.h1;
+    var subAText = spec.subA.replace(/^#\s*/, "");
+    if (t.subA) {
+      t.subA.innerHTML = '<span class="hashsym">#</span> ' + subAText;
+    }
+    if (t.subB) {
+      t.subB.textContent = spec.subB;
+    }
+    vdNavForMode(t.root, mode);
+    gsap.set([t.h1, t.subA, t.subB].filter(Boolean), { autoAlpha: 1, y: 0 });
+    return true;
+  }
+
+  /** Sub-comp `data-composition-src` can resolve after the host clip starts — poll until DOM exists. */
+  function vowelDocsApplyModeImmediateRetry(mode, onDone) {
+    var n = 0;
+    function tick() {
+      if (vowelDocsApplyModeImmediate(mode)) {
+        if (typeof onDone === "function") {
+          onDone();
+        }
+        return;
+      }
+      n += 1;
+      if (n < 60) {
+        setTimeout(tick, 40);
+      }
+    }
+    tick();
+  }
+
+  /**
+   * Fade doc title/sections + swap copy + sidebar. Sub-comp can load after VOWELDOCS_IN — retry until DOM is ready.
+   */
+  function vowelDocsModeRun(mode) {
+    var spec = VD_MODES[mode];
+    if (!spec) {
       return;
     }
-    var els = [t.h1, t.subA, t.subB].filter(Boolean);
-    gsap
-      .timeline({ defaults: { ease: "power2.out" } })
-      .to(els, { autoAlpha: 0, y: -10, duration: 0.22, stagger: 0.04, ease: "power2.in" })
-      .add(function () {
-        t.h1.textContent = spec.h1;
-        var subAText = spec.subA.replace(/^#\s*/, "");
-        if (t.subA) {
-          t.subA.innerHTML = '<span class="hashsym">#</span> ' + subAText;
+    var attempt = 0;
+    var maxAttempts = 45;
+    function tryRun() {
+      var t = vdModeTargets();
+      if (!t) {
+        attempt += 1;
+        if (attempt < maxAttempts) {
+          setTimeout(tryRun, 40);
         }
-        if (t.subB) {
-          t.subB.textContent = spec.subB;
-        }
-        vdNavForMode(t.root, mode);
-      })
-      .fromTo(els, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.36, stagger: 0.07, ease: "power2.out" });
+        return;
+      }
+      var els = [t.h1, t.subA, t.subB].filter(Boolean);
+      gsap
+        .timeline({ defaults: { ease: "power2.out" } })
+        .to(els, { autoAlpha: 0, y: -10, duration: 0.22, stagger: 0.04, ease: "power2.in" })
+        .add(function () {
+          t.h1.textContent = spec.h1;
+          var subAText = spec.subA.replace(/^#\s*/, "");
+          if (t.subA) {
+            t.subA.innerHTML = '<span class="hashsym">#</span> ' + subAText;
+          }
+          if (t.subB) {
+            t.subB.textContent = spec.subB;
+          }
+          vdNavForMode(t.root, mode);
+        })
+        .fromTo(els, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.36, stagger: 0.07, ease: "power2.out" });
+    }
+    tryRun();
   }
 
   if (!WORDS || !WORDS.length) {
@@ -368,10 +409,8 @@
     }
   }
 
-  var voiceClient = findVoiceClientStart();
   var vowelbotAsk = findFirstVowelbotInDialogue();
   var vowelClientAfterBot = vowelbotAsk ? findVowelClientPairAfter(vowelbotAsk.idx + 1) : null;
-  var T_VD_CLIENT = voiceClient ? voiceClient.t : 36.62;
   var T_VD_VOWELBOT = vowelbotAsk ? vowelbotAsk.t : 44.78;
   var T_VD_CLIENT_RETURN = vowelClientAfterBot ? vowelClientAfterBot.t : 56.28;
 
@@ -387,15 +426,6 @@
   tl.to(
     "#karaoke-wrap",
     { autoAlpha: 1, visibility: "visible", duration: 0.2, ease: "none" },
-    WORDSTACK_INTRO_END
-  );
-  tl.add(
-    function () {
-      var wrap = document.getElementById("karaoke-wrap");
-      if (wrap) {
-        wrap.classList.add("karaoke-wrap--abstract-on");
-      }
-    },
     WORDSTACK_INTRO_END
   );
   tl.fromTo(
@@ -492,12 +522,12 @@
     KARAOKE_HANDOFF
   );
 
-  /* Vowel Docs: page title + sections + sidebar track transcript (Voice client ↔ Vowelbot). */
+  /* Vowel Docs: default mock is client (comp HTML). Animate to Vowelbot + repo beat, then back to client. */
   tl.add(
     function () {
-      vowelDocsModeRun("client");
+      vowelDocsApplyModeImmediateRetry("client");
     },
-    T_VD_CLIENT
+    VOWELDOCS_IN
   );
   tl.add(
     function () {
@@ -548,7 +578,7 @@
       }
       var wrap = document.getElementById("karaoke-wrap");
       if (wrap) {
-        wrap.classList.remove("karaoke-wrap--dialogue", "karaoke-wrap--abstract-on");
+        wrap.classList.remove("karaoke-wrap--dialogue");
       }
     },
     OUTRO_IN
