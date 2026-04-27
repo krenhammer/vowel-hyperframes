@@ -8,7 +8,7 @@
   /** Inbox out → Vowel Docs in on “What if your users…” (transcript: `VOWEL_VOWELDOCS_IN` in index). */
   var VOWELDOCS_IN =
     typeof window.VOWEL_VOWELDOCS_IN === "number" ? window.VOWEL_VOWELDOCS_IN : 12.99;
-  /** Karaoke: promo block → in-app “Hey,” + bb-ai; unchanged from pre-docs audio sync. */
+  /** Karaoke: promo block → in-app dialogue (`#bb-ai`, word-level transcript). */
   var KARAOKE_HANDOFF = 28.35;
   var INBOX_HOST_START =
     typeof window.VOWEL_INBOX_HOST_START === "number" ? window.VOWEL_INBOX_HOST_START : 2.23;
@@ -71,6 +71,43 @@
     return w;
   }
 
+  function wordNorm(t) {
+    return stripPunct(String(t)).toLowerCase();
+  }
+
+  /** Transcript time: first “voice … client” (user integrating the client). */
+  function findVoiceClientStart() {
+    var i;
+    for (i = 0; i < WORDS.length - 1; i++) {
+      if (wordNorm(WORDS[i].text) === "voice" && wordNorm(WORDS[i + 1].text) === "client") {
+        return { t: WORDS[i].start, idx: i };
+      }
+    }
+    return null;
+  }
+
+  /** Transcript time: first “Vowelbot” in the in-app dialogue (AI asks about Vowelbot). */
+  function findFirstVowelbotInDialogue() {
+    var i;
+    for (i = AI_FIRST; i < WORDS.length; i++) {
+      if (wordNorm(WORDS[i].text) === "vowelbot") {
+        return { t: WORDS[i].start, idx: i };
+      }
+    }
+    return null;
+  }
+
+  /** After Vowelbot beat: “… add the Vowel client to” — back to Voice client doc view. */
+  function findVowelClientPairAfter(minIdx) {
+    var i;
+    for (i = Math.max(0, minIdx || 0); i < WORDS.length - 1; i++) {
+      if (wordNorm(WORDS[i].text) === "vowel" && wordNorm(WORDS[i + 1].text) === "client") {
+        return { t: WORDS[i].start, idx: i };
+      }
+    }
+    return null;
+  }
+
   var VD_MODES = {
     client: {
       h1: "Voice client",
@@ -120,6 +157,144 @@
     }
   }
 
+  /**
+   * Voice session button is `#vd-fab` in comp-voweldocs (bottom-right in the mock; blue `#vd-rag-fab` is RAG, not this).
+   * Keys + hex are the former in-comp `VOICE_FAB_COLORS`; the master sets `backgroundColor` from dialogue — no comp timeline.
+   */
+  var VOICE_FAB = {
+    inactive: "#6b7280",
+    active: "#22c55e",
+    userSpeaking: "#3b82f6",
+    thinking: "#eab308",
+    aiSpeaking: "#a855f7",
+    idle: "#27272a",
+  };
+
+  function setVdVoiceFabState(key) {
+    var c = VOICE_FAB[key];
+    if (!c) {
+      return;
+    }
+    var host = document.getElementById("scene-voweldocs-host");
+    if (!host) {
+      return;
+    }
+    var fab = host.querySelector("#vd-fab");
+    if (!fab) {
+      return;
+    }
+    gsap.set(fab, { backgroundColor: c, overwrite: "auto" });
+  }
+
+  /**
+   * Who is “speaking” for each transcript word in the in-app block (index ≥ AI_FIRST=78), from SCRIPT_DRAFT line order.
+   * 199+ = closing narration over the CTA, not the in-mock host — FAB idles.
+   */
+  function inAppDialogueRole(idx) {
+    if (idx < AI_FIRST) {
+      return "promo";
+    }
+    if (idx > 218) {
+      return "promo";
+    }
+    if (idx >= 199) {
+      return "narrator";
+    }
+    if (idx <= 86) {
+      return "ai";
+    }
+    if (idx <= 107) {
+      return "user";
+    }
+    if (idx <= 126) {
+      return "ai";
+    }
+    if (idx <= 133) {
+      return "user";
+    }
+    if (idx <= 188) {
+      return "ai";
+    }
+    if (idx <= 198) {
+      return "user";
+    }
+    return "narrator";
+  }
+
+  function inAppDialogueRoleToFabKey(role) {
+    if (role === "ai") {
+      return "aiSpeaking";
+    }
+    if (role === "user") {
+      return "userSpeaking";
+    }
+    if (role === "narrator") {
+      return "idle";
+    }
+    return "idle";
+  }
+
+  function wireVoweldocsVoiceFabToMaster(timeline) {
+    timeline.add(
+      function () {
+        setVdVoiceFabState("inactive");
+      },
+      VOWELDOCS_IN
+    );
+    timeline.add(
+      function () {
+        setVdVoiceFabState("active");
+      },
+      KARAOKE_HANDOFF
+    );
+    var w;
+    for (w = 78; w <= 218; w += 1) {
+      if (!WORDS[w]) {
+        break;
+      }
+      (function (i) {
+        if (inAppDialogueRole(i) === "promo") {
+          return;
+        }
+        timeline.add(
+          function () {
+            setVdVoiceFabState(inAppDialogueRoleToFabKey(inAppDialogueRole(i)));
+          },
+          WORDS[i].start
+        );
+      })(w);
+    }
+    var g;
+    for (g = 78; g < 198; g += 1) {
+      if (!WORDS[g] || !WORDS[g + 1]) {
+        break;
+      }
+      var r1 = inAppDialogueRole(g);
+      var r2 = inAppDialogueRole(g + 1);
+      if (r1 === r2) {
+        continue;
+      }
+      if ((r1 !== "ai" && r1 !== "user") || (r2 !== "ai" && r2 !== "user")) {
+        continue;
+      }
+      var gap = WORDS[g + 1].start - WORDS[g].end;
+      if (gap < 0.05) {
+        continue;
+      }
+      (function (tThink) {
+        timeline.add(function () {
+          setVdVoiceFabState("thinking");
+        }, tThink);
+      })(WORDS[g].end + Math.min(0.05, gap * 0.3));
+    }
+    timeline.add(
+      function () {
+        setVdVoiceFabState("inactive");
+      },
+      INBOX_REPRISE
+    );
+  }
+
   /** Fade doc title/sections + swap copy + sidebar (run when timeline hits — comp DOM may load after first paint). */
   function vowelDocsModeRun(mode) {
     var spec = VD_MODES[mode];
@@ -144,27 +319,6 @@
       })
       .fromTo(els, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.36, stagger: 0.07, ease: "power2.out" });
   }
-
-  function vdCaptionSet(spec, state) {
-    var el = document.getElementById("vd-caption");
-    if (!el) {
-      return;
-    }
-    spec = spec || { lines: [] };
-    el.setAttribute("data-vd-state", state || "inactive");
-    el.setAttribute("data-vd-speaker", spec.speaker || "");
-    el.className = "vd-caption clip vd-cap--" + (state || "inactive");
-    var body = el.querySelector("#vd-cap-body");
-    if (body) {
-      body.innerHTML = (spec.lines || [])
-        .map(function (w) {
-          return '<div class="abs-bar clip cap-w-' + w + '" aria-hidden="true"></div>';
-        })
-        .join("");
-    }
-  }
-
-  window.vdCaptionSet = vdCaptionSet;
 
   if (!WORDS || !WORDS.length) {
     window.__timelines["vowel-onboarding-master"] = gsap.timeline({ paused: true }).set({}, {}, 0.1);
@@ -214,6 +368,13 @@
     }
   }
 
+  var voiceClient = findVoiceClientStart();
+  var vowelbotAsk = findFirstVowelbotInDialogue();
+  var vowelClientAfterBot = vowelbotAsk ? findVowelClientPairAfter(vowelbotAsk.idx + 1) : null;
+  var T_VD_CLIENT = voiceClient ? voiceClient.t : 36.62;
+  var T_VD_VOWELBOT = vowelbotAsk ? vowelbotAsk.t : 44.78;
+  var T_VD_CLIENT_RETURN = vowelClientAfterBot ? vowelClientAfterBot.t : 56.28;
+
   var tl = gsap.timeline({ paused: true });
 
   gsap.set("#bb-promo", { autoAlpha: 0, visibility: "hidden" });
@@ -222,20 +383,19 @@
   gsap.set("#scene-voweldocs-host", { autoAlpha: 0 });
   /* Inbox hidden until after “how’s it going?”; host `data-start` = `VOWEL_INBOX_HOST_START`. */
   gsap.set("#scene-inbox-host", { autoAlpha: 0 });
-  gsap.set("#vd-inapp-dialogue-chrome", { autoAlpha: 0 });
-  gsap.set("#vd-caption", {
-    xPercent: 0,
-    left: "1.5%",
-    right: "1.5%",
-    width: "auto",
-    autoAlpha: 0,
-    y: -16,
-    force3D: true,
-  });
 
   tl.to(
     "#karaoke-wrap",
     { autoAlpha: 1, visibility: "visible", duration: 0.2, ease: "none" },
+    WORDSTACK_INTRO_END
+  );
+  tl.add(
+    function () {
+      var wrap = document.getElementById("karaoke-wrap");
+      if (wrap) {
+        wrap.classList.add("karaoke-wrap--abstract-on");
+      }
+    },
     WORDSTACK_INTRO_END
   );
   tl.fromTo(
@@ -326,101 +486,33 @@
       var wrap = document.getElementById("karaoke-wrap");
       if (wrap) {
         wrap.classList.add("karaoke-wrap--ai");
+        wrap.classList.add("karaoke-wrap--dialogue");
       }
     },
     KARAOKE_HANDOFF
   );
 
-  tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 1, duration: 0.4, ease: "sine.out" }, KARAOKE_HANDOFF + 0.05);
-
-  /* Vowel Docs: swap title/sections + sidebar when dialogue moves between Voice client and Vowelbot. */
+  /* Vowel Docs: page title + sections + sidebar track transcript (Voice client ↔ Vowelbot). */
   tl.add(
     function () {
       vowelDocsModeRun("client");
     },
-    36.62
+    T_VD_CLIENT
   );
   tl.add(
     function () {
       vowelDocsModeRun("vowelbot");
     },
-    44.78
+    T_VD_VOWELBOT
   );
   tl.add(
     function () {
       vowelDocsModeRun("client");
     },
-    56.28
+    T_VD_CLIENT_RETURN
   );
 
-  /* Captions: neutral chrome; states drive FAB palette on #vd-fab inside comp-voweldocs (see COMPONENTS.md). */
-  tl.add(
-    function () {
-      vdCaptionSet({ speaker: "user", lines: ["100", "88", "72"] }, "user");
-    },
-    29.1
-  );
-  tl.fromTo(
-    "#vd-caption",
-    { autoAlpha: 0, y: -20 },
-    {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.45,
-      ease: "back.out(1.15)",
-      overwrite: "auto",
-    },
-    29.05
-  );
-
-  tl.add(
-    function () {
-      vdCaptionSet({ speaker: "ai", lines: ["100", "92", "80"] }, "thinking");
-    },
-    32.4
-  );
-  tl.add(
-    function () {
-      vdCaptionSet({ speaker: "ai", lines: ["100", "88"] }, "ai");
-    },
-    34.2
-  );
-  tl.add(
-    function () {
-      vdCaptionSet({ speaker: "user", lines: ["92", "70"] }, "user");
-    },
-    38.5
-  );
-  tl.add(
-    function () {
-      vdCaptionSet({ speaker: "ai", lines: ["100", "88", "76"] }, "thinking");
-    },
-    42.0
-  );
-  tl.add(
-    function () {
-      vdCaptionSet({ speaker: "ai", lines: ["100", "92", "88", "60"] }, "ai");
-    },
-    44.0
-  );
-  tl.add(
-    function () {
-      vdCaptionSet({ speaker: "user", lines: ["88", "80"] }, "user");
-    },
-    52.0
-  );
-  tl.add(
-    function () {
-      vdCaptionSet({ speaker: "ai", lines: ["100", "88", "72"] }, "ai");
-    },
-    55.5
-  );
-  tl.add(
-    function () {
-      vdCaptionSet({ lines: ["100", "92"] }, "active");
-    },
-    68.0
-  );
+  wireVoweldocsVoiceFabToMaster(tl);
 
   /* Closing CTA: NE zoom to costs, then stagger + unload — after “give Vowel a try”; leads into “clearing out that support inbox.” */
   tl.to(
@@ -454,14 +546,16 @@
       if (inh) {
         inh.classList.remove("scene-inbox-reprise");
       }
+      var wrap = document.getElementById("karaoke-wrap");
+      if (wrap) {
+        wrap.classList.remove("karaoke-wrap--dialogue", "karaoke-wrap--abstract-on");
+      }
     },
     OUTRO_IN
   );
   tl.to("#karaoke-wrap", { autoAlpha: 0, duration: 0.45, ease: "power2.in" }, OUTRO_IN);
   tl.to("#scene-voweldocs-host", { autoAlpha: 0, filter: "blur(8px)", duration: 0.5 }, OUTRO_IN);
   tl.to("#scene-inbox-host", { autoAlpha: 0, duration: 0.4, ease: "power2.in" }, OUTRO_IN);
-  tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 0, duration: 0.35 }, OUTRO_IN);
-  tl.to("#vd-caption", { autoAlpha: 0, duration: 0.3 }, OUTRO_IN);
 
   tl.set({}, {}, MASTER);
 

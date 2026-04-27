@@ -74,7 +74,7 @@
         </div>
       </div>
 
-      <div class="scene-scale-host">
+      <div class="scene-scale-host" id="scene-voweldocs-wrap">
         <div class="scene-scale-viewport">
           <div
             id="scene-voweldocs-host"
@@ -103,24 +103,20 @@
         data-height="1920"
       ></div>
 
-      <div
-        id="vd-inapp-dialogue-chrome"
-        class="clip vd-inapp-dialogue-chrome"
-        data-start="0"
-        data-duration="91"
-        data-track-index="6"
-        aria-hidden="true"
-      >
-        <div class="vd-inapp-dialogue-chrome__watermark" aria-hidden="true">Hey</div>
-      </div>
-
-      <div id="karaoke-wrap" class="clip" data-start="0" data-duration="91" data-track-index="7">
+      <div id="karaoke-wrap" class="clip" data-start="0" data-duration="91" data-track-index="6">
+        <!-- Abstract motion behind on-screen captions; master sets .karaoke-wrap--abstract-on from intro through outro handoff. -->
+        <div id="karaoke-abstract" class="karaoke-abstract" aria-hidden="true">
+          <div class="kablob kablob--a"></div>
+          <div class="kablob kablob--b"></div>
+          <div class="kablob kablob--c"></div>
+          <div class="kablob-lines" aria-hidden="true"></div>
+        </div>
         <div id="karaoke-root" aria-live="polite">
           <div id="karaoke-stage"></div>
         </div>
       </div>
 
-      <div id="outro-layer" class="clip" data-start="0" data-duration="91" data-track-index="8">
+      <div id="outro-layer" class="clip" data-start="0" data-duration="91" data-track-index="7">
         <p class="out-hero">Get started today at</p>
         <a class="out-url" href="https://vowel.to">https://vowel.to</a>
         <p class="out-attr">
@@ -132,21 +128,6 @@
             >Free Music Archive</a
           >.
         </p>
-      </div>
-
-      <div
-        id="vd-caption"
-        class="vd-caption clip vd-cap--inactive"
-        data-vd-state="inactive"
-        data-vd-speaker=""
-        aria-hidden="true"
-        data-start="0"
-        data-duration="91"
-        data-track-index="9"
-      >
-        <div class="vd-cap-inner">
-          <div class="vd-cap-body" id="vd-cap-body"></div>
-        </div>
       </div>
 
       <div class="grain-veil" aria-hidden="true"></div>

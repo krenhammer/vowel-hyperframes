@@ -85,11 +85,14 @@ body {
   Inbox 2× camera: scaled paint extends past 1920×1080 — default letterbox overflow was clipping
   the mock when zoomed (vowel-components #scene-inbox + .scene-wrap use overflow: visible here).
 */
-#scene-inbox-wrap.scene-scale-host {
+#scene-inbox-wrap.scene-scale-host,
+#scene-voweldocs-wrap.scene-scale-host {
   overflow: visible;
 }
 #scene-inbox-wrap .scene-scale-viewport,
-#scene-inbox-wrap .scene-scale-viewport > * {
+#scene-inbox-wrap .scene-scale-viewport > *,
+#scene-voweldocs-wrap .scene-scale-viewport,
+#scene-voweldocs-wrap .scene-scale-viewport > * {
   overflow: visible;
 }
 
@@ -138,28 +141,6 @@ body {
   background: #000000;
 }
 
-#vd-inapp-dialogue-chrome {
-  position: absolute;
-  inset: 0;
-  z-index: 18;
-  pointer-events: none;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.vd-inapp-dialogue-chrome__watermark {
-  position: absolute;
-  left: 8%;
-  top: 6%;
-  font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-  font-weight: 800;
-  font-size: clamp(120px, 14vw, 220px);
-  line-height: 1;
-  color: rgba(232, 238, 248, 0.12);
-  letter-spacing: -0.03em;
-  user-select: none;
-}
-
 #karaoke-wrap {
   position: absolute;
   inset: 0;
@@ -183,7 +164,111 @@ body {
   box-sizing: border-box;
 }
 
+/* Soft animated field behind on-screen dialogue (not promo / not outro). */
+#karaoke-abstract {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 140px;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+/* Narration + in-app: abstract field runs whenever on-screen captions are in use (not outro). */
+#karaoke-wrap.karaoke-wrap--abstract-on #karaoke-abstract {
+  opacity: 1;
+}
+
+#karaoke-abstract .kablob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  will-change: transform, opacity;
+  animation: kablob-drift 9s ease-in-out infinite;
+}
+
+#karaoke-abstract .kablob--a {
+  width: 340px;
+  height: 220px;
+  left: 4%;
+  top: 8%;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(15, 208, 110, 0.42) 0%, transparent 72%);
+  animation-delay: 0s;
+}
+
+#karaoke-abstract .kablob--b {
+  width: 300px;
+  height: 200px;
+  right: 6%;
+  top: 32%;
+  background: radial-gradient(ellipse 75% 75% at 50% 50%, rgba(37, 99, 235, 0.38) 0%, transparent 70%);
+  animation: kablob-drift 11s ease-in-out infinite;
+  animation-delay: -2.8s;
+}
+
+#karaoke-abstract .kablob--c {
+  width: 260px;
+  height: 180px;
+  left: 22%;
+  bottom: 18%;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(168, 212, 255, 0.22) 0%, transparent 75%);
+  animation: kablob-drift 8.5s ease-in-out infinite;
+  animation-delay: -4.2s;
+}
+
+#karaoke-abstract .kablob-lines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  background: repeating-linear-gradient(
+    118deg,
+    transparent 0,
+    transparent 8px,
+    rgba(255, 255, 255, 0.04) 8px,
+    rgba(255, 255, 255, 0.04) 9px
+  );
+  animation: kablob-lines-shift 18s linear infinite;
+  mix-blend-mode: soft-light;
+}
+
+@keyframes kablob-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(22px, -18px) scale(1.09);
+    opacity: 1;
+  }
+}
+
+@keyframes kablob-lines-shift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 120px 80px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #karaoke-abstract .kablob,
+  #karaoke-abstract .kablob-lines {
+    animation: none;
+  }
+  #karaoke-wrap.karaoke-wrap--abstract-on #karaoke-abstract .kablob--a {
+    opacity: 0.5;
+  }
+}
+
 #karaoke-root {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 100%;
   margin-left: auto;
@@ -205,6 +290,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 1;
   /* Explicit top (not inset:0) so captions sit lower over the 16:9 band; same for promo + AI. */
   top: 140px;
   flex: none;
@@ -285,10 +371,8 @@ body {
   padding: 0 3% 0 3.5%;
 }
 
+/* Normal flow + inline-block .kw — not flex column (column would stack one word per line). */
 .beat-block.beat-ai .beat-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
   text-align: left;
   max-width: 100%;
   font-style: normal;
@@ -403,61 +487,3 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-#vd-caption {
-  position: fixed;
-  left: 1.5%;
-  right: 1.5%;
-  top: 72px;
-  width: auto;
-  z-index: 200;
-  max-width: none;
-  padding: 14px 22px 16px;
-  box-sizing: border-box;
-  border-radius: 14px;
-  background: rgba(15, 17, 23, 0.95);
-  border: 1px solid #3f3f46;
-  border-top: 2px solid #52525b;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-  text-align: left;
-}
-
-#vd-caption.vd-cap--inactive {
-  opacity: 0.72;
-  border-color: #27272a;
-  border-top-color: #3f3f46;
-}
-
-#vd-caption .abs-bar {
-  display: block;
-  height: 12px;
-  border-radius: 6px;
-  background: #ffffff;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
-}
-
-#vd-caption .vd-cap-body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-#vd-caption .cap-w-100 {
-  width: 100%;
-}
-#vd-caption .cap-w-92 {
-  width: 92%;
-}
-#vd-caption .cap-w-88 {
-  width: 88%;
-}
-#vd-caption .cap-w-80 {
-  width: 80%;
-}
-#vd-caption .cap-w-72 {
-  width: 72%;
-}
-#vd-caption .cap-w-60 {
-  width: 60%;
-}

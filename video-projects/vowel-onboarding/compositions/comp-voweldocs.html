@@ -1,10 +1,10 @@
 <div
   data-composition-id="comp-voweldocs"
   data-start="0"
-  data-duration="26.62"
+  data-duration="78"
   data-width="1920"
   data-height="1080"
-  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
+  style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible"
 >
   <div class="chrome">
     <!-- Mock quadrant (disabled, kept): data-mock-qz="1" data-mock-qz-hold="1" data-mock-qz-pan="0.7" data-mock-qz-scale="2" on .vd-zoom-canvas -->
@@ -51,18 +51,6 @@
         </div>
       </aside>
       <div class="main">
-        <!-- Abstract caption tray: non-blocking overlay in .main (does not reflow .doc). Driven by window.vdCaptionSet + master TL. -->
-        <div
-          id="vd-caption"
-          class="vd-caption clip vd-cap--inactive"
-          data-vd-state="inactive"
-          data-vd-speaker=""
-          aria-hidden="true"
-        >
-          <div class="vd-cap-inner">
-            <div class="vd-cap-body" id="vd-cap-body"></div>
-          </div>
-        </div>
         <article class="doc">
           <h1 class="clip" id="vd-h1">Self-host</h1>
           <div class="lead-wrap clip" id="vd-lead-wrap">
@@ -150,7 +138,12 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      /* 2× NW match (was GSAP in-clip timeline; static layout only — master drives FAB/captions). */
+      overflow: visible;
+      will-change: transform;
+      backface-visibility: hidden;
+      transform: translateZ(0) scale(2);
+      transform-origin: 0 0;
     }
     [data-composition-id="comp-voweldocs"] .abs-bar {
       display: block;
@@ -307,64 +300,9 @@
       display: flex;
       flex-direction: column;
     }
-    /* Abstract transcript tray — modal-style overlay: out of document flow so line-count changes do not move .doc. */
-    [data-composition-id="comp-voweldocs"] #vd-caption {
-      position: absolute;
-      top: 8px;
-      left: 0;
-      right: 0;
-      width: min(384px, calc(100% - 96px));
-      margin: 0 auto;
-      z-index: 4;
-      padding: 14px 24px 18px;
-      border-radius: 14px;
-      background: rgba(15, 17, 23, 0.95);
-      border: 1px solid #3f3f46;
-      border-top: 2px solid #52525b;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-      pointer-events: none;
-      text-align: left;
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption.vd-cap--inactive {
-      opacity: 0.72;
-      border-color: #27272a;
-      border-top-color: #3f3f46;
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption .abs-bar {
-      display: block;
-      height: 12px;
-      border-radius: 6px;
-      background: #ffffff;
-      flex-shrink: 0;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption .vd-cap-body {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-100 {
-      width: 100%;
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-92 {
-      width: 92%;
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-88 {
-      width: 88%;
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-80 {
-      width: 80%;
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-72 {
-      width: 72%;
-    }
-    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-60 {
-      width: 60%;
-    }
     [data-composition-id="comp-voweldocs"] .doc {
       flex: 1;
-      /* Fixed top padding ≈ old flow (2-line caption + margins + prior 20px) so title/scroll layout stays stable. */
-      padding: 98px 48px 32px;
+      padding: 28px 48px 32px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -523,116 +461,19 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <!-- <script src="compositions/components/mock-quadrant-tour.js"></script> -->
   <script>
     (function () {
+      /* No in-comp motion: mock is static. Voice FAB colors + doc chrome updates come from vowel-onboarding-master (script.js). */
       window.__timelines = window.__timelines || {};
-      var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out", overwrite: "auto" } });
-      var root = '[data-composition-id="comp-voweldocs"]';
-      var vp = root + " .viewport";
-      var zc = root + " .vd-zoom-canvas";
-      /* Single source for zoom tour + data-mock-qz-* on .vd-zoom-canvas; T tracks tour length for post-tour beats. */
-      var vdZoom = {
-        tourAt: 1.35,
-        scale: 2,
-        holdAfterNW: 1,
-        zoomInDuration: 0.75,
-        panDuration: 0.7,
-        resetDuration: 0.65,
-        fabTrackSelectors: [root + " #vd-rag-fab", root + " #vd-fab"],
-      };
-      /* When mock-quadrant is enabled, refTourEnd can use hfMockQuadrant.estimateTourEndTime (see mock-quadrant-tour.js).
-      var refTourEnd =
-        typeof window.hfMockQuadrant === "object" && typeof window.hfMockQuadrant.estimateTourEndTime === "function"
-          ? window.hfMockQuadrant.estimateTourEndTime(vdZoom.tourAt, vdZoom, zc)
-          : vdZoom.tourAt + vdZoom.zoomInDuration + vdZoom.holdAfterNW + vdZoom.panDuration * 3 + vdZoom.resetDuration;
-      */
-      var refTourEnd =
-        vdZoom.tourAt + vdZoom.zoomInDuration + vdZoom.holdAfterNW + vdZoom.panDuration * 3 + vdZoom.resetDuration;
-      var T0 = 3.37; /* historical offset for beats authored as (time + 3.37) vs ref tour end 5.85s */
-      var T = T0;
-
-      tl.from(root + " .topbar", { y: -14, autoAlpha: 0, duration: 0.4 }, 0.1);
-      tl.from(root + " #vd-brand-row", { autoAlpha: 0, x: -8, duration: 0.35 }, 0.12);
-      tl.from(vp, { autoAlpha: 0, duration: 0.45 }, 0.15);
-      tl.from(root + " .sb-row", { autoAlpha: 0, x: -10, duration: 0.28, stagger: 0.04 }, 0.25);
-      tl.from(root + " #vd-rag-fab", { autoAlpha: 0, scale: 0.86, duration: 0.4, ease: "back.out(1.4)" }, 0.38);
-      tl.from(root + " #vd-h1", { autoAlpha: 0, y: 16, duration: 0.42 }, 0.4);
-      tl.from(root + " #lead-a .abs-bar", { autoAlpha: 0, scaleX: 0.2, duration: 0.35, stagger: 0.08, transformOrigin: "left center" }, 0.48);
-      tl.from(root + " .scroll-host", { autoAlpha: 0, duration: 0.32 }, 0.58);
-
-      tl.to(root + " #vd-nav-btn", { scale: 0.96, duration: 0.1, ease: "power2.in" }, 1.1);
-      tl.to(root + " #vd-nav-btn", { scale: 1, duration: 0.32, ease: "power2.out" }, 1.2);
-
-      /* Mock quadrant tour (disabled, kept)
-      if (typeof window.hfAddMockQuadrantTour === "function") {
-        var tourEnd = window.hfAddMockQuadrantTour(tl, zc, vdZoom.tourAt, vdZoom);
-        T = T0 + (tourEnd - refTourEnd);
+      if (typeof gsap === "undefined") {
+        return;
       }
-      */
-
-      tl.to(root + " #lead-a", { autoAlpha: 0, y: -6, duration: 0.2, ease: "power2.in" }, 2.92 + T);
-      tl.fromTo(
-        root + " #lead-b",
-        { autoAlpha: 0, y: 8 },
-        { autoAlpha: 1, y: 0, duration: 0.36, ease: "power2.out" },
-        3.15 + T
-      );
-
-      tl.add(function () {
-        var a = document.querySelector(root + " #sb-start");
-        var b = document.querySelector(root + " #sb-rag");
-        if (a) {
-          a.classList.remove("on");
-          a.classList.add("dim");
-        }
-        if (b) {
-          b.classList.remove("dim");
-          b.classList.add("on");
-        }
-      }, 3.05 + T);
-
-      tl.to(root + " #vd-scroll-inner", { y: -160, duration: 1.45, ease: "power2.inOut" }, 3.45 + T);
-
-      tl.from(root + " #vd-fab", { autoAlpha: 0, scale: 0.88, duration: 0.42, ease: "back.out(1.35)" }, 4.35 + T);
-
-      /**
-       * Voice FAB color beats — `colorKey` maps to VOICE_FAB_COLORS; tune timings only.
-       */
-      var VOICE_FAB_COLORS = {
-        inactive: "#6b7280",
-        active: "#22c55e",
-        userSpeaking: "#3b82f6",
-        thinking: "#eab308",
-        aiSpeaking: "#a855f7",
-        idle: "#27272a",
-      };
-      var voiceFabBeats = [
-        { time: 4.52 + T, colorKey: "inactive" },
-        { time: 4.66 + T, colorKey: "userSpeaking" },
-        { time: 4.86 + T, colorKey: "userSpeaking" },
-        { time: 5.08 + T, colorKey: "active" },
-        { time: 5.2 + T, colorKey: "thinking" },
-        { time: 5.36 + T, colorKey: "userSpeaking" },
-        { time: 5.58 + T, colorKey: "thinking" },
-        { time: 5.72 + T, colorKey: "thinking" },
-        { time: 5.92 + T, colorKey: "aiSpeaking" },
-        { time: 6.28 + T, colorKey: "aiSpeaking" },
-        { time: 6.72 + T, colorKey: "active" },
-        { time: 6.92 + T, colorKey: "inactive" },
-        { time: 7.08 + T, colorKey: "idle" },
-      ];
-
-      voiceFabBeats.forEach(function (beat) {
-        tl.to(root + " #vd-fab", { backgroundColor: VOICE_FAB_COLORS[beat.colorKey], duration: 0.2, ease: "power2.out" }, beat.time);
-      });
-
-      /* API key / FAB beats are driven from vowel-components-main (global time) so #vd-fab stays one element. */
-
-      tl.set({}, {}, 23.25 + T);
-      var compRoot = document.querySelector(root);
-      if (compRoot) {
-        compRoot.setAttribute("data-duration", String(23.25 + T));
+      var tl = gsap.timeline({ paused: true });
+      var dur = 78;
+      tl.set({}, {}, dur);
+      var el = document.querySelector('[data-composition-id="comp-voweldocs"]');
+      if (el) {
+        el.setAttribute("data-duration", String(dur));
       }
       window.__timelines["comp-voweldocs"] = tl;
     })();
