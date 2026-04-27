@@ -142,6 +142,14 @@
       #scene-inbox {
         z-index: 1;
       }
+      /* Inbox 2× camera: scaled paint extends past 1920×1080 — default scene overflow was clipping (looked like “no zoom” + hard box). */
+      #scene-inbox.scene-scale-host {
+        overflow: visible;
+      }
+      #scene-inbox .scene-scale-viewport,
+      #scene-inbox .scene-scale-viewport > .scene-wrap {
+        overflow: visible;
+      }
       #scene-github {
         z-index: 2;
         opacity: 0;
@@ -210,7 +218,7 @@
       id="root"
       data-composition-id="vowel-components-main"
       data-start="0"
-      data-duration="78.51"
+      data-duration="81.26"
       data-width="1080"
       data-height="1920"
     >
@@ -223,7 +231,7 @@
         id="vd-inapp-dialogue-chrome"
         class="clip vd-inapp-dialogue-chrome"
         data-start="0"
-        data-duration="78.51"
+        data-duration="81.26"
         data-track-index="8"
         aria-hidden="true"
       >
@@ -250,7 +258,7 @@
             data-composition-id="comp-inbox"
             data-composition-src="compositions/comp-inbox.html"
             data-start="0"
-            data-duration="11.46"
+            data-duration="14.21"
             data-track-index="1"
             data-width="1920"
             data-height="1080"
@@ -263,7 +271,7 @@
             class="scene-wrap"
             data-composition-id="comp-github"
             data-composition-src="compositions/comp-github.html"
-            data-start="11.11"
+            data-start="13.86"
             data-duration="8"
             data-track-index="2"
             data-width="1920"
@@ -277,7 +285,7 @@
             class="scene-wrap"
             data-composition-id="comp-codespace"
             data-composition-src="compositions/comp-codespace.html"
-            data-start="18.76"
+            data-start="21.51"
             data-duration="9"
             data-track-index="3"
             data-width="1920"
@@ -291,7 +299,7 @@
             class="scene-wrap"
             data-composition-id="comp-voweldocs"
             data-composition-src="compositions/comp-voweldocs.html"
-            data-start="27.41"
+            data-start="30.16"
             data-duration="23.25"
             data-track-index="4"
             data-width="1920"
@@ -305,7 +313,7 @@
             class="scene-wrap"
             data-composition-id="comp-rag-modal"
             data-composition-src="compositions/comp-rag-modal.html"
-            data-start="36.06"
+            data-start="38.81"
             data-duration="8"
             data-track-index="5"
             data-width="1920"
@@ -319,7 +327,7 @@
             class="scene-wrap"
             data-composition-id="comp-api-modal"
             data-composition-src="compositions/comp-api-modal.html"
-            data-start="43.71"
+            data-start="46.46"
             data-duration="7"
             data-track-index="6"
             data-width="1920"
@@ -333,7 +341,7 @@
             class="scene-wrap"
             data-composition-id="comp-turso-svg-bg"
             data-composition-src="compositions/comp-turso-svg-bg.html"
-            data-start="51.21"
+            data-start="53.96"
             data-duration="8.65"
             data-track-index="7"
             data-width="1920"
@@ -347,7 +355,7 @@
             class="scene-wrap"
             data-composition-id="comp-voweldocs-cta-bg"
             data-composition-src="compositions/comp-voweldocs-cta-bg.html"
-            data-start="59.86"
+            data-start="62.61"
             data-duration="8.65"
             data-track-index="12"
             data-width="1920"
@@ -361,7 +369,7 @@
             class="scene-wrap"
             data-composition-id="comp-outro"
             data-composition-src="compositions/comp-outro.html"
-            data-start="68.51"
+            data-start="71.26"
             data-duration="10"
             data-track-index="13"
             data-width="1920"
@@ -414,6 +422,8 @@
         /** “Support Inbox” hold before list motion — keep in sync with `INBOX_TITLE_PAUSE` in comp-inbox. */
         var INBOX_PRE_ANIM_PAUSE = 1;
         var INBOX_LEAD = WORDSTACK_INTRO + INBOX_PRE_ANIM_PAUSE;
+        /** NW zoom hold + zoom-out before emails — keep in sync with `INBOX_ZOOM_PREAMBLE` in comp-inbox (2 + 0.75). */
+        var INBOX_ZOOM_PREAMBLE = 2.75;
         var tl = gsap.timeline({ paused: true });
 
         tl.set("#vd-caption", { autoAlpha: 0, y: -20, force3D: true }, 0);
@@ -430,42 +440,42 @@
           Math.max(0, WORDSTACK_INTRO - 0.45)
         );
 
-        tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65 + INBOX_LEAD);
+        tl.to("#scene-inbox", { autoAlpha: 0, scale: 1.06, duration: 0.35, ease: "power3.inOut" }, 7.65 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE);
         tl.fromTo(
           "#scene-github",
           { autoAlpha: 0, scale: 0.94 },
           { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power3.inOut" },
-          7.65 + INBOX_LEAD
+          7.65 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE
         );
 
-        tl.to("#scene-github", { autoAlpha: 0, xPercent: -14, duration: 0.35, ease: "power2.inOut" }, 15.3 + INBOX_LEAD);
+        tl.to("#scene-github", { autoAlpha: 0, xPercent: -14, duration: 0.35, ease: "power2.inOut" }, 15.3 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE);
         tl.fromTo(
           "#scene-codespace",
           { autoAlpha: 0, xPercent: 14 },
           { autoAlpha: 1, xPercent: 0, duration: 0.35, ease: "power2.inOut" },
-          15.3 + INBOX_LEAD
+          15.3 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE
         );
 
-        tl.to("#scene-codespace", { autoAlpha: 0, filter: "blur(12px)", duration: 0.45, ease: "sine.inOut" }, 23.95 + INBOX_LEAD);
+        tl.to("#scene-codespace", { autoAlpha: 0, filter: "blur(12px)", duration: 0.45, ease: "sine.inOut" }, 23.95 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE);
         tl.fromTo(
           "#scene-voweldocs",
           { autoAlpha: 0, filter: "blur(12px)" },
           { autoAlpha: 1, filter: "blur(0px)", duration: 0.45, ease: "sine.inOut" },
-          23.95 + INBOX_LEAD
+          23.95 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE
         );
-        tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 32.6 + INBOX_LEAD);
+        tl.fromTo("#scene-rag", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 32.6 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE);
 
-        tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 40.25 + INBOX_LEAD);
+        tl.to("#scene-rag", { autoAlpha: 0, duration: 0.35, ease: "power3.in" }, 40.25 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE);
         tl.fromTo(
           "#scene-api",
           { autoAlpha: 0, y: 28 },
           { autoAlpha: 1, y: 0, duration: 0.38, ease: "power3.out" },
-          40.25 + INBOX_LEAD
+          40.25 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE
         );
-        tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 1, duration: 0.35, ease: "sine.out" }, 40.25 + INBOX_LEAD);
+        tl.to("#vd-inapp-dialogue-chrome", { autoAlpha: 1, duration: 0.35, ease: "sine.out" }, 40.25 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE);
 
         /* #vd-fab: same DOM node as comp-voweldocs; here we only drive API / key / “active” beat (overwrite child timeline). */
-        var T_API = 40.25 + INBOX_LEAD;
+        var T_API = 40.25 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE;
         var T_KEY = 1.58;
         var ow = { overwrite: "auto" };
         tl.to("#vd-fab", { autoAlpha: 0, scale: 0.88, duration: 0.2, ease: "power2.in", ...ow }, T_API);
@@ -622,7 +632,7 @@
         );
 
         /* After caption beat — crossfade voweldocs → Turso SVG marquee (comp-turso-svg-bg). */
-        var T_VOWEL_FADE = 47.75 + INBOX_LEAD;
+        var T_VOWEL_FADE = 47.75 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE;
         tl.to("#scene-voweldocs", { autoAlpha: 0, duration: 0.6, ease: "power2.in" }, T_VOWEL_FADE);
         tl.fromTo(
           "#scene-turso-svg",
@@ -632,7 +642,7 @@
         );
 
         /* Full-frame CTA grid — separate scene after Turso SVG (comp-voweldocs-cta-bg). */
-        var T_TURSO_END = 47.75 + 8.65 + INBOX_LEAD;
+        var T_TURSO_END = 47.75 + 8.65 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE;
         tl.to("#scene-turso-svg", { autoAlpha: 0, duration: 0.5, ease: "power2.in", overwrite: "auto" }, T_TURSO_END);
         tl.fromTo(
           "#scene-voweldocs-cta-bg",
@@ -641,7 +651,7 @@
           T_TURSO_END
         );
 
-        var T_CTA_END = 65.05 + INBOX_LEAD;
+        var T_CTA_END = 65.05 + INBOX_LEAD + INBOX_ZOOM_PREAMBLE;
         var OUTRO_LEN = 10;
         tl.to("#scene-voweldocs-cta-bg", { autoAlpha: 0, duration: 0.48, ease: "power2.in" }, T_CTA_END - 0.38);
         tl.to("#scene-outro", { autoAlpha: 1, duration: 0.52, ease: "power2.out" }, T_CTA_END - 0.35);
