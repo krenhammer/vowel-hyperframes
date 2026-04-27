@@ -19,13 +19,8 @@
         <div class="viewport">
       <main class="main">
         <!-- Large red $ in pink chip — upper‑right of main list. -->
-        <div
-          class="inbox-cost-clip clip"
-          id="inbox-cost-clip"
-          data-start="0"
-          data-duration="8"
-          data-track-index="0"
-        >
+        <!-- No class="clip" here — same as .mail-row: engine-owned visibility fights GSAP autoAlpha. -->
+        <div class="inbox-cost-clip" id="inbox-cost-clip">
           <div class="inbox-cost-box" id="inbox-cost-box" aria-hidden="true">
             <div class="inbox-cost-amount">
               <span class="inbox-cost-sym">$</span><span class="inbox-cost-val" id="inbox-cost-val">0</span>
@@ -425,7 +420,6 @@
        */
       var T_TROUBLE =
         typeof window.VOWEL_INBOX_T_TROUBLE === "number" ? window.VOWEL_INBOX_T_TROUBLE : 4.88 - HOST0;
-      var T_NE = typeof window.VOWEL_INBOX_T_NE === "number" ? window.VOWEL_INBOX_T_NE : 7.33 - HOST0;
       var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
       var root = '[data-composition-id="comp-inbox"]';
       var zc = root + " .inbox-camera-surface";
@@ -460,10 +454,11 @@
       for (var tj = 0; tj < n; tj++) {
         total += costs[tj];
       }
-      var valEl = document.getElementById("inbox-cost-val");
       function setCostDisplay(amount) {
-        if (valEl) {
-          valEl.textContent = String(Math.max(0, Math.round(amount)));
+        var r = document.querySelector('[data-composition-id="comp-inbox"]');
+        var el = r ? r.querySelector("#inbox-cost-val") : null;
+        if (el) {
+          el.textContent = String(Math.max(0, Math.round(amount)));
         }
       }
       var costShadow0 =
@@ -500,17 +495,19 @@
           B + 6.1
         );
         ux.set(zc, { ...camIdentity(), ...tw }, B + 6.65);
-        /* Cost chip: no extra scale (parent camera is already scaled). */
-        ux.from(
+        /* Cost chip: fromTo end state required — init gsap.set keeps autoAlpha:0, plain .from() would tween 0→0. */
+        ux.fromTo(
           root + " #inbox-cost-clip",
-          { autoAlpha: 0, y: 10, duration: 0.4, ease: "back.out(1.2)" },
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, duration: 0.4, ease: "back.out(1.2)" },
           B + 0.0
         );
         var rowStagger = 0.085;
         var tRows = B + 0.1;
-        ux.from(
+        ux.fromTo(
           root + " .mail-row",
-          { autoAlpha: 0, y: 18, duration: 0.38, stagger: rowStagger, ease: "expo.out" },
+          { autoAlpha: 0, y: 18 },
+          { autoAlpha: 1, y: 0, duration: 0.38, stagger: rowStagger, ease: "expo.out" },
           tRows
         );
         var running2 = 0;
@@ -562,17 +559,9 @@
       }
 
       /**
-       * Rows already in (totals on hidden counter): pan camera NW → NE, reveal cost chip, pulse. Does **not**
-       * return to a full wide shot or clear rows before the master’s Vowel Docs crossfade.
+       * Pan NW → NE + cost chip + pulse. `B` = row-infill start so chip/camera align with stagger; $ from row calls only.
        */
       function addNeCostUnwindAfterRowsOnly(ux, B) {
-        ux.call(
-          function () {
-            setCostDisplay(total);
-          },
-          null,
-          B
-        );
         ux.fromTo(
           zc,
           { ...camAtNw(sOpen), ...tw },
@@ -591,9 +580,10 @@
           },
           B
         );
-        ux.from(
+        ux.fromTo(
           root + " #inbox-cost-clip",
-          { autoAlpha: 0, y: 10, duration: 0.4, ease: "back.out(1.2)" },
+          { autoAlpha: 0, y: 10 },
+          { autoAlpha: 1, y: 0, duration: 0.4, ease: "back.out(1.2)" },
           B
         );
         ux.fromTo(
@@ -604,8 +594,7 @@
         );
       }
 
-      /* “Trouble tickets” → row in-fill; “on top of these” → NE + cost. `.mail-row` is not a HyperFrames `clip`
-         (no data-start) so GSAP owns visibility; rows are decorative inside this comp. */
+      /* “Trouble tickets” → row in-fill + NE camera + pink cost chip on the same beat (not delayed to “top”). */
       var rowStaggerOpen = 0.085;
       var tRowOpen = T_TROUBLE;
       tl.fromTo(
@@ -628,7 +617,7 @@
           );
         })(running4);
       }
-      addNeCostUnwindAfterRowsOnly(tl, T_NE);
+      addNeCostUnwindAfterRowsOnly(tl, tRowOpen);
 
       var MASTER_DUR = 91;
       var COMP_DUR = MASTER_DUR - HOST0;
