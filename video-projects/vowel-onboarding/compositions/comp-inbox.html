@@ -559,6 +559,41 @@
       }
 
       /**
+       * Reverse row unload + cost chip hide only — for end CTA when UI is already at NE + full list (after
+       * `playInboxNeCostUnwindReprise`). Compressed timing so it fits before outro; same cost math as `addNeCostUnwindBlock`.
+       */
+      function addEmailUnloadRepriseOnly(ux) {
+        var B = 0;
+        var revT2 = 0.12;
+        var revSt2 = 0.048;
+        var rem2 = total;
+        var k2;
+        for (k2 = 0; k2 < n; k2++) {
+          var rIdx3 = n - k2;
+          rem2 -= costs[rIdx3 - 1];
+          (function (v, idSuffix, at) {
+            ux.call(
+              function () {
+                setCostDisplay(v);
+              },
+              null,
+              at
+            );
+            ux.to(
+              root + " #inbox-r" + idSuffix,
+              { autoAlpha: 0, x: 36, scale: 0.98, duration: 0.28, ease: "power2.in" },
+              at
+            );
+          })(rem2, rIdx3, revT2 + 0.08 + k2 * revSt2);
+        }
+        ux.to(
+          root + " #inbox-cost-clip",
+          { autoAlpha: 0, y: -8, duration: 0.36, ease: "power2.in" },
+          B + 1.28
+        );
+      }
+
+      /**
        * Pan NW → NE + cost chip + pulse. `B` = row-infill start so chip/camera align with stagger; $ from row calls only.
        */
       function addNeCostUnwindAfterRowsOnly(ux, B) {
@@ -697,6 +732,19 @@
         setCostDisplay(total);
         var rt = gsap.timeline({ paused: true });
         rt.set({}, {}, 0.01);
+        return rt;
+      };
+      /**
+       * Master ~“head start on” (narrator): run the same email-out + cost-hide as the tail of `addNeCostUnwindBlock`,
+       * assuming the reprise already left the inbox in NE zoom with a full rack + total.
+       */
+      window.playInboxEmailUnloadReprise = function () {
+        var r = document.querySelector("[data-composition-id=\"comp-inbox\"]");
+        if (!r) {
+          return null;
+        }
+        var rt = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+        addEmailUnloadRepriseOnly(rt);
         return rt;
       };
       window.__timelines["comp-inbox"] = tl;

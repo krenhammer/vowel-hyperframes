@@ -14,7 +14,7 @@
     typeof window.VOWEL_INBOX_HOST_START === "number" ? window.VOWEL_INBOX_HOST_START : 2.23;
   /** After “give Vowel a try” + NE/cost/unwind (~7.4s); karaoke through “that support inbox.” ~80.8s. */
   var OUTRO_IN = 81.25;
-  /** Return to inbox + play NE zoom / costs / email unload (comp-inbox `playInboxNeCostUnwindReprise`). “try” ends ~74.65s. */
+  /** Return to inbox + static NE + cost (comp-inbox reprise at ~74.55s). Email strip-out runs at `T_INBOX_EMAIL_UNLOAD` (“head start on”). */
   var INBOX_REPRISE = 74.55;
   /** No karaoke during word-stack intro — keep in sync with `#scene-intro-host` + comp-wordstack-intro TOTAL. */
   var WORDSTACK_INTRO_END = 3.38;
@@ -141,6 +141,21 @@
       }
     }
     return null;
+  }
+
+  /** First word of “head start on” (closing VO) — email rack unload in comp-inbox lines up with this phrase. */
+  function findHeadStartOnTime() {
+    var i;
+    for (i = 0; i < WORDS.length - 2; i++) {
+      if (
+        wordNorm(WORDS[i].text) === "head" &&
+        wordNorm(WORDS[i + 1].text) === "start" &&
+        wordNorm(WORDS[i + 2].text) === "on"
+      ) {
+        return WORDS[i].start;
+      }
+    }
+    return 77.85;
   }
 
   var VD_MODES = {
@@ -616,6 +631,7 @@
   var T_VD_VOWELBOT = vowelbotAsk ? vowelbotAsk.t : 44.78;
   /** Back to Self-host when the user breaks in after the full GitHub / client answer (not mid “add the Vowel client…”). */
   var T_VD_RETURN = wowAfterBot ? wowAfterBot.t : 68.74;
+  var T_INBOX_EMAIL_UNLOAD = findHeadStartOnTime();
 
   var tl = gsap.timeline({ paused: true });
 
@@ -775,7 +791,7 @@
   wireVoweldocsVoiceFabToMaster(tl);
   wireVdAbstractCaptionsToMaster(tl);
 
-  /* Closing CTA: cut to inbox already in NE zoom + cost total; no extra camera or row motion (comp-inbox reprise). */
+  /* Closing CTA: cut to inbox in static NE; email unload when narrator hits “head start on”. */
   tl.to(
     "#scene-voweldocs-host",
     { autoAlpha: 0, duration: 0.45, filter: "blur(2px)", ease: "power2.in" },
@@ -798,6 +814,17 @@
       }
     },
     INBOX_REPRISE + 0.04
+  );
+
+  tl.add(
+    function () {
+      var anim =
+        typeof window.playInboxEmailUnloadReprise === "function" ? window.playInboxEmailUnloadReprise() : null;
+      if (anim && typeof anim.play === "function") {
+        anim.play(0);
+      }
+    },
+    T_INBOX_EMAIL_UNLOAD
   );
 
   tl.fromTo("#outro-layer", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.65, ease: "power2.out" }, OUTRO_IN);
