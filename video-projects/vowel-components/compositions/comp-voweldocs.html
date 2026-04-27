@@ -51,7 +51,7 @@
         </div>
       </aside>
       <div class="main">
-        <!-- Abstract caption tray: part of the voweldocs mock (below topbar, centered in main). Driven by window.vdCaptionSet + master TL. -->
+        <!-- Abstract caption tray: non-blocking overlay in .main (does not reflow .doc). Driven by window.vdCaptionSet + master TL. -->
         <div
           id="vd-caption"
           class="vd-caption clip vd-cap--inactive"
@@ -307,12 +307,14 @@
       display: flex;
       flex-direction: column;
     }
-    /* Abstract transcript tray — ~1/5 of mock width, centered under global topbar in main column. */
+    /* Abstract transcript tray — modal-style overlay: out of document flow so line-count changes do not move .doc. */
     [data-composition-id="comp-voweldocs"] #vd-caption {
-      flex-shrink: 0;
-      align-self: center;
+      position: absolute;
+      top: 8px;
+      left: 0;
+      right: 0;
       width: min(384px, calc(100% - 96px));
-      margin: 8px 48px 2px;
+      margin: 0 auto;
       z-index: 4;
       padding: 14px 24px 18px;
       border-radius: 14px;
@@ -361,7 +363,8 @@
     }
     [data-composition-id="comp-voweldocs"] .doc {
       flex: 1;
-      padding: 20px 48px 32px;
+      /* Fixed top padding ≈ old flow (2-line caption + margins + prior 20px) so title/scroll layout stays stable. */
+      padding: 98px 48px 32px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
