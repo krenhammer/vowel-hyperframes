@@ -7,7 +7,9 @@
   style="position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden"
 >
   <div class="chrome">
-    <div class="viewport">
+    <!-- Same shell as comp-voweldocs: column flex + vd-zoom-canvas (quarter-zoom hook lives on this in other mocks). -->
+    <div class="vd-zoom-canvas">
+      <div class="viewport">
       <aside class="sidebar">
         <h1 class="inbox-page-title" id="inbox-page-title">Support Inbox</h1>
         <div class="sb-row"></div>
@@ -149,23 +151,37 @@
           </div>
         </div>
       </main>
+      </div>
     </div>
   </div>
   <style>
     [data-composition-id="comp-inbox"] {
-      background: #e8eaef;
+      background: #0d0d0f;
       font-family: "DM Sans", system-ui, sans-serif;
-      color: #0f172a;
+      color: #e6edf3;
     }
     [data-composition-id="comp-inbox"] .abs-bar {
       display: block;
       height: 10px;
       border-radius: 5px;
-      background: #cbd5e1;
+      background: #3f3f46;
     }
     [data-composition-id="comp-inbox"] .chrome {
       position: absolute;
-      inset: 0;
+      top: 0;
+      bottom: 0;
+      left: 320px;
+      right: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+    [data-composition-id="comp-inbox"] .vd-zoom-canvas {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
     [data-composition-id="comp-inbox"] .inbox-cost-clip {
       position: absolute;
@@ -223,51 +239,44 @@
       letter-spacing: 0.14em;
       color: #be185d;
     }
-    /* Mock webapp width = 2/3 frame (1280px), centered — no outer stroke (soft shadow only) */
+    /* Flat flex shell — same pattern as comp-voweldocs .viewport (no card radius / drop shadow). */
     [data-composition-id="comp-inbox"] .viewport {
-      position: absolute;
-      top: 48px;
-      bottom: 48px;
-      left: 320px;
-      right: 320px;
+      flex: 1;
+      min-height: 0;
       display: flex;
-      border-radius: 12px;
-      border: none;
-      overflow: hidden;
       transform-origin: 50% 50%;
-      box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
-      background: #ffffff;
+      overflow: hidden;
     }
     [data-composition-id="comp-inbox"] .sidebar {
-      width: 228px;
-      background: #f4f6f9;
-      padding: 14px 12px 16px;
+      width: 280px;
+      flex-shrink: 0;
+      background: #121216;
+      padding: 20px 16px 24px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      border-right: 1px solid #e2e6ed;
-      flex-shrink: 0;
+      border-right: 1px solid #2a2a32;
       align-items: stretch;
     }
     [data-composition-id="comp-inbox"] .inbox-page-title {
       margin: 0;
       padding: 0 0 4px;
-      font-size: clamp(19px, 1.25cqi, 26px);
+      font-size: clamp(19px, 1.25vw, 26px);
       font-weight: 800;
       letter-spacing: -0.04em;
       line-height: 1.1;
-      color: #0f172a;
+      color: #fafafa;
       white-space: nowrap;
     }
     [data-composition-id="comp-inbox"] .sb-row {
       height: 32px;
       border-radius: 8px;
-      background: #e2e8f0;
-      opacity: 0.85;
+      background: #3f3f46;
+      opacity: 0.9;
     }
     [data-composition-id="comp-inbox"] .sb-row.active {
-      background: #fee2e2;
-      border: 1px solid #fca5a5;
+      background: rgba(127, 29, 29, 0.35);
+      border: 1px solid #991b1b;
       opacity: 1;
     }
     [data-composition-id="comp-inbox"] .main {
@@ -275,29 +284,29 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: #ffffff;
+      background: #16161c;
       min-width: 0;
       min-height: 0;
     }
     [data-composition-id="comp-inbox"] .toolbar {
       padding: 14px 18px;
-      border-bottom: 1px solid #e8ecf1;
+      border-bottom: 1px solid #2a2a32;
       display: flex;
       flex-direction: column;
       gap: 8px;
       align-items: flex-start;
-      background: #fafbfc;
+      background: #141418;
       flex-shrink: 0;
     }
     [data-composition-id="comp-inbox"] .tb-a {
       width: 36%;
       height: 13px;
-      background: #94a3b8;
+      background: #52525b;
     }
     [data-composition-id="comp-inbox"] .tb-b {
       width: 22%;
       height: 9px;
-      background: #cbd5e1;
+      background: #3f3f46;
     }
     [data-composition-id="comp-inbox"] .list {
       padding: 12px 14px 14px;
@@ -315,9 +324,9 @@
       align-items: flex-start;
       gap: 12px;
       padding: 10px 12px;
-      background: #fef2f2;
+      background: rgba(127, 29, 29, 0.18);
       border-radius: 8px;
-      border: none;
+      border: 1px solid #3f2a2a;
       flex-shrink: 0;
     }
     /* Plain red exclamation only (no badge / circle) */
@@ -329,7 +338,7 @@
       font-weight: 800;
       font-size: 22px;
       line-height: 1;
-      color: #dc2626;
+      color: #f87171;
     }
     [data-composition-id="comp-inbox"] .mail-meta {
       display: flex;
@@ -341,12 +350,12 @@
     [data-composition-id="comp-inbox"] .mail-subject {
       font-size: 16px;
       font-weight: 600;
-      color: #7f1d1d;
+      color: #fecaca;
     }
     [data-composition-id="comp-inbox"] .mail-subject .tkt {
       font-weight: 700;
       font-variant-numeric: tabular-nums;
-      color: #991b1b;
+      color: #f87171;
       margin-right: 0.4em;
       letter-spacing: -0.02em;
     }
