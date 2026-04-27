@@ -51,7 +51,18 @@
         </div>
       </aside>
       <div class="main">
-        <!-- Caption / voice transcript: see index.html #vd-caption (root-level for z-order over modals) + COMPONENTS.md -->
+        <!-- Abstract caption tray: part of the voweldocs mock (below topbar, centered in main). Driven by window.vdCaptionSet + master TL. -->
+        <div
+          id="vd-caption"
+          class="vd-caption clip vd-cap--inactive"
+          data-vd-state="inactive"
+          data-vd-speaker=""
+          aria-hidden="true"
+        >
+          <div class="vd-cap-inner">
+            <div class="vd-cap-body" id="vd-cap-body"></div>
+          </div>
+        </div>
         <article class="doc">
           <h1 class="clip" id="vd-h1">Self-host</h1>
           <div class="lead-wrap clip" id="vd-lead-wrap">
@@ -295,6 +306,58 @@
       position: relative;
       display: flex;
       flex-direction: column;
+    }
+    /* Abstract transcript tray — ~1/5 of mock width, centered under global topbar in main column. */
+    [data-composition-id="comp-voweldocs"] #vd-caption {
+      flex-shrink: 0;
+      align-self: center;
+      width: min(384px, calc(100% - 96px));
+      margin: 8px 48px 2px;
+      z-index: 4;
+      padding: 14px 24px 18px;
+      border-radius: 14px;
+      background: rgba(15, 17, 23, 0.95);
+      border: 1px solid #3f3f46;
+      border-top: 2px solid #52525b;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+      text-align: left;
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption.vd-cap--inactive {
+      opacity: 0.72;
+      border-color: #27272a;
+      border-top-color: #3f3f46;
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption .abs-bar {
+      display: block;
+      height: 12px;
+      border-radius: 6px;
+      background: #ffffff;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption .vd-cap-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-100 {
+      width: 100%;
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-92 {
+      width: 92%;
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-88 {
+      width: 88%;
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-80 {
+      width: 80%;
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-72 {
+      width: 72%;
+    }
+    [data-composition-id="comp-voweldocs"] #vd-caption .cap-w-60 {
+      width: 60%;
     }
     [data-composition-id="comp-voweldocs"] .doc {
       flex: 1;

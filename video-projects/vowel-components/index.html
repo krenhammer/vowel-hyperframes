@@ -167,61 +167,6 @@
         z-index: 9;
         opacity: 0;
       }
-      /* Post–API key caption: always neutral gray chrome (no hue). State is data-only + FAB. See COMPONENTS.md. */
-      #vd-caption {
-        position: fixed;
-        left: 50%;
-        top: 20px;
-        z-index: 200;
-        width: 20vw; /* 1/5 of screen (viewport) width */
-        padding: 14px 24px 18px;
-        border-radius: 14px;
-        background: rgba(15, 17, 23, 0.95);
-        border: 1px solid #3f3f46;
-        border-top: 2px solid #52525b;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        pointer-events: none;
-        text-align: left;
-      }
-      #vd-caption.vd-cap--inactive {
-        opacity: 0.72;
-        border-color: #27272a;
-        border-top-color: #3f3f46;
-      }
-      /* Abstract “text” = horizontal bars (same language as comp-inbox / comp-voweldocs `.abs-bar`). */
-      #vd-caption .abs-bar {
-        display: block;
-        height: 12px;
-        border-radius: 6px;
-        background: #ffffff;
-        flex-shrink: 0;
-        /* Hairline so white bars read clearly on the dark caption tray. */
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
-      }
-      #vd-caption .vd-cap-body {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      #vd-caption .cap-w-100 {
-        width: 100%;
-      }
-      #vd-caption .cap-w-92 {
-        width: 92%;
-      }
-      #vd-caption .cap-w-88 {
-        width: 88%;
-      }
-      #vd-caption .cap-w-80 {
-        width: 80%;
-      }
-      #vd-caption .cap-w-72 {
-        width: 72%;
-      }
-      #vd-caption .cap-w-60 {
-        width: 60%;
-      }
-
       /* Ported from vowel-turso-rag: in-app dialogue chrome (green rail + ghost word). */
       :root {
         --vd-turso-accent: #0fd06e;
@@ -415,21 +360,6 @@
           ></div>
         </div>
       </div>
-      <!--
-        Caption: after config modal is dismissed (not while scene-api is up). 20vw tray, abs-bars. data-vd-state + data-vd-speaker; FAB (vdCaptionSet).
-        Hoisted in #root (fixed) so it stacks over scene-rag and scene-api.
-      -->
-      <div
-        id="vd-caption"
-        class="vd-caption clip vd-cap--inactive"
-        data-vd-state="inactive"
-        data-vd-speaker=""
-        aria-hidden="true"
-      >
-        <div class="vd-cap-inner">
-          <div class="vd-cap-body" id="vd-cap-body"></div>
-        </div>
-      </div>
     </div>
     <script src="animated-image-background/AnimatedImageBackground.js"></script>
     <script>
@@ -477,7 +407,7 @@
         var INBOX_LEAD = WORDSTACK_INTRO + INBOX_PRE_ANIM_PAUSE;
         var tl = gsap.timeline({ paused: true });
 
-        tl.set("#vd-caption", { xPercent: -50, autoAlpha: 0, y: -20, force3D: true }, 0);
+        tl.set("#vd-caption", { autoAlpha: 0, y: -20, force3D: true }, 0);
         tl.set("#vd-inapp-dialogue-chrome", { autoAlpha: 0 }, 0);
         tl.set("#scene-inbox", { autoAlpha: 1 }, 0);
         tl.set("#scene-turso-svg", { autoAlpha: 0 }, 0);
@@ -566,14 +496,14 @@
         );
         tl.fromTo(
           "#vd-caption",
-          { xPercent: -50, y: -24, autoAlpha: 0 },
-          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.5, ease: "back.out(1.2)", ...ow },
+          { y: -24, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.5, ease: "back.out(1.2)", ...ow },
           T1
         );
 
         tl.to(
           "#vd-caption",
-          { xPercent: -50, y: -12, autoAlpha: 0, duration: 0.22, ease: "power2.in", overwrite: "auto" },
+          { y: -12, autoAlpha: 0, duration: 0.22, ease: "power2.in", overwrite: "auto" },
           T1 + 0.9
         );
         var T2 = T1 + 0.95;
@@ -585,8 +515,8 @@
         );
         tl.fromTo(
           "#vd-caption",
-          { xPercent: -50, y: 14, autoAlpha: 0 },
-          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.38, ease: "power3.out", ...ow },
+          { y: 14, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.38, ease: "power3.out", ...ow },
           T2
         );
         tl.to(
@@ -598,7 +528,7 @@
         var T3 = T2 + 0.7;
         tl.to(
           "#vd-caption",
-          { xPercent: -50, y: -10, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
+          { y: -10, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
           T3
         );
         var T4 = T3 + 0.06;
@@ -610,8 +540,8 @@
         );
         tl.fromTo(
           "#vd-caption",
-          { xPercent: -50, y: 12, autoAlpha: 0 },
-          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.4, ease: "power2.out", ...ow },
+          { y: 12, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.4, ease: "power2.out", ...ow },
           T4
         );
         tl.to(
@@ -623,7 +553,7 @@
         var T5 = T4 + 0.85;
         tl.to(
           "#vd-caption",
-          { xPercent: -50, y: -10, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
+          { y: -10, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
           T5
         );
         var T6 = T5 + 0.06;
@@ -635,8 +565,8 @@
         );
         tl.fromTo(
           "#vd-caption",
-          { xPercent: -50, y: 14, autoAlpha: 0 },
-          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.42, ease: "power2.out", ...ow },
+          { y: 14, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.42, ease: "power2.out", ...ow },
           T6
         );
         tl.to(
@@ -648,7 +578,7 @@
         var T7 = T6 + 0.95;
         tl.to(
           "#vd-caption",
-          { xPercent: -50, y: -8, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
+          { y: -8, autoAlpha: 0, duration: 0.2, ease: "power2.in", overwrite: "auto" },
           T7
         );
         var T8 = T7 + 0.06;
@@ -660,8 +590,8 @@
         );
         tl.fromTo(
           "#vd-caption",
-          { xPercent: -50, y: 10, autoAlpha: 0 },
-          { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.36, ease: "back.out(1.1)", ...ow },
+          { y: 10, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.36, ease: "back.out(1.1)", ...ow },
           T8
         );
         tl.to(
@@ -671,13 +601,13 @@
         );
         tl.to(
           "#vd-caption",
-          { xPercent: -50, y: -16, autoAlpha: 0, duration: 0.3, ease: "power2.in", overwrite: "auto" },
+          { y: -16, autoAlpha: 0, duration: 0.3, ease: "power2.in", overwrite: "auto" },
           T8 + 0.6
         );
         tl.add(
           function () {
             vdCaptionSet({ speaker: "", lines: [] }, "inactive");
-            gsap.set("#vd-caption", { xPercent: -50, y: 0, autoAlpha: 0 });
+            gsap.set("#vd-caption", { y: 0, autoAlpha: 0 });
           },
           T8 + 0.64
         );

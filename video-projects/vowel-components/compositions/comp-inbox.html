@@ -24,8 +24,9 @@
           data-track-index="0"
         >
           <div class="inbox-cost-box" id="inbox-cost-box" aria-hidden="true">
-            <span class="inbox-cost-sym">$</span>
-            <span class="inbox-cost-val" id="inbox-cost-val">0</span>
+            <div class="inbox-cost-amount">
+              <span class="inbox-cost-sym">$</span><span class="inbox-cost-val" id="inbox-cost-val">0</span>
+            </div>
             <div class="inbox-cost-label">support</div>
           </div>
         </div>
@@ -169,7 +170,7 @@
     [data-composition-id="comp-inbox"] .inbox-cost-clip {
       position: absolute;
       z-index: 3;
-      right: 12px;
+      right: 36px;
       top: 58px;
       left: auto;
       transform-origin: 50% 50%;
@@ -177,19 +178,31 @@
     }
     [data-composition-id="comp-inbox"] .inbox-cost-box {
       display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0 12px;
-      padding: 26px 32px 22px 28px;
-      border-radius: 24px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 224px;
+      min-width: 224px;
+      max-width: 224px;
+      box-sizing: border-box;
+      padding: 14px 12px 12px;
+      border-radius: 18px;
       background: linear-gradient(180deg, #fce7f3 0%, #fbcfe8 100%);
-      border: 3px solid #f472b6;
-      box-shadow: 0 14px 40px rgba(190, 24, 93, 0.26), 0 3px 0 rgba(255, 255, 255, 0.65) inset;
+      border: 2px solid #f472b6;
+      box-shadow: 0 10px 32px rgba(190, 24, 93, 0.22), 0 2px 0 rgba(255, 255, 255, 0.65) inset;
+    }
+    [data-composition-id="comp-inbox"] .inbox-cost-amount {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: center;
+      width: 100%;
+      gap: 0.08em;
     }
     [data-composition-id="comp-inbox"] .inbox-cost-sym,
     [data-composition-id="comp-inbox"] .inbox-cost-val {
       font-weight: 800;
-      font-size: 78px;
+      font-size: 72px;
       line-height: 1;
       color: #dc2626;
       font-variant-numeric: tabular-nums;
@@ -197,19 +210,20 @@
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
     }
     [data-composition-id="comp-inbox"] .inbox-cost-sym {
-      font-size: 58px;
-      margin-right: 4px;
+      font-size: 54px;
+      margin-right: 0;
     }
     [data-composition-id="comp-inbox"] .inbox-cost-label {
       width: 100%;
-      margin-top: 6px;
-      font-size: 15px;
+      margin-top: 5px;
+      text-align: center;
+      font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       color: #be185d;
     }
-    /* Mock webapp width = 2/3 frame (1280px), centered */
+    /* Mock webapp width = 2/3 frame (1280px), centered — no outer stroke (soft shadow only) */
     [data-composition-id="comp-inbox"] .viewport {
       position: absolute;
       top: 48px;
@@ -218,7 +232,7 @@
       right: 320px;
       display: flex;
       border-radius: 12px;
-      border: 1px solid #c5cad3;
+      border: none;
       overflow: hidden;
       transform-origin: 50% 50%;
       box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
@@ -238,7 +252,7 @@
     [data-composition-id="comp-inbox"] .inbox-page-title {
       margin: 0;
       padding: 0 0 4px;
-      font-size: clamp(19px, 1.25vw, 26px);
+      font-size: clamp(19px, 1.25cqi, 26px);
       font-weight: 800;
       letter-spacing: -0.04em;
       line-height: 1.1;
@@ -303,8 +317,7 @@
       padding: 10px 12px;
       background: #fef2f2;
       border-radius: 8px;
-      border: 1px solid #fecaca;
-      border-left: 4px solid #dc2626;
+      border: none;
       flex-shrink: 0;
     }
     /* Plain red exclamation only (no badge / circle) */
@@ -367,7 +380,7 @@
        * so all tween positions are offset on one flat timeline.
        */
       var WORDSTACK_INTRO_PAD = 2.46;
-      /** Readable title hold after word-stack intro — keep in sync with `INBOX_PRE_ANIM_PAUSE` in index.html. */
+      /** Beat after word-stack intro (list / cost motion still starts at O) — keep in sync with `INBOX_PRE_ANIM_PAUSE` in index.html. */
       var INBOX_TITLE_PAUSE = 1;
       var PAD = WORDSTACK_INTRO_PAD;
       var T_ANIM = PAD + INBOX_TITLE_PAUSE;
@@ -392,16 +405,10 @@
         }
       }
       var costShadow0 =
-        "0 14px 40px rgba(190, 24, 93, 0.26), 0 3px 0 rgba(255, 255, 255, 0.65) inset";
+        "0 10px 32px rgba(190, 24, 93, 0.22), 0 2px 0 rgba(255, 255, 255, 0.65) inset";
       var costShadow1 =
-        "0 0 0 3px #fda4af, 0 18px 48px rgba(190, 24, 93, 0.32), 0 3px 0 rgba(255, 255, 255, 0.65) inset";
-      gsap.set(root + " #inbox-page-title", { autoAlpha: 0 });
-      tl.fromTo(
-        root + " #inbox-page-title",
-        { autoAlpha: 0, y: 6 },
-        { autoAlpha: 1, y: 0, duration: 0.32, ease: "power2.out" },
-        PAD
-      );
+        "0 0 0 2px #fda4af, 0 14px 40px rgba(190, 24, 93, 0.28), 0 2px 0 rgba(255, 255, 255, 0.65) inset";
+      /* "Support Inbox" title: no intro tween — static from first frame. */
       tl.from(
         root + " #inbox-cost-clip",
         { autoAlpha: 0, scale: 0.88, y: 12, duration: 0.4, ease: "back.out(1.2)" },
